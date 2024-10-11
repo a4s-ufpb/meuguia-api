@@ -1,10 +1,13 @@
 # env file
 .env
 
+# intellij
+.idea/
 
 # Compiled class file
 *.class
 target/
+
 # Log file
 *.log
 
