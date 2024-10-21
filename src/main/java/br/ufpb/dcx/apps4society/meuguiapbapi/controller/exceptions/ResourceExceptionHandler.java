@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {

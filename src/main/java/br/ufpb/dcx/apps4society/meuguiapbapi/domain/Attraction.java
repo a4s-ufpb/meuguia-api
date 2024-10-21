@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

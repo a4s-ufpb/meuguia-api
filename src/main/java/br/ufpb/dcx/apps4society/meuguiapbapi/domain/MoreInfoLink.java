@@ -1,9 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity
