@@ -2,21 +2,20 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: meu-guia-api
-  datasource:
-    url: jdbc:postgresql://localhost:5432/attractiondb
-    username: postgres
-    password: postgres
-    initialization-mode: always
-  jpa:
-    show-sql: false
-    open-in-view: true
-    hibernate:
-      ddl-auto: update
-      use-new-id-generator-mappings: false
-    properties:
-      hibernate:
-        temp:
-          use_jdbc_metadata_defaults: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  profiles:
+    active: dev
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
