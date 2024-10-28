@@ -2,6 +2,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.auth.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationRequest;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -17,12 +20,17 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthenticationService(JwtService jwtService, AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public AuthenticationService(JwtService jwtService,
+                                 AuthenticationManager authenticationManager,
+                                 UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -41,6 +49,21 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(token)
+                .build();
+    }
+
+    public AuthenticationResponse register(RegisterRequest registerRequest) {
+        User user = User.builder()
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .firstName(registerRequest.getFirstName())
+                .lastName(registerRequest.getLastName())
+                .build();
+        userRepository.save(user);
+
+        var jwtToken = jwtService.buildToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
                 .build();
     }
 }

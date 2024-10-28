@@ -1,4 +1,4 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class ResponseUserDTO {
+    private Long id;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
 }
