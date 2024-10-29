@@ -1,10 +1,12 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
 
 @Data
+@Builder
 @Entity
 public class TouristSegmentation {
 

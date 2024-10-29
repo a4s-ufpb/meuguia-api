@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.service.TurismSegmentationService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.service.TourismSegmentationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,17 +22,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/segmentations", produces = {"application/json"})
-@Tag(name = "Turism Segmentation", description = "Endpoints para gerenciar as segmentações turísticas dos atrativos")
+@Tag(name = "Tourism Segmentation", description = "Endpoints para gerenciar as segmentações turísticas dos atrativos")
 @AllArgsConstructor
-public class TurismSegmentationController {
+public class TourismSegmentationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TurismSegmentationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TourismSegmentationController.class);
 
     @Autowired
-    private TurismSegmentationService turismSegmentationService;
+    private TourismSegmentationService tourismSegmentationService;
 
     @Operation(summary = "Buscar a segmentação turística do atrativo por id", description = "Busca uma segmentação turística do atrativo por id",
-            tags = {"Turism Segmentation"},
+            tags = {"Tourism Segmentation"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
                             content = @Content(schema = @Schema(implementation = TuristAttractionDTO.class))
@@ -46,14 +46,14 @@ public class TurismSegmentationController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<TouristSegmentation> findById(@PathVariable Long id) {
         logger.info("Buscando segmentação turística com ID: {}", id);
-        TouristSegmentation obj = turismSegmentationService.findById(id);
+        TouristSegmentation obj = tourismSegmentationService.findById(id);
         logger.info("Segmentação turística encontrada: {}", obj);
         return ResponseEntity.ok().body(obj);
     }
 
     @Operation(summary = "Listagem de todas as segmentações turísticas do atrativo",
             description = "Lista todas as segmentações turísticas do atrativo",
-            tags = {"Turism Segmentation"},
+            tags = {"Tourism Segmentation"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
                             content = {
@@ -70,14 +70,14 @@ public class TurismSegmentationController {
     @GetMapping
     public ResponseEntity<List<TouristSegmentation>> findAll() {
         logger.info("Buscando todas as segmentações turísticas");
-        List<TouristSegmentation> list = turismSegmentationService.findAll();
+        List<TouristSegmentation> list = tourismSegmentationService.findAll();
         logger.info("Total de segmentações encontradas: {}", list.size());
         return ResponseEntity.ok().body(list);
     }
 
     @Operation(summary = "Cadastro de segmentações turísticas",
             description = "Cadastra as segmentações turísticas dos atrativos",
-            tags = {"Turism Segmentation"},
+            tags = {"Tourism Segmentation"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
                             content = @Content(schema = @Schema(implementation = TuristAttractionDTO.class))
@@ -89,7 +89,7 @@ public class TurismSegmentationController {
     @PostMapping
     public ResponseEntity<TouristSegmentation> create(@RequestBody TouristSegmentation obj) {
         logger.info("Cadastrando nova segmentação turística: {}", obj);
-        TouristSegmentation newObj = turismSegmentationService.create(obj);
+        TouristSegmentation newObj = tourismSegmentationService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/segmentations/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
@@ -100,7 +100,7 @@ public class TurismSegmentationController {
     @DeleteMapping(value = "/{id}")
     @Operation(summary = "Deleta uma segmentação turística passando o seu id",
             description = "Deleta uma segmentação turística passando o seu id",
-            tags = {"Turism Segmentation"},
+            tags = {"Tourism Segmentation"},
             responses = {
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -110,7 +110,7 @@ public class TurismSegmentationController {
     )
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         logger.info("Deletando segmentação turística com ID: {}", id);
-        turismSegmentationService.delete(id);
+        tourismSegmentationService.delete(id);
         logger.info("Segmentação turística deletada com sucesso");
         return ResponseEntity.noContent().build();
     }

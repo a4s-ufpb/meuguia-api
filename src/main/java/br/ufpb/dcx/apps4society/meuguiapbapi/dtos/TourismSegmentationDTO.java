@@ -4,7 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
 import lombok.Data;
 
 @Data
-public class TurismSegmentationDTO {
+public class TourismSegmentationDTO {
 
     private Long id;
 
@@ -12,10 +12,10 @@ public class TurismSegmentationDTO {
 
     private String description;
 
-    public TurismSegmentationDTO() {
+    public TourismSegmentationDTO() {
     }
 
-    public TurismSegmentationDTO(TouristSegmentation obj) {
+    public TourismSegmentationDTO(TouristSegmentation obj) {
         this.id = obj.getId();
         this.name = obj.getName();
         this.description = obj.getDescription();

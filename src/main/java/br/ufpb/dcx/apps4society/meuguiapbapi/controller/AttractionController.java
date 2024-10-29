@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/turists", produces = {"application/json"})
+@RequestMapping(value = "/api/tourists", produces = {"application/json"})
 @AllArgsConstructor
 @Tag(name = "Attractions", description = "Endpoints para gerenciar atrativos")
 public class AttractionController {
@@ -70,7 +70,7 @@ public class AttractionController {
         logger.info("Criando novo atrativo: {}", obj);
         Attraction newObj = attractionService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/turists/{id}")
+                .path("/tourists/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
         logger.info("Atrativo criado com sucesso: {}", newObj);
         return ResponseEntity.created(uri).body(obj);

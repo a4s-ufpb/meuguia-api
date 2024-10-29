@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TurismSegmentationRepository extends JpaRepository<TouristSegmentation, Long> {
+public interface TourismSegmentationRepository extends JpaRepository<TouristSegmentation, Long> {
 
 }
