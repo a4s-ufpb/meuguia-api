@@ -1,0 +1,28 @@
+server:
+  port: ${TEST_SERVER_PORT}
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  test:
+    server:
+      port: ${TEST_SERVER_PORT}
+      baseURI: http://${TEST_SERVER_HOST}
+    base-path: ${TEST_SERVER_BASE_PATH}
+  output:
+    ansi:
+      enabled: always
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+  profiles:
+    default: ${TEST_PROFILE}
+
+logging:
+  level:
+    test: debug
+  group:
+    auth: "br.ufpb.dcx.apps4society.meuguiapbapi.auth,br.ufpb.dcx.apps4society.meuguiapbapi.config"
+    controller: "br.ufpb.dcx.apps4society.meuguiapbapi.controller"
+    test: "br.ufpb.dcx.apps4society.meuguiapbapi.controller, br.ufpb.dcx.apps4society.meuguiapbapi.util, br.ufpb.dcx.apps4society.meuguiapbapi.mock, br.ufpb.dcx.apps4society.meuguiapbapi"

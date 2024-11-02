@@ -5,4 +5,4 @@
  |_|  |_|\___|\__,_|  \____|\__,_|_|\__,_| |_|   |____/
 
 ${application.title} ${application.version}
-Powered by Israel Pontes ${spring-boot.version}
+Powered by Apps4Society and Spring boot ${spring-boot.version}

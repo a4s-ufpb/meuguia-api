@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/more-info", produces = {"application/json"})
 @Tag(name = "More Info Link", description = "Endpoints para gerenciar os links para mais informações dos atrativos")
+@Slf4j
 @AllArgsConstructor
 public class MoreInfoLinkController {
-
-    private static final Logger logger = LoggerFactory.getLogger(MoreInfoLinkController.class);
 
     @Autowired
     private MoreInfoLinkService moreInfoLinkService;
@@ -45,9 +46,9 @@ public class MoreInfoLinkController {
     )
     @GetMapping(value = "/{id}")
     public ResponseEntity<MoreInfoLink> findById(@PathVariable Long id) {
-        logger.info("Buscando link de mais informações com ID: {}", id);
+        log.info("Buscando link de mais informações com ID: {}", id);
         MoreInfoLink obj = moreInfoLinkService.findById(id);
-        logger.info("Link encontrado: {}", obj);
+        log.info("Link encontrado: {}", obj);
         return ResponseEntity.ok().body(obj);
     }
 
@@ -69,9 +70,9 @@ public class MoreInfoLinkController {
     )
     @GetMapping
     public List<MoreInfoLink> findAll() {
-        logger.info("Buscando todos os links de mais informações");
+        log.info("Buscando todos os links de mais informações");
         List<MoreInfoLink> list = moreInfoLinkService.findAll();
-        logger.info("Total de links encontrados: {}", list.size());
+        log.info("Total de links encontrados: {}", list.size());
         return ResponseEntity.ok().body(list).getBody();
     }
 
@@ -88,12 +89,12 @@ public class MoreInfoLinkController {
     )
     @PostMapping
     public ResponseEntity<MoreInfoLink> create(@RequestBody MoreInfoLink obj) {
-        logger.info("Cadastrando novo link de mais informações: {}", obj);
+        log.info("Cadastrando novo link de mais informações: {}", obj);
         MoreInfoLink newObj = moreInfoLinkService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/more-info/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
-        logger.info("Link de mais informações criado com sucesso: {}", newObj);
+        log.info("Link de mais informações criado com sucesso: {}", newObj);
         return ResponseEntity.created(uri).body(newObj);
     }
 
@@ -109,9 +110,9 @@ public class MoreInfoLinkController {
             }
     )
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        logger.info("Deletando link de mais informações com ID: {}", id);
+        log.info("Deletando link de mais informações com ID: {}", id);
         moreInfoLinkService.delete(id);
-        logger.info("Link de mais informações deletado com sucesso");
+        log.info("Link de mais informações deletado com sucesso");
         return ResponseEntity.noContent().build();
     }
 }

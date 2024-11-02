@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.RequestUserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.ResponseUserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -37,15 +39,16 @@ public class UserController {
     @PutMapping
     public ResponseEntity<ResponseUserDTO> updateAuthenticatedUser(@RequestBody RequestUserDTO requestUserDTO, Authentication authentication) {
         User logedUser = (User) authentication.getPrincipal();
-
         return ResponseEntity.ok(userService.update(requestUserDTO, logedUser));
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
-    public void deleteAuthenticatedUser(Authentication authentication) {
+    public ResponseEntity<Object> deleteAuthenticatedUser(Authentication authentication) {
+        log.info("Trying to delete a user");
         User logedUser = (User) authentication.getPrincipal();
         userService.delete(logedUser);
+        log.info("User deleted");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

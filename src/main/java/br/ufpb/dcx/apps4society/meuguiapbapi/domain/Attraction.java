@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import jakarta.persistence.*;
@@ -8,7 +10,9 @@ import java.util.List;
 
 
 @Data
+@Builder
 @Entity
+@AllArgsConstructor
 public class Attraction {
 
     @Id

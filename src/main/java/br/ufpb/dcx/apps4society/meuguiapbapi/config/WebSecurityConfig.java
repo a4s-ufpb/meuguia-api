@@ -26,9 +26,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tourists/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/segmentations").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/types").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/more-info").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/segmentations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/types/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/more-info/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
