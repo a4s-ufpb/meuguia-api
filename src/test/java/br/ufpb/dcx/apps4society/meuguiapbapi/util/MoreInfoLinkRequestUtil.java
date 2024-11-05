@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +21,7 @@ public class MoreInfoLinkRequestUtil {
         basePath = MeuguiaApiApplicationTests.basePath;
     }
 
-    public MoreInfoLink post(MoreInfoLink request, String token) {
+    public MoreInfoLink post(MoreInfoLinkForm request, String token) {
         return given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")

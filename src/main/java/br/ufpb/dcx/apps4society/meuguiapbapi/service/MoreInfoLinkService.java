@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.MoreInfoLinkRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,12 @@ public class MoreInfoLinkService {
         return moreInfoLinkRepository.findAll();
     }
 
-    public MoreInfoLink create(MoreInfoLink obj) {
-        obj.setId(null);
-        return moreInfoLinkRepository.save(obj);
+    public MoreInfoLink create(MoreInfoLinkForm obj) {
+        MoreInfoLink moreInfoLink = MoreInfoLink.builder()
+                .link(obj.getLink())
+                .description(obj.getDescription())
+                .build();
+        return moreInfoLinkRepository.save(moreInfoLink);
     }
 
     public void delete(Long id) {

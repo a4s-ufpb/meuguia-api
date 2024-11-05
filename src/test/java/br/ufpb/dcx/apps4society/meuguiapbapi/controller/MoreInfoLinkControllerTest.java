@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockMoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
 import org.junit.jupiter.api.*;
@@ -38,7 +39,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn201_whenMoreInfoLinkDataIsValidTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(1);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(1);
 
         MoreInfoLink response = given()
                 .contentType("application/json")
@@ -60,7 +61,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenMoreInfoLinkLinkIsNullTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(2);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(2);
         requestBody.setLink(null);
 
         given()
@@ -76,7 +77,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenMoreInfoLinkDescriptionIsNullTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(3);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(3);
         requestBody.setDescription(null);
 
         given()
@@ -93,7 +94,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenMoreInfoLinkLinkIsEmptyTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(4);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(4);
         requestBody.setLink("");
 
         given()
@@ -109,7 +110,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenMoreInfoLinkLinkIsInvalidTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(5);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(5);
         requestBody.setLink("invalidLink");
 
         given()
@@ -128,8 +129,8 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         Assumptions.assumeTrue(env.matchesProfiles("test-dev"),
                 "Test only runs when 'test-dev' profile is active");
 
-        MoreInfoLink requestBody1 = mockMoreInfoLink.mockRequest(6);
-        MoreInfoLink requestBody2 = mockMoreInfoLink.mockRequest(7);
+        MoreInfoLinkForm requestBody1 = mockMoreInfoLink.mockRequest(6);
+        MoreInfoLinkForm requestBody2 = mockMoreInfoLink.mockRequest(7);
         MoreInfoLink infoLink1 = moreInfoLinkRequestUtil.post(requestBody1, token);
         MoreInfoLink infoLink2 = moreInfoLinkRequestUtil.post(requestBody2, token);
 
@@ -152,7 +153,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findById_shouldReturn200_whenMoreInfoLinkExistsTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(8);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(8);
         MoreInfoLink infoLink = moreInfoLinkRequestUtil.post(requestBody, token);
 
         given()
@@ -184,7 +185,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn204_whenTokenIsValidTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(9);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(9);
         MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
 
         given()
@@ -199,7 +200,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn401_whenTokenIsInvalidTest() {
-       MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(10);
+       MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(10);
        MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
 
        given()
@@ -216,7 +217,7 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn403_whenTokenIsMissingTest() {
-        MoreInfoLink requestBody = mockMoreInfoLink.mockRequest(11);
+        MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(11);
         MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
 
         given()

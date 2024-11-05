@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.MoreInfoLinkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +87,7 @@ public class MoreInfoLinkController {
             }
     )
     @PostMapping
-    public ResponseEntity<MoreInfoLink> create(@RequestBody MoreInfoLink obj) {
+    public ResponseEntity<MoreInfoLink> create(@RequestBody @Valid MoreInfoLinkForm obj) {
         log.info("Cadastrando novo link de mais informações: {}", obj);
         MoreInfoLink newObj = moreInfoLinkService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -7,6 +7,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockMoreInfoLink;
@@ -62,7 +63,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     void setUpEach() {
         TouristSegmentation segmentationRequest = mockTouristSegmentation.mockRequest(90);
         AttractionType attractionTypeRequest = mockAttractionType.mockRequest(90);
-        MoreInfoLink moreInfoLinkRequest = mockMoreInfoLink.mockRequest(90);
+        MoreInfoLinkForm moreInfoLinkRequest = mockMoreInfoLink.mockRequest(90);
 
         segmentation = tourismSegmentationRequestUtil.post(segmentationRequest, token);
         attractionType = attractionTypeRequestUtil.post(attractionTypeRequest, token);
