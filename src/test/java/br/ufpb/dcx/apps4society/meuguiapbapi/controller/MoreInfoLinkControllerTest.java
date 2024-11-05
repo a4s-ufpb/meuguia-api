@@ -7,6 +7,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockMoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -41,13 +42,18 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
     void create_shouldReturn201_whenMoreInfoLinkDataIsValidTest() {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(1);
 
-        MoreInfoLink response = given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(requestBody)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
-                .then()
+                .post(PATH_MORE_INFO_LINK);
+
+        if (response.statusCode() == HttpStatus.CREATED.value()) {
+            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
@@ -55,8 +61,6 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
                 .body("description", equalTo(requestBody.getDescription()))
                 .extract()
                 .as(MoreInfoLink.class);
-
-        moreInfoLinkRequestUtil.delete(response, token);
     }
 
     @Test
@@ -64,13 +68,18 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(2);
         requestBody.setLink(null);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(requestBody)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
-                .then()
+                .post(PATH_MORE_INFO_LINK);
+
+        if (response.statusCode() == HttpStatus.CREATED.value()) {
+            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -80,13 +89,18 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(3);
         requestBody.setDescription(null);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(requestBody)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
-                .then()
+                .post(PATH_MORE_INFO_LINK);
+
+        if (response.statusCode() == HttpStatus.CREATED.value()) {
+            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
@@ -97,13 +111,18 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(4);
         requestBody.setLink("");
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(requestBody)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
-                .then()
+                .post(PATH_MORE_INFO_LINK);
+
+        if (response.statusCode() == HttpStatus.CREATED.value()) {
+            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -113,13 +132,18 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(5);
         requestBody.setLink("invalidLink");
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .body(requestBody)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
-                .then()
+                .post(PATH_MORE_INFO_LINK);
+
+        if (response.statusCode() == HttpStatus.CREATED.value()) {
+            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -134,21 +158,22 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLink infoLink1 = moreInfoLinkRequestUtil.post(requestBody1, token);
         MoreInfoLink infoLink2 = moreInfoLinkRequestUtil.post(requestBody2, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .when()
-                .get(PATH_MORE_INFO_LINK)
-                .then()
+                .get(PATH_MORE_INFO_LINK);
+
+        moreInfoLinkRequestUtil.delete(infoLink1, token);
+        moreInfoLinkRequestUtil.delete(infoLink2, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2))
                 .body("id.flatten()", hasItems(infoLink1.getId().intValue(), infoLink2.getId().intValue()))
                 .body("link.flatten()", hasItems(infoLink1.getLink(), infoLink1.getLink()))
                 .body("description.flatten()", hasItems(infoLink1.getDescription(), infoLink1.getDescription()));
-
-        moreInfoLinkRequestUtil.delete(infoLink1, token);
-        moreInfoLinkRequestUtil.delete(infoLink2, token);
 }
 
     @Test
@@ -156,19 +181,20 @@ public class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
         MoreInfoLinkForm requestBody = mockMoreInfoLink.mockRequest(8);
         MoreInfoLink infoLink = moreInfoLinkRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
                 .when()
-                .get(PATH_MORE_INFO_LINK+"/"+infoLink.getId())
-                .then()
+                .get(PATH_MORE_INFO_LINK+"/"+infoLink.getId());
+
+        moreInfoLinkRequestUtil.delete(infoLink, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", is(infoLink.getId().intValue()))
                 .body("link", equalTo(infoLink.getLink()))
                 .body("description", equalTo(infoLink.getDescription()));
-
-        moreInfoLinkRequestUtil.delete(infoLink, token);
     }
 
     @Test

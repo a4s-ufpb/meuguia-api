@@ -8,6 +8,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,34 +40,42 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     void create_shouldReturn201_whenAttractionTypeIsValidAndUserIsAuthenticatedTest() {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(1);
 
-        AttractionType response = given()
+        Response response = given()
                 .header("Authorization", "Bearer "+ token)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
                 .body("name", equalTo(requestBody.getName()))
                 .body("description", equalTo(requestBody.getDescription()))
                 .extract().as(AttractionType.class);
-
-        requestUtil.delete(response, token);
     }
 
     @Test
     void create_shouldReturn401_whenTokenInvalidTest() {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(2);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer "+ INVALID_TOKEN)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -75,12 +84,17 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     void create_shouldReturn401_whenUserNotAuthenticatedTest() {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(3);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -90,13 +104,18 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(4);
         requestBody.setName(null);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer "+token)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -106,13 +125,18 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(5);
         requestBody.setDescription(null);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer "+token)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -123,13 +147,18 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         AttractionTypeForm requestBody = mockAttractionType.mockRequest(4);
         requestBody.setName("");
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer "+token)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_ATTRACTION_TYPE)
-                .then()
+                .post(PATH_ATTRACTION_TYPE);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            requestUtil.delete(response.as(AttractionType.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -142,20 +171,21 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         AttractionType attractionType1 = requestUtil.post(requestBody1, token);
         AttractionType attractionType2 = requestUtil.post(requestBody2, token);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get(PATH_ATTRACTION_TYPE)
-                .then()
+                .get(PATH_ATTRACTION_TYPE);
+
+        requestUtil.delete(attractionType1, token);
+        requestUtil.delete(attractionType2, token);
+
+        response.then()
                 .log().body()
                 .body("size()", is(2))
                 .body("id.flatten()", hasItems(attractionType1.getId().intValue(), attractionType2.getId().intValue()))
                 .body("name.flatten()", hasItems(attractionType1.getName(), attractionType2.getName()))
                 .body("description.flatten()", hasItems(attractionType1.getDescription(), attractionType2.getDescription()))
                 .statusCode(HttpStatus.OK.value());
-
-        requestUtil.delete(attractionType1, token);
-        requestUtil.delete(attractionType2, token);
     }
 
     @Test
@@ -188,34 +218,36 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void delete_shouldReturn403_whenTokenIsMissingTest() {
         AttractionTypeForm request = mockAttractionType.mockRequest(9);
-        AttractionType response = requestUtil.post(request, token);
+        AttractionType attractionType = requestUtil.post(request, token);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .delete(PATH_ATTRACTION_TYPE+"/"+response.getId())
-                .then()
+                .delete(PATH_ATTRACTION_TYPE+"/"+attractionType.getId());
+
+        requestUtil.delete(attractionType, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
-
-        requestUtil.delete(response, token);
     }
 
     @Test
     void delete_shouldReturn401_whenTokenInvalidTest() {
         AttractionTypeForm request = mockAttractionType.mockRequest(10);
-        AttractionType response = requestUtil.post(request, token);
+        AttractionType attractionType = requestUtil.post(request, token);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer "+ INVALID_TOKEN)
                 .contentType(ContentType.JSON)
                 .when()
-                .delete(PATH_ATTRACTION_TYPE+"/"+response.getId())
-                .then()
+                .delete(PATH_ATTRACTION_TYPE+"/"+attractionType.getId());
+
+        requestUtil.delete(attractionType, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
-
-        requestUtil.delete(response, token);
     }
 
     @Test
@@ -229,5 +261,4 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
-
 }

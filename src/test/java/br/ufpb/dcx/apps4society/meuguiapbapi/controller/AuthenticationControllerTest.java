@@ -6,6 +6,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,20 +22,23 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     void register_shouldReturnStatus201_whenDataIsValidTest() {
         RegisterForm requestBody = mockAuthentication.mockRequest(1);
 
-        AuthenticationResponse response = given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("token", notNullValue())
                 .extract()
                 .body()
                 .as(AuthenticationResponse.class);
-
-        userRequestUtil.delete(response.getToken());
     }
 
     @Test
@@ -42,16 +46,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(2);
         AuthenticationResponse auth = userRequestUtil.register(requestBody);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .post(PATH_USER_REGISTER);
 
         userRequestUtil.delete(auth.getToken());
+
+        response.then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -59,12 +64,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm mockRequest = mockAuthentication.mockRequest(3);
         mockRequest.setEmail("");
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -74,12 +84,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm mockRequest = mockAuthentication.mockRequest(4);
         mockRequest.setPassword("");
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -89,12 +104,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm mockRequest = mockAuthentication.mockRequest(5);
         mockRequest.setFirstName("");
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -104,12 +124,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(6);
         requestBody.setLastName("");
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -119,12 +144,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(7);
         requestBody.setEmail(null);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -134,12 +164,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(8);
         requestBody.setPassword(null);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -149,12 +184,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(9);
         requestBody.setFirstName(null);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -164,12 +204,17 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterForm requestBody = mockAuthentication.mockRequest(10);
         requestBody.setLastName(null);
 
-        given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER)
-                .then()
+                .post(PATH_USER_REGISTER);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -177,22 +222,21 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void authenticate_shouldReturn200_whenUserExistTest() {
         RegisterForm mockRequest = mockAuthentication.mockRequest(11);
-        userRequestUtil.register(mockRequest);
+        AuthenticationResponse auth = userRequestUtil.register(mockRequest);
 
         AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
-        AuthenticationResponse response = given()
+        Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
-                .then()
+                .post(PATH_USER_AUTHENTICATE);
+
+        userRequestUtil.delete(auth.getToken());
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
-                .body("token", notNullValue())
-                .extract()
-                .as(AuthenticationResponse.class);
-
-        userRequestUtil.delete(response.getToken());
+                .body("token", notNullValue());
     }
 
     @Test

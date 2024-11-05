@@ -19,6 +19,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.TourismSegmentationRequestUtil;
+import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.junit.jupiter.api.*;
@@ -85,16 +86,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn201_whenIsAValidAttractionTest() {
-
         AttractionForm requestBody = mockAttraction.mockRequest(1, segmentation, moreInfoLink, attractionType);
 
-        Attraction response = given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        attractionRequestUtil.delete(response.as(Attraction.class), token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("name", equalTo(requestBody.getName()))
@@ -106,24 +109,25 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("fonte", equalTo(requestBody.getFonte()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
                 .body("attractionTypes.id", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()))
-                .extract()
-                .as(Attraction.class);
-
-        attractionRequestUtil.delete(response, token);
+                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
     void create_shouldReturn400_whenHasNullValuesTest() {
         Attraction requestBody = new Attraction();
 
-        given()
-                .header("Authorization", "Bearer " + token)
-                .contentType("application/json")
-                .body(requestBody)
-                .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+        Response response = given()
+                        .header("Authorization", "Bearer " + token)
+                        .contentType("application/json")
+                        .body(requestBody)
+                        .when()
+                        .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -135,13 +139,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody.setCity("");
         requestBody.setState("");
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -151,13 +160,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(3, segmentation, moreInfoLink, attractionType);
         requestBody.setAttractionTypes(mockAttractionType.mockEntity(INVALID_ID.intValue()));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -167,13 +181,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(4, segmentation, moreInfoLink, attractionType);
         requestBody.setSegmentations(List.of(mockTouristSegmentation.mockEntity(INVALID_ID.intValue())));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -183,13 +202,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(5, segmentation, moreInfoLink, attractionType);
         requestBody.setMoreInfoLinkList(List.of(mockMoreInfoLink.mockEntity(INVALID_ID.intValue())));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -198,13 +222,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     void create_shouldReturn401_whenTokenInvalidTest() {
         AttractionForm requestBody = mockAttraction.mockRequest(6, segmentation, moreInfoLink, attractionType);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -213,12 +242,17 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     void crete_shouldReturn403_whenUserNotAuthenticatedTest() {
         AttractionForm requestBody = mockAttraction.mockRequest(7, segmentation, moreInfoLink, attractionType);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post(PATH_CREATE_ATTRACTION)
-                .then()
+                .post(PATH_CREATE_ATTRACTION);
+
+        if (response.getStatusCode() == HttpStatus.CREATED.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -236,13 +270,16 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody.setImage_link("https://imagem.com/teatro-municipal");
         requestBody.setFonte("Fonte: https://fonte.com/teatro-municipal");
 
-        Attraction response = given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + savedAttraction.getId())
-                .then()
+                .put(PATH_ATTRACTION + "/" + savedAttraction.getId());
+
+        attractionRequestUtil.delete(response.as(Attraction.class), token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("name", equalTo(requestBody.getName()))
@@ -254,24 +291,25 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("fonte", equalTo(requestBody.getFonte()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
                 .body("attractionTypes.id", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()))
-                .extract()
-                .as(Attraction.class);
-
-        attractionRequestUtil.delete(response, token);
+                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
     void update_shouldReturn400_whenHasNullValuesTest() {
         Attraction requestBody = new Attraction();
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + INVALID_ID)
-                .then()
+                .put(PATH_ATTRACTION + "/" + INVALID_ID);
+
+        if (response.getStatusCode() == HttpStatus.OK.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -284,17 +322,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody.setName("");
         requestBody.setCity("");
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + savedAttraction.getId())
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .put(PATH_ATTRACTION + "/" + savedAttraction.getId());
 
         attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -304,17 +343,19 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         requestBody.setAttractionTypes(mockAttractionType.mockEntity(INVALID_ID.intValue()));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + savedAttraction.getId())
-                .then()
+                .put(PATH_ATTRACTION + "/" + savedAttraction.getId());
+
+        attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
 
-        attractionRequestUtil.delete(savedAttraction, token);
     }
 
     @Test
@@ -324,17 +365,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         requestBody.setSegmentations(List.of(mockTouristSegmentation.mockEntity(INVALID_ID.intValue())));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + savedAttraction.getId())
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .put(PATH_ATTRACTION + "/" + savedAttraction.getId());
 
         attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
+                .log().body()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -344,30 +386,36 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         requestBody.setMoreInfoLinkList(List.of(mockMoreInfoLink.mockEntity(INVALID_ID.intValue())));
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + savedAttraction.getId())
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .put(PATH_ATTRACTION + "/" + savedAttraction.getId());
 
         attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
+                .log().body()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void update_shouldReturn404_whenAttractionNotExistsTest() {
         AttractionForm requestBody = mockAttraction.mockRequest(13, segmentation, moreInfoLink, attractionType);
 
-        given()
+        Response response =given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + INVALID_ID)
-                .then()
+                .put(PATH_ATTRACTION + "/" + INVALID_ID);
+
+        if (response.getStatusCode() == HttpStatus.OK.value()) {
+            attractionRequestUtil.delete(response.as(Attraction.class), token);
+        }
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -378,17 +426,19 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
         attraction.setName("Updated Name 1");
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + attraction.getId())
-                .then()
+                .put(PATH_ATTRACTION + "/" + attraction.getId());
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
 
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -397,16 +447,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
         attraction.setName("Updated Name 2");
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put(PATH_ATTRACTION + "/" + attraction.getId())
-                .then()
+                .put(PATH_ATTRACTION + "/" + attraction.getId());
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
 
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -466,12 +518,15 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         Attraction attraction = attractionRequestUtil.post(mockAttraction.mockRequest(17, segmentation, moreInfoLink, attractionType), token);
 
-        given()
+        Response response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .when()
-                .get(PATH_ATTRACTION)
-                .then()
+                .get(PATH_ATTRACTION);
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(1))
@@ -486,7 +541,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
                 .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
 
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -513,11 +567,14 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(18, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=" + attraction.getName())
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=" + attraction.getName());
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("name", hasItem(attraction.getName()))
@@ -530,8 +587,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
                 .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
                 .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
-
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -539,16 +594,17 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(19, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=NotExist")
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=NotExist");
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
-
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -563,11 +619,19 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody = mockAttraction.mockRequest(21, segmentation2, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=mock")
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_NAME+"?name=mock");
+
+        attractionRequestUtil.delete(attraction1, token);
+        attractionRequestUtil.delete(attraction2, token);
+
+        tourismSegmentationRequestUtil.delete(segmentation2, token);
+        attractionTypeRequestUtil.delete(attractionType2, token);
+        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2))
@@ -582,14 +646,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
                 .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
 
-        log.info("deleting attractions");
-        attractionRequestUtil.delete(attraction1, token);
-        attractionRequestUtil.delete(attraction2, token);
-        log.info("deleting attractions");
-
-        tourismSegmentationRequestUtil.delete(segmentation2, token);
-        attractionTypeRequestUtil.delete(attractionType2, token);
-        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
     }
 
     @Test
@@ -597,11 +653,14 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm request = mockAttraction.mockRequest(22, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(request, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_CITY+ "?city=" + request.getCity())
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_CITY+ "?city=" + request.getCity());
+
+        attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("name", hasItem(savedAttraction.getName()))
@@ -615,10 +674,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
                 .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()))
                 .extract()
-                .jsonPath()
-                .getList(".", Attraction.class).get(0);
-
-        attractionRequestUtil.delete(savedAttraction, token);
+                .jsonPath();
     }
 
     @Test
@@ -626,16 +682,17 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm requestBody = mockAttraction.mockRequest(23, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_CITY+"?city=Rio Tinto")
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_CITY+"?city=Rio Tinto");
+
+        attractionRequestUtil.delete(attraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
-
-        attractionRequestUtil.delete(attraction, token);
     }
 
     @Test
@@ -662,11 +719,19 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody = mockAttraction.mockRequest(25, segmentation2, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_CITY+"?city="+attraction1.getCity())
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_CITY+"?city="+attraction1.getCity());
+
+        attractionRequestUtil.delete(attraction1, token);
+        attractionRequestUtil.delete(attraction2, token);
+
+        tourismSegmentationRequestUtil.delete(segmentation2, token);
+        attractionTypeRequestUtil.delete(attractionType2, token);
+        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2))
@@ -680,13 +745,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation2.getId().intValue()))
                 .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
                 .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
-
-        attractionRequestUtil.delete(attraction1, token);
-        attractionRequestUtil.delete(attraction2, token);
-
-        tourismSegmentationRequestUtil.delete(segmentation2, token);
-        attractionTypeRequestUtil.delete(attractionType2, token);
-        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
     }
 
     @Test
@@ -694,11 +752,14 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionForm request = mockAttraction.mockRequest(26, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(request, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+ "?segmentation=" + segmentation.getName())
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+ "?segmentation=" + segmentation.getName());
+
+        attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("name", hasItem(savedAttraction.getName()))
@@ -711,8 +772,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
                 .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
                 .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
-
-        attractionRequestUtil.delete(savedAttraction, token);
     }
 
     @Test
@@ -723,17 +782,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         TourismSegmentationForm segmentationRequest = mockTouristSegmentation.mockRequest(16);
         TourismSegmentation segmentation1 = tourismSegmentationRequestUtil.post(segmentationRequest, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+"?segmentation="+segmentation1.getName())
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.OK.value())
-                .body("size()", is(0));
+                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+"?segmentation="+segmentation1.getName());
 
         attractionRequestUtil.delete(attraction, token);
         tourismSegmentationRequestUtil.delete(segmentation1, token);
+
+        response.then()
+                .log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", is(0));
     }
 
     @Test
@@ -747,11 +807,18 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         requestBody = mockAttraction.mockRequest(29, segmentation, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
-        given()
+        Response response = given()
                 .contentType("application/json")
                 .when()
-                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+"?segmentation="+segmentation.getName())
-                .then()
+                .get(PATH_FIND_ATTRACTION_BY_SEGMENTATION+"?segmentation="+segmentation.getName());
+
+        attractionRequestUtil.delete(attraction1, token);
+        attractionRequestUtil.delete(attraction2, token);
+
+        attractionTypeRequestUtil.delete(attractionType2, token);
+        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
+
+        response.then()
                 .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2))
@@ -765,13 +832,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation.getId().intValue()))
                 .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
                 .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
-
-
-        attractionRequestUtil.delete(attraction1, token);
-        attractionRequestUtil.delete(attraction2, token);
-
-        attractionTypeRequestUtil.delete(attractionType2, token);
-        moreInfoLinkRequestUtil.delete(moreInfoLink2, token);
     }
 
     @Test
