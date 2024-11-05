@@ -2,20 +2,13 @@ server:
   port: 8080
 
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     name: meu-guia-api
   profiles:
-    active: dev
+    active: prod
   security:
     jwt:
       secret-key: ${JWT_SECRET}
       expiration: ${JWT_EXPIRATION}
   jackson:
     property-naming-strategy: SNAKE_CASE
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'

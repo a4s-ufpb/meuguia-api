@@ -14,8 +14,4 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    sql:
-      init:
-        mode: always
-    database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
