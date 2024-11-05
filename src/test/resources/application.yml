@@ -1,3 +1,7 @@
+app:
+  version: ^project.version^
+  name: ^project.name^
+
 server:
   port: ${TEST_SERVER_PORT}
 
