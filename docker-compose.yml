@@ -1,0 +1,37 @@
+services:
+  db:
+    container_name: container-database-meuquiapb
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - meuguiapb-network
+
+  meuguiapb-api:
+    container_name: container-meuguiapb-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      - db
+    networks:
+      - meuguiapb-network
+
+volumes:
+  db-data: {}
+
+networks:
+  meuguiapb-network:
+    driver: bridge
