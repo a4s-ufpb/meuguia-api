@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
@@ -11,8 +11,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
-import java.util.List;
 
 import static br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil.PATH_ATTRACTION_TYPE;
 import static io.restassured.RestAssured.*;
@@ -26,8 +24,8 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUP() {
-        RegisterRequest registerRequest = mockAuthentication.mockRequest(80);
-        AuthenticationResponse authenticationResponse = userRequestUtil.register(registerRequest);
+        RegisterForm registerForm = mockAuthentication.mockRequest(80);
+        AuthenticationResponse authenticationResponse = userRequestUtil.register(registerForm);
         token = authenticationResponse.getToken();
     }
 

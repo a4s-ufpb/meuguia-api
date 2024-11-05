@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.auth.controller;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationRequest;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.service.AuthenticationService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody RegisterForm request
     ) {
         log.debug("Trying to register a new user");
         AuthenticationResponse responseBody = authenticationService.register(request);
@@ -33,7 +33,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationForm request
     ) {
         log.debug("Trying to authenticate user request");
         AuthenticationResponse responseBody = authenticationService.authenticate(request);

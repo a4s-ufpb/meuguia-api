@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class RegisterForm {
+    @NotEmpty
+    @Email
     private String email;
     private String password;
     private String firstName;

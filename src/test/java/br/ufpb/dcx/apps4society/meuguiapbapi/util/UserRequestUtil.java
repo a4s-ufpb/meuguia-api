@@ -1,9 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class UserRequestUtil {
         basePath = MeuguiaApiApplicationTests.basePath;
     }
 
-    public AuthenticationResponse register(RegisterRequest bodyRequest) {
+    public AuthenticationResponse register(RegisterForm bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)
@@ -35,7 +35,7 @@ public class UserRequestUtil {
                 .as(AuthenticationResponse.class);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest bodyRequest) {
+    public AuthenticationResponse authenticate(AuthenticationForm bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)

@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.auth.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterRequest;
+import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.JwtService;
@@ -33,7 +33,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationForm request) {
         log.debug("Authenticating user");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -52,12 +52,12 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse register(RegisterRequest registerRequest) {
+    public AuthenticationResponse register(RegisterForm registerForm) {
         User user = User.builder()
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .firstName(registerRequest.getFirstName())
-                .lastName(registerRequest.getLastName())
+                .email(registerForm.getEmail())
+                .password(passwordEncoder.encode(registerForm.getPassword()))
+                .firstName(registerForm.getFirstName())
+                .lastName(registerForm.getLastName())
                 .build();
         userRepository.save(user);
 
