@@ -205,8 +205,83 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .when()
                 .post(PATH_USER_AUTHENTICATE)
                 .then()
+                .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
-        }
+    }
+
+    @Test
+    void authenticate_shouldReturn400_whenEmailIsInvalidTest() {
+        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        requestBody.setEmail("");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_USER_AUTHENTICATE)
+                .then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void authenticate_shouldReturn400_whenPasswordIsInvalidTest() {
+        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        requestBody.setPassword("");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_USER_AUTHENTICATE)
+                .then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void authenticate_shouldReturn400_whenEmailIsMissingTest() {
+        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        requestBody.setEmail(null);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_USER_AUTHENTICATE)
+                .then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void authenticate_shouldReturn400_whenPasswordIsMissingTest() {
+        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        requestBody.setPassword(null);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_USER_AUTHENTICATE)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void authenticate_shouldReturn400_whenPasswordLengthIsLessThan8Test() {
+        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        requestBody.setPassword("1234567");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_USER_AUTHENTICATE)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
 
     @Test
     void delete_shouldReturnStatus204_whenTokenIsValidTest() {
