@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ public class AttractionTypeController {
             }
     )
     @PostMapping
-    public ResponseEntity<AttractionType> create(@RequestBody AttractionType obj) {
+    public ResponseEntity<AttractionType> create(@RequestBody @Valid AttractionTypeForm obj) {
         logger.info("Criando novo tipo de atrativo: {}", obj);
         AttractionType newObj = attractionTypeService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()

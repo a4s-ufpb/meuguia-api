@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class AttractionTypeRequestUtil {
         basePath = MeuguiaApiApplicationTests.basePath;
     }
 
-    public AttractionType post(AttractionType request, String token) {
+    public AttractionType post(AttractionTypeForm request, String token) {
         return given()
             .header("Authorization", "Bearer "+ token)
             .contentType(ContentType.JSON)

@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionTypeRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,12 @@ public class AttractionTypeService {
     @Autowired
     private AttractionTypeRepository attractionTypeRepository;
 
-    @Autowired
-    private AttractionService attractionService;
-
-    public AttractionType create(AttractionType obj) {
-        obj.setId(null);
-        return attractionTypeRepository.save(obj);
+    public AttractionType create(AttractionTypeForm obj) {
+        AttractionType attractionType = AttractionType.builder()
+                .name(obj.getName())
+                .description(obj.getDescription())
+                .build();
+        return attractionTypeRepository.save(attractionType);
     }
 
     public void findById(Long id) {
