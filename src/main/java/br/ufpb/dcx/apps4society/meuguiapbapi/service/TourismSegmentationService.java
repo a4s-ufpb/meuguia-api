@@ -49,4 +49,13 @@ public class TourismSegmentationService {
         findById(id);
         tourismSegmentationRepository.deleteById(id);
     }
+
+    public boolean existsById(Long id) {
+        return tourismSegmentationRepository.existsById(id);
+    }
+
+    public boolean existsByName(String segmentationName) {
+
+        return tourismSegmentationRepository.existsByName(segmentationName);
+    }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TourismSegmentationRepository extends JpaRepository<TourismSegmentation, Long> {
-
+    boolean existsByName(String segmentationName);
 }

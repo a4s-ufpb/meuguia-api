@@ -1,7 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,57 @@ import java.util.Optional;
 @Service
 public class AttractionService {
 
-    @Autowired
-    private AttractionRepository turistAttractionRepository;
+    private final AttractionRepository turistAttractionRepository;
+    private final TourismSegmentationService tourismSegmentationService;
+    private final AttractionTypeService attractionTypeService;
+    private final MoreInfoLinkService moreInfoLinkService;
 
-    public Attraction create(Attraction obj) {
-        obj.setId(null);
-        return turistAttractionRepository.save(obj);
+    @Autowired
+    public AttractionService(MoreInfoLinkService moreInfoLinkService,
+                             AttractionTypeService attractionTypeService,
+                             TourismSegmentationService tourismSegmentationService,
+                             AttractionRepository turistAttractionRepository) {
+        this.moreInfoLinkService = moreInfoLinkService;
+        this.attractionTypeService = attractionTypeService;
+        this.tourismSegmentationService = tourismSegmentationService;
+        this.turistAttractionRepository = turistAttractionRepository;
+    }
+
+    public Attraction create(AttractionForm obj) {
+        validateFields(obj);
+
+        Attraction attraction = Attraction.builder()
+                .name(obj.getName())
+                .description(obj.getDescription())
+                .map_link(obj.getMap_link())
+                .city(obj.getCity())
+                .state(obj.getState())
+                .image_link(obj.getImage_link())
+                .fonte(obj.getFonte())
+                .segmentations(obj.getSegmentations())
+                .attractionTypes(obj.getAttractionTypes())
+                .moreInfoLinkList(obj.getMoreInfoLinkList())
+                .build();
+
+        return turistAttractionRepository.save(attraction);
+    }
+
+    private void validateFields(AttractionForm obj) {
+        if (!this.attractionTypeService.existsById(obj.getAttractionTypes().getId())) {
+            throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionTypes().getId());
+        }
+
+        for (TourismSegmentation segmentation : obj.getSegmentations()) {
+            if (!this.tourismSegmentationService.existsById(segmentation.getId())) {
+                throw new ObjectNotFoundException("Segmentação não encontrada! Id: " + segmentation.getId());
+            }
+        }
+
+        for (MoreInfoLink moreInfoLink : obj.getMoreInfoLinkList()) {
+            if (!this.moreInfoLinkService.existsById(moreInfoLink.getId())) {
+                throw new ObjectNotFoundException("Link de mais informações não encontrado! Id: " + moreInfoLink.getId());
+            }
+        }
     }
 
     public Attraction findById(Long id) {
@@ -32,15 +79,18 @@ public class AttractionService {
     }
 
     public List<Attraction> findByName(String name) {
-        return turistAttractionRepository.findAllByName(name);
+        return turistAttractionRepository.findByNameContainingIgnoreCase(name);
     }
 
     public List<Attraction> findByCity(String city) {
         return turistAttractionRepository.findAllByCity(city);
     }
 
-    public List<Attraction> findBySegmentations(String segmentations) {
-        return turistAttractionRepository.findAllBySegmentationName(segmentations);
+    public List<Attraction> findBySegmentation(String segmentationName) {
+        if (!this.tourismSegmentationService.existsByName(segmentationName)) {
+            throw new ObjectNotFoundException("Segmentação com nome '" + segmentationName + "' não encontrada!");
+        }
+        return turistAttractionRepository.findAllBySegmentationName(segmentationName);
     }
 
     public List<Attraction> findByType(String attractionTypes) {
@@ -52,15 +102,17 @@ public class AttractionService {
         turistAttractionRepository.deleteById(id);
     }
 
-    public Attraction update(Long id, TuristAttractionDTO objDto) {
-        Attraction obj = findById(id);
-        obj.setName(objDto.getName());
-        obj.setDescription(objDto.getDescription());
-        obj.setMap_link(objDto.getMap_link());
-        obj.setCity(objDto.getCity());
-        obj.setState(objDto.getState());
-        obj.setImage_link(objDto.getImage_link());
-        obj.setFonte(objDto.getFonte());
-        return turistAttractionRepository.save(obj);
+    public Attraction update(Long id, AttractionForm obj) {
+        validateFields(obj);
+
+        Attraction attraction = findById(id);
+        attraction.setName(obj.getName());
+        attraction.setDescription(obj.getDescription());
+        attraction.setMap_link(obj.getMap_link());
+        attraction.setCity(obj.getCity());
+        attraction.setState(obj.getState());
+        attraction.setImage_link(obj.getImage_link());
+        attraction.setFonte(obj.getFonte());
+        return turistAttractionRepository.save(attraction);
     }
 }

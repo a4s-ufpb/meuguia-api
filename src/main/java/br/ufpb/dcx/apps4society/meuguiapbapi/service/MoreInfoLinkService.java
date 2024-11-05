@@ -41,4 +41,8 @@ public class MoreInfoLinkService {
         findById(id);
         moreInfoLinkRepository.deleteById(id);
     }
+
+    public boolean existsById(Long id) {
+        return moreInfoLinkRepository.existsById(id);
+    }
 }

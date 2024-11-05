@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 public class MeuguiaApiApplicationTests {
 	public final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyaWQiLCJuYW1lIjoiSm9obiBEb2UifQ.invalidsignature";
-	public final Long INVALID_ID = 0L;
+	public final Long INVALID_ID = -1L;
 
 	public final MockAuthentication mockAuthentication = new MockAuthentication();
 	public final UserRequestUtil userRequestUtil = new UserRequestUtil();

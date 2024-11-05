@@ -11,8 +11,7 @@ import java.util.List;
 @Repository
 public interface AttractionRepository extends JpaRepository<Attraction, Long> {
 
-    @Query("SELECT obj FROM Attraction obj WHERE obj.name = :name")
-    List<Attraction> findAllByName(@Param(value = "name") String name);
+    List<Attraction> findByNameContainingIgnoreCase(String name);
 
     @Query("SELECT obj FROM Attraction obj WHERE obj.city = :city")
     List<Attraction> findAllByCity(@Param(value = "city") String city);

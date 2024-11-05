@@ -39,4 +39,8 @@ public class AttractionTypeService {
         findById(id);
         attractionTypeRepository.deleteById(id);
     }
+
+    public boolean existsById(Long id) {
+        return attractionTypeRepository.existsById(id);
+    }
 }

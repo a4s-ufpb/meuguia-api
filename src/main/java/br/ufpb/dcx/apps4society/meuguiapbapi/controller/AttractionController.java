@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,14 +68,14 @@ public class AttractionController {
             }
     )
     @PostMapping(value = "/create")
-    public ResponseEntity<Attraction> create(@RequestBody Attraction obj) {
+    public ResponseEntity<Attraction> create(@RequestBody @Valid AttractionForm obj) {
         logger.info("Criando novo atrativo: {}", obj);
         Attraction newObj = attractionService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/tourists/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
         logger.info("Atrativo criado com sucesso: {}", newObj);
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(newObj);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -171,9 +173,9 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/bySegmentations")
-    public ResponseEntity<List<Attraction>> findBySegmentations(@RequestParam String segmentations) {
-        logger.info("Buscando atrativo pela segmentação: {}", segmentations);
-        List<Attraction> list = attractionService.findBySegmentations(segmentations);
+    public ResponseEntity<List<Attraction>> findBySegmentations(@RequestParam String segmentation) {
+        logger.info("Buscando atrativo pela segmentação: {}", segmentation);
+        List<Attraction> list = attractionService.findBySegmentation(segmentation);
         logger.info("Atrativos encontrados pela segmentação: {}", list.size());
         return ResponseEntity.ok().body(list);
     }
@@ -191,18 +193,18 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/byType")
-    public ResponseEntity<List<Attraction>> findByType(@RequestParam String attractionTypes) {
-        logger.info("Buscando atrativo pelo tipo: {}", attractionTypes);
-        List<Attraction> list = attractionService.findByType(attractionTypes);
+    public ResponseEntity<List<Attraction>> findByType(@RequestParam String attractionType) {
+        logger.info("Buscando atrativo pelo tipo: {}", attractionType);
+        List<Attraction> list = attractionService.findByType(attractionType);
         logger.info("Atrativos encontrados pelo tipo: {}", list.size());
         return ResponseEntity.ok().body(list);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TuristAttractionDTO> update(@PathVariable Long id, @RequestBody TuristAttractionDTO objDto) {
+    public ResponseEntity<Attraction> update(@PathVariable Long id, @RequestBody @Valid AttractionForm objDto) {
         logger.info("Atualizando atrativo com ID: {}", id);
         Attraction newObj = attractionService.update(id, objDto);
         logger.info("Atrativo atualizado com sucesso: {}", newObj);
-        return ResponseEntity.ok().body(new TuristAttractionDTO(newObj));
+        return ResponseEntity.ok().body(newObj);
     }
 }

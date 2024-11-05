@@ -1,24 +1,21 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
 
 import java.util.List;
 
 public class MockAttraction {
-    public Attraction mockEntity(Integer num) {
-        return null;
-    }
 
-    public Attraction mockRequest(
+    public AttractionForm mockRequest(
             Integer num,
             TourismSegmentation segmentation,
             MoreInfoLink moreInfoLink,
             AttractionType attractionType
     ) {
-        return Attraction.builder()
+        return AttractionForm.builder()
                 .name("mock Teatro municipal " + num)
                 .description("Teatro municipal de joão pessoa")
                 .map_link("https://mapa.com")
