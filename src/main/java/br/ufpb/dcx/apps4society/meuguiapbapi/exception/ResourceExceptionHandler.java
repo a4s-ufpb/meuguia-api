@@ -1,14 +1,22 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
 import jakarta.validation.ValidationException;
+import lombok.Getter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.servlet.ServletRequest;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -43,13 +51,38 @@ public class ResourceExceptionHandler {
     }
 
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, ServletRequest request) {
-        String errorMessage = "Validation error: " + e.getLocalizedMessage();
-        StandardError error = new StandardError(
-                HttpStatus.BAD_REQUEST.value(),
-                errorMessage,
-                System.currentTimeMillis());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    public Error handleMethodArgumentNotValidException(MethodArgumentNotValidException e, ServletRequest request) {
+        BindingResult result = e.getBindingResult();
+        List<FieldError> fieldErrors = result.getFieldErrors();
+        return processFieldErrors(fieldErrors);
+    }
+
+    private Error processFieldErrors(List<FieldError> fieldErrors) {
+        Error error = new Error(HttpStatus.BAD_REQUEST.value(), "Validation error");
+        for (FieldError fieldError: fieldErrors) {
+            error.addFieldError(fieldError.getObjectName(), fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        return error;
+    }
+
+    @Getter
+    static class Error {
+        private final int status;
+        private final String message;
+        private final Long timeStamp = System.currentTimeMillis();
+        private List<FieldError> fieldErrors = new ArrayList<>();
+
+        Error(int status, String message) {
+            this.status = status;
+            this.message = message;
+        }
+
+        public void addFieldError(String objectName, String path, String message) {
+            FieldError error = new FieldError(objectName, path, message);
+            fieldErrors.add(error);
+        }
     }
 }
