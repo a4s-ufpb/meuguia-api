@@ -85,7 +85,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    void create_shouldReturn400_whenAttractionTypeNameIsInvalidTest() {
+    void create_shouldReturn400_whenAttractionTypeNameIsMissingTest() {
         AttractionType requestBody = mockAttractionType.mockRequest(4);
         requestBody.setName(null);
 
@@ -101,9 +101,26 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    void create_shouldReturn400_whenAttractionTypeDescriptionIsInvalidTest() {
+    void create_shouldReturn400_whenAttractionTypeDescriptionIsMissingTest() {
         AttractionType requestBody = mockAttractionType.mockRequest(5);
         requestBody.setDescription(null);
+
+        given()
+                .header("Authorization", "Bearer "+token)
+                .contentType(ContentType.JSON)
+                .body(requestBody)
+                .when()
+                .post(PATH_ATTRACTION_TYPE)
+                .then()
+                .log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    @Test
+    void create_shouldReturn400_whenAttractionTypeNameIsInvalidTest() {
+        AttractionType requestBody = mockAttractionType.mockRequest(4);
+        requestBody.setName("");
 
         given()
                 .header("Authorization", "Bearer "+token)
