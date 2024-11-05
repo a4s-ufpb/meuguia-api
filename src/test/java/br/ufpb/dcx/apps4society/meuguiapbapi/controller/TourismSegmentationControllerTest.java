@@ -3,7 +3,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockTouristSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.TourismSegmentationRequestUtil;
 import io.restassured.http.ContentType;
@@ -35,9 +36,9 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn201_whenTourismSegmentationDataIsValidTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(1);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(1);
 
-        TouristSegmentation response = given()
+        TourismSegmentation response = given()
                 .header("Authorization", "Bearer " + token)
                 .contentType(ContentType.JSON)
                 .body(requestBody)
@@ -50,14 +51,14 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .body("name", equalTo(requestBody.getName()))
                 .body("description", equalTo(requestBody.getDescription()))
                 .extract()
-                .as(TouristSegmentation.class);
+                .as(TourismSegmentation.class);
 
         requestUtil.delete(response, token);
     }
 
     @Test
     void create_shouldReturn403_whenUserIsNotAuthenticatedTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(2);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(2);
 
         given()
                 .contentType(ContentType.JSON)
@@ -71,7 +72,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn401_whenTokenIsNotValidTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(3);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(3);
 
         given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
@@ -86,7 +87,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsInvalidTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(4);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(4);
         requestBody.setName("");
 
         given()
@@ -102,7 +103,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsNullTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(5);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(5);
         requestBody.setName(null);
 
         given()
@@ -117,24 +118,8 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
     }
 
     @Test
-    void create_shouldReturn400_whenTourismSegmentationDescriptionIsInvalidTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(6);
-        requestBody.setDescription("");
-
-        given()
-                .header("Authorization", "Bearer " + token)
-                .contentType(ContentType.JSON)
-                .body(requestBody)
-                .when()
-                .post(PATH_TOURISM_SEGMENTATION)
-                .then()
-                .log().body()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
     void create_shouldReturn400_whenTourismSegmentationDescriptionNullTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(7);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(7);
         requestBody.setDescription(null);
 
         given()
@@ -150,10 +135,10 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void findById_shouldReturn200_whenTourismSegmentationExistsTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(8);
-        TouristSegmentation segmentation = requestUtil.post(requestBody, token);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(8);
+        TourismSegmentation segmentation = requestUtil.post(requestBody, token);
 
-        TouristSegmentation response = given()
+        TourismSegmentation response = given()
                 .contentType(ContentType.JSON)
                 .when()
                 .get(PATH_TOURISM_SEGMENTATION + "/" + segmentation.getId())
@@ -164,7 +149,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .body("name", equalTo(segmentation.getName()))
                 .body("description", equalTo(segmentation.getDescription()))
                 .extract()
-                .as(TouristSegmentation.class);
+                .as(TourismSegmentation.class);
 
         requestUtil.delete(response, token);
     }
@@ -182,11 +167,11 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void findAll_shouldReturn200and2Items_whenTourismSegmentationExistsTest() {
-        TouristSegmentation request1 = mockTouristSegmentation.mockRequest(9);
-        TouristSegmentation request2 = mockTouristSegmentation.mockRequest(10);
+        TourismSegmentationForm request1 = mockTouristSegmentation.mockRequest(9);
+        TourismSegmentationForm request2 = mockTouristSegmentation.mockRequest(10);
 
-        TouristSegmentation segmentation1 = requestUtil.post(request1, token);
-        TouristSegmentation segmentation2 = requestUtil.post(request2, token);
+        TourismSegmentation segmentation1 = requestUtil.post(request1, token);
+        TourismSegmentation segmentation2 = requestUtil.post(request2, token);
 
         given()
                 .contentType(ContentType.JSON)
@@ -219,8 +204,8 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn204_whenTourismSegmentationExistsTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(11);
-        TouristSegmentation response = requestUtil.post(requestBody, token);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(11);
+        TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
                 .header("Authorization", "Bearer " + token)
@@ -233,8 +218,8 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn403_whenUserIsNotAuthenticated() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(12);
-        TouristSegmentation response = requestUtil.post(requestBody, token);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(12);
+        TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
                 .contentType(ContentType.JSON)
@@ -249,8 +234,8 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn401_whenTokenIsInvalidTest() {
-        TouristSegmentation requestBody = mockTouristSegmentation.mockRequest(13);
-        TouristSegmentation response = requestUtil.post(requestBody, token);
+        TourismSegmentationForm requestBody = mockTouristSegmentation.mockRequest(13);
+        TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
                 .contentType(ContentType.JSON)

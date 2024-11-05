@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dtos;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import lombok.Data;
 
 @Data
@@ -15,7 +15,7 @@ public class TourismSegmentationDTO {
     public TourismSegmentationDTO() {
     }
 
-    public TourismSegmentationDTO(TouristSegmentation obj) {
+    public TourismSegmentationDTO(TourismSegmentation obj) {
         this.id = obj.getId();
         this.name = obj.getName();
         this.description = obj.getDescription();

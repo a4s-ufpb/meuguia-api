@@ -46,7 +46,7 @@ public class Attraction {
             joinColumns = @JoinColumn(name = "attraction_id"),
             inverseJoinColumns = @JoinColumn(name = "segmentation_id")
     )
-    private List<TouristSegmentation> segmentations = new ArrayList<>();
+    private List<TourismSegmentation> segmentations = new ArrayList<>();
 
     @OneToOne
     @JoinTable(

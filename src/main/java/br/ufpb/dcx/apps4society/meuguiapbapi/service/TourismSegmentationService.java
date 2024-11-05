@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +19,30 @@ public class TourismSegmentationService {
     @Autowired
     private TourismSegmentationRepository tourismSegmentationRepository;
 
-    @Autowired
-    private AttractionService attractionService;
-
-    public TouristSegmentation findById(Long id) {
-        Optional<TouristSegmentation> obj = tourismSegmentationRepository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! id: " + id + ", Tipo " + TouristSegmentation.class.getName()));
+    public TourismSegmentation findById(Long id) {
+        Optional<TourismSegmentation> obj = tourismSegmentationRepository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! id: " + id + ", Tipo " + TourismSegmentation.class.getName()));
     }
 
-    public List<TouristSegmentation> findAll() {
-        List<TouristSegmentation> segmentations = tourismSegmentationRepository.findAll();
+    public List<TourismSegmentation> findAll() {
+        List<TourismSegmentation> segmentations = tourismSegmentationRepository.findAll();
 
         // Filtra para manter apenas as segmentações com nomes únicos
         return new ArrayList<>(segmentations.stream()
                 .collect(Collectors.toMap(
-                        TouristSegmentation::getName,  // Usa o nome como chave
+                        TourismSegmentation::getName,  // Usa o nome como chave
                         Function.identity(),          // Usa o próprio objeto TurismSegmentation como valor
                         (existing, replacement) -> existing // Em caso de duplicata, mantém o existente
                 ))
                 .values());
     }
 
-    public TouristSegmentation create(TouristSegmentation obj) {
-        obj.setId(null);
-        return tourismSegmentationRepository.save(obj);
+    public TourismSegmentation create(TourismSegmentationForm obj) {
+        TourismSegmentation tourismSegmentation = TourismSegmentation.builder()
+                .name(obj.getName())
+                .description(obj.getDescription())
+                .build();
+        return tourismSegmentationRepository.save(tourismSegmentation);
     }
 
     public void delete(Long id) {

@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.dtos;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import lombok.Builder;
 import lombok.Data;
 
@@ -29,7 +29,7 @@ public class TuristAttractionDTO {
 
     private String fonte;
 
-    private List<TouristSegmentation> segmentations;
+    private List<TourismSegmentation> segmentations;
 
     private AttractionType attractionTypes;
 
@@ -52,7 +52,7 @@ public class TuristAttractionDTO {
         this.moreInfoLinkList = obj.getMoreInfoLinkList();
     }
 
-    public TuristAttractionDTO(Long id, String name, String description, String map_link, String city, String state, String image_link, String fonte, List<TouristSegmentation> segmentations, AttractionType attractionTypes, List<MoreInfoLink> moreInfoLinkList) {
+    public TuristAttractionDTO(Long id, String name, String description, String map_link, String city, String state, String image_link, String fonte, List<TourismSegmentation> segmentations, AttractionType attractionTypes, List<MoreInfoLink> moreInfoLinkList) {
         this.id = id;
         this.name = name;
         this.description = description;

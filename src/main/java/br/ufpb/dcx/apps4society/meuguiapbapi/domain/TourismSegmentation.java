@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Data
 @Builder
 @Entity
-public class TouristSegmentation {
+public class TourismSegmentation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,10 +20,10 @@ public class TouristSegmentation {
     @Column(length = 200, nullable = false)
     private String description;
 
-    public TouristSegmentation() {
+    public TourismSegmentation() {
     }
 
-    public TouristSegmentation(Long id, String name, String description) {
+    public TourismSegmentation(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;

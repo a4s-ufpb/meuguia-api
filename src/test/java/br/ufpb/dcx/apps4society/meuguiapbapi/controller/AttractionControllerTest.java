@@ -6,9 +6,10 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockMoreInfoLink;
@@ -39,7 +40,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     private final MoreInfoLinkRequestUtil moreInfoLinkRequestUtil = new MoreInfoLinkRequestUtil();
     private final AttractionRequestUtil attractionRequestUtil = new AttractionRequestUtil();
 
-    private TouristSegmentation segmentation;
+    private TourismSegmentation segmentation;
     private AttractionType attractionType;
     private MoreInfoLink moreInfoLink;
 
@@ -62,7 +63,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeEach
     void setUpEach() {
-        TouristSegmentation segmentationRequest = mockTouristSegmentation.mockRequest(90);
+        TourismSegmentationForm segmentationRequest = mockTouristSegmentation.mockRequest(90);
         AttractionTypeForm attractionTypeRequest = mockAttractionType.mockRequest(90);
         MoreInfoLinkForm moreInfoLinkRequest = mockMoreInfoLink.mockRequest(90);
 
@@ -551,7 +552,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction requestBody = mockAttraction.mockRequest(20, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TouristSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(14), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(14), token);
         AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(11), token);
         MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(12), token);
 
@@ -648,7 +649,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction requestBody = mockAttraction.mockRequest(24, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TouristSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(15), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(15), token);
         AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(12), token);
         MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(13), token);
 
@@ -713,8 +714,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction requestBody = mockAttraction.mockRequest(27, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        TouristSegmentation segmentationRequest = mockTouristSegmentation.mockRequest(16);
-        TouristSegmentation segmentation1 = tourismSegmentationRequestUtil.post(segmentationRequest, token);
+        TourismSegmentationForm segmentationRequest = mockTouristSegmentation.mockRequest(16);
+        TourismSegmentation segmentation1 = tourismSegmentationRequestUtil.post(segmentationRequest, token);
 
         given()
                 .contentType("application/json")
@@ -734,7 +735,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         Attraction requestBody = mockAttraction.mockRequest(28, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TouristSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(17), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(17), token);
         AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(13), token);
         MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(14), token);
 

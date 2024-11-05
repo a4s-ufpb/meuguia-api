@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.TourismSegmentationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +46,9 @@ public class TourismSegmentationController {
             }
     )
     @GetMapping(value = "/{id}")
-    public ResponseEntity<TouristSegmentation> findById(@PathVariable Long id) {
+    public ResponseEntity<TourismSegmentation> findById(@PathVariable Long id) {
         logger.info("Buscando segmentação turística com ID: {}", id);
-        TouristSegmentation obj = tourismSegmentationService.findById(id);
+        TourismSegmentation obj = tourismSegmentationService.findById(id);
         logger.info("Segmentação turística encontrada: {}", obj);
         return ResponseEntity.ok().body(obj);
     }
@@ -68,9 +70,9 @@ public class TourismSegmentationController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<TouristSegmentation>> findAll() {
+    public ResponseEntity<List<TourismSegmentation>> findAll() {
         logger.info("Buscando todas as segmentações turísticas");
-        List<TouristSegmentation> list = tourismSegmentationService.findAll();
+        List<TourismSegmentation> list = tourismSegmentationService.findAll();
         logger.info("Total de segmentações encontradas: {}", list.size());
         return ResponseEntity.ok().body(list);
     }
@@ -87,9 +89,9 @@ public class TourismSegmentationController {
             }
     )
     @PostMapping
-    public ResponseEntity<TouristSegmentation> create(@RequestBody TouristSegmentation obj) {
+    public ResponseEntity<TourismSegmentation> create(@RequestBody @Valid TourismSegmentationForm obj) {
         logger.info("Cadastrando nova segmentação turística: {}", obj);
-        TouristSegmentation newObj = tourismSegmentationService.create(obj);
+        TourismSegmentation newObj = tourismSegmentationService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/segmentations/{id}")
                 .buildAndExpand(newObj.getId()).toUri();

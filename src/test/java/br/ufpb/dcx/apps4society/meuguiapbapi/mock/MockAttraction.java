@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class MockAttraction {
 
     public Attraction mockRequest(
             Integer num,
-            TouristSegmentation segmentation,
+            TourismSegmentation segmentation,
             MoreInfoLink moreInfoLink,
             AttractionType attractionType
     ) {

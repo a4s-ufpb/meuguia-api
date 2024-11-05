@@ -1,7 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +21,7 @@ public class TourismSegmentationRequestUtil {
         basePath = MeuguiaApiApplicationTests.basePath;
     }
 
-    public TouristSegmentation post(TouristSegmentation request, String token) {
+    public TourismSegmentation post(TourismSegmentationForm request, String token) {
         return given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
@@ -30,10 +31,10 @@ public class TourismSegmentationRequestUtil {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(TouristSegmentation.class);
+                .as(TourismSegmentation.class);
     }
 
-    public void delete(TouristSegmentation request, String token) {
+    public void delete(TourismSegmentation request, String token) {
         given()
                 .header("Authorization", "Bearer " + token)
                 .when()
