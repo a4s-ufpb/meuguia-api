@@ -1,4 +1,15 @@
 services:
+  watchtower:
+    container_name: container-watchtower
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "120"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
   db:
     container_name: container-database-meuquiapb
     image: postgres:16
@@ -16,9 +27,9 @@ services:
 
   meuguiapb-api:
     container_name: container-meuguiapb-api
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/meuguiapbapi:prod
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     restart: always
     env_file:
       - .env

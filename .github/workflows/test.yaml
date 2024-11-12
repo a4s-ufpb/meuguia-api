@@ -1,4 +1,4 @@
-name: Build and Test Spring Boot application
+name: build-and-test
 
 on:
   push:
@@ -31,15 +31,15 @@ jobs:
     steps:
      - name: Checkout code
        uses: actions/checkout@v4
-
      - name: Set up JDK 21
        uses: actions/setup-java@v4
        with:
          distribution: 'corretto'
          java-version: '21'
-
-     - name: Build with Maven
-       run: mvn package -DskipTests
-
-     - name: Run Tests
-       run: mvn test
+         cache: maven
+     - run: mvn --batch-mode --update-snapshots verify
+     - run: mkdir staging && cp target/*.jar staging/
+     - uses: actions/upload-artifact@v4
+       with:
+         name: Package
+         path: staging
