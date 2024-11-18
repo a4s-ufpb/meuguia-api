@@ -1,24 +1,21 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.port;
-import static io.restassured.RestAssured.basePath;
 import static io.restassured.RestAssured.given;
 
-public class MoreInfoLinkRequestUtil {
+public class MoreInfoLinkRequestUtil extends RequestUtil {
     public static final String PATH_MORE_INFO_LINK = "/more-info";
 
-    @BeforeEach
-    void setUp() {
-        port = MeuguiaApiApplicationTests.port;
-        baseURI = MeuguiaApiApplicationTests.baseURI;
-        basePath = MeuguiaApiApplicationTests.basePath;
+    private static MoreInfoLinkRequestUtil instance;
+
+    public static MoreInfoLinkRequestUtil getInstance() {
+        if (instance == null) {
+            instance = new MoreInfoLinkRequestUtil();
+        }
+        return instance;
     }
 
     public MoreInfoLink post(MoreInfoLinkForm request, String token) {

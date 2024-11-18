@@ -1,25 +1,22 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.basePath;
-import static io.restassured.RestAssured.port;
 
-public class AttractionTypeRequestUtil {
+public class AttractionTypeRequestUtil extends RequestUtil {
     public static final String PATH_ATTRACTION_TYPE = "/types";
 
-    @BeforeEach
-    void setUP() {
-        port = MeuguiaApiApplicationTests.port;
-        baseURI = MeuguiaApiApplicationTests.baseURI;
-        basePath = MeuguiaApiApplicationTests.basePath;
+    private static AttractionTypeRequestUtil instance;
+
+    public static AttractionTypeRequestUtil getInstance() {
+        if (instance == null) {
+            instance = new AttractionTypeRequestUtil();
+        }
+        return instance;
     }
 
     public AttractionType post(AttractionTypeForm request, String token) {

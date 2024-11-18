@@ -1,29 +1,26 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.port;
-import static io.restassured.RestAssured.basePath;
-import static io.restassured.RestAssured.baseURI;
 
-public class AttractionRequestUtil {
+public class AttractionRequestUtil extends RequestUtil {
     public static final String PATH_ATTRACTION = "/tourists";
     public static final String PATH_CREATE_ATTRACTION = "/tourists/create";
     public static final String PATH_FIND_ATTRACTION_BY_NAME = "/tourists/byName";
     public static final String PATH_FIND_ATTRACTION_BY_CITY = "/tourists/byCity";
     public static final String PATH_FIND_ATTRACTION_BY_SEGMENTATION = "/tourists/bySegmentations";
 
-    @BeforeEach
-    void setup() {
-        port = MeuguiaApiApplicationTests.port;
-        baseURI = MeuguiaApiApplicationTests.baseURI;
-        basePath = MeuguiaApiApplicationTests.basePath;
+    private static AttractionRequestUtil instance;
+
+    public static AttractionRequestUtil getInstance() {
+        if (instance == null) {
+            instance = new AttractionRequestUtil();
+        }
+        return instance;
     }
 
     public void delete(Attraction attraction, String token) {

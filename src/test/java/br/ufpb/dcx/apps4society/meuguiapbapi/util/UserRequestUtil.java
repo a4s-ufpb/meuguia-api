@@ -1,25 +1,25 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.*;
 
-public class UserRequestUtil {
+public class UserRequestUtil extends RequestUtil {
     public static final String PATH_USER_REGISTER = "/auth/register";
     public static final String PATH_USER_AUTHENTICATE = "/auth/authenticate";
     public static final String PATH_USER = "/user";
 
-    @BeforeEach
-    void setUp() {
-        port = MeuguiaApiApplicationTests.port;
-        baseURI = MeuguiaApiApplicationTests.baseURI;
-        basePath = MeuguiaApiApplicationTests.basePath;
+    private static UserRequestUtil instance;
+
+    public static UserRequestUtil getInstance() {
+        if (instance == null) {
+            instance = new UserRequestUtil();
+        }
+        return instance;
     }
 
     public AuthenticationResponse register(RegisterForm bodyRequest) {

@@ -9,7 +9,7 @@ spring:
   test:
     server:
       port: ${TEST_SERVER_PORT}
-      baseURI: http://${TEST_SERVER_HOST}
+      baseURI: ${TEST_SERVER_URI}
     base-path: ${TEST_SERVER_BASE_PATH}
   output:
     ansi:
@@ -20,6 +20,13 @@ spring:
       expiration: ${JWT_EXPIRATION}
   profiles:
     default: ${TEST_PROFILE}
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 logging:
   level:

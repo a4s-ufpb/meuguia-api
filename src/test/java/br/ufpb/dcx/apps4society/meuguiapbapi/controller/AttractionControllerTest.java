@@ -34,15 +34,15 @@ import static org.hamcrest.Matchers.*;
 
 @Slf4j
 class AttractionControllerTest extends MeuguiaApiApplicationTests {
-    private final MockAttractionType mockAttractionType = new MockAttractionType();
-    private final MockMoreInfoLink mockMoreInfoLink = new MockMoreInfoLink();
-    private final MockTouristSegmentation mockTouristSegmentation = new MockTouristSegmentation();
-    private final MockAttraction mockAttraction = new MockAttraction();
+    private final MockAttractionType mockAttractionType = MockAttractionType.getInstance();
+    private final MockMoreInfoLink mockMoreInfoLink = MockMoreInfoLink.getInstance();
+    private final MockTouristSegmentation mockTouristSegmentation = MockTouristSegmentation.getInstance();
+    private final MockAttraction mockAttraction = MockAttraction.getInstance();
 
-    private final TourismSegmentationRequestUtil tourismSegmentationRequestUtil = new TourismSegmentationRequestUtil();
-    private final AttractionTypeRequestUtil attractionTypeRequestUtil = new AttractionTypeRequestUtil();
-    private final MoreInfoLinkRequestUtil moreInfoLinkRequestUtil = new MoreInfoLinkRequestUtil();
-    private final AttractionRequestUtil attractionRequestUtil = new AttractionRequestUtil();
+    private final TourismSegmentationRequestUtil tourismSegmentationRequestUtil = TourismSegmentationRequestUtil.getInstance();
+    private final AttractionTypeRequestUtil attractionTypeRequestUtil = AttractionTypeRequestUtil.getInstance();
+    private final MoreInfoLinkRequestUtil moreInfoLinkRequestUtil = MoreInfoLinkRequestUtil.getInstance();
+    private final AttractionRequestUtil attractionRequestUtil = AttractionRequestUtil.getInstance();
 
     private TourismSegmentation segmentation;
     private AttractionType attractionType;
@@ -108,8 +108,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", equalTo(requestBody.getImage_link()))
                 .body("fonte", equalTo(requestBody.getFonte()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attractionTypes.id", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()));
+                .body("attraction_types.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -290,8 +290,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", equalTo(requestBody.getImage_link()))
                 .body("fonte", equalTo(requestBody.getFonte()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attractionTypes.id", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id", equalTo(moreInfoLink.getId().intValue()));
+                .body("attraction_types.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -585,8 +585,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItem(attraction.getImage_link()))
                 .body("fonte", hasItem(attraction.getFonte()))
                 .body("segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
+                .body("attraction_types.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -643,8 +643,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItems(attraction1.getImage_link(), attraction2.getImage_link()))
                 .body("fonte", hasItems(attraction1.getFonte(), attraction2.getFonte()))
                 .body("segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation2.getId().intValue()))
-                .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
+                .body("attraction_types.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("more_info_link_list.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
 
     }
 
@@ -671,10 +671,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItem(savedAttraction.getImage_link()))
                 .body("fonte", hasItem(savedAttraction.getFonte()))
                 .body("segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()))
-                .extract()
-                .jsonPath();
+                .body("attraction_types.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -743,8 +741,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItems(attraction1.getImage_link(), attraction2.getImage_link()))
                 .body("fonte", hasItems(attraction1.getFonte(), attraction2.getFonte()))
                 .body("segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation2.getId().intValue()))
-                .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
+                .body("attraction_types.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("more_info_link_list.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
     }
 
     @Test
@@ -770,8 +768,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItem(savedAttraction.getImage_link()))
                 .body("fonte", hasItem(savedAttraction.getFonte()))
                 .body("segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("attractionTypes.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("moreInfoLinkList[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
+                .body("attraction_types.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id[0]", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -830,8 +828,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("image_link", hasItems(attraction1.getImage_link(), attraction2.getImage_link()))
                 .body("fonte", hasItems(attraction1.getFonte(), attraction2.getFonte()))
                 .body("segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation.getId().intValue()))
-                .body("attractionTypes.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("moreInfoLinkList.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
+                .body("attraction_types.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("more_info_link_list.id.flatten()", hasItems(moreInfoLink.getId().intValue(), moreInfoLink2.getId().intValue()));
     }
 
     @Test

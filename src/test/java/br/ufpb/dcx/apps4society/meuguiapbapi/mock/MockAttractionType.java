@@ -4,6 +4,14 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
 
 public class MockAttractionType {
+    private static MockAttractionType instance;
+
+    public static MockAttractionType getInstance() {
+        if (instance == null) {
+            instance = new MockAttractionType();
+        }
+        return instance;
+    }
 
     public AttractionType mockEntity(Integer num) {
         return AttractionType.builder()
