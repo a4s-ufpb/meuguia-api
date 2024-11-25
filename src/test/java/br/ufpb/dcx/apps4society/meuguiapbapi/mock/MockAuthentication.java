@@ -7,6 +7,14 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import java.util.Random;
 
 public class MockAuthentication {
+    private static MockAuthentication instance;
+
+    public static MockAuthentication getInstance() {
+        if (instance == null) {
+            instance = new MockAuthentication();
+        }
+        return instance;
+    }
 
     public User mockEntity(Integer num) {
         return User.builder()

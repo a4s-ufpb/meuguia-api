@@ -1,24 +1,21 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.port;
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.basePath;
 
-public class TourismSegmentationRequestUtil {
+public class TourismSegmentationRequestUtil extends RequestUtil {
     public final static String PATH_TOURISM_SEGMENTATION = "/segmentations";
 
-    @BeforeEach
-    void setUP() {
-        port = MeuguiaApiApplicationTests.port;
-        baseURI = MeuguiaApiApplicationTests.baseURI;
-        basePath = MeuguiaApiApplicationTests.basePath;
+    private static TourismSegmentationRequestUtil instance;
+
+    public static TourismSegmentationRequestUtil getInstance() {
+        if (instance == null) {
+            instance = new TourismSegmentationRequestUtil();
+        }
+        return instance;
     }
 
     public TourismSegmentation post(TourismSegmentationForm request, String token) {

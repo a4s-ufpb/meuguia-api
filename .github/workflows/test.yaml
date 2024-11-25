@@ -23,11 +23,10 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRATION: ${{ vars.JWT_EXPIRATION }}
-          TEST_SERVER_HOST: ${{ vars.TEST_SERVER_HOST }}
+          TEST_SERVER_URI: ${{ vars.TEST_SERVER_URI }}
           TEST_SERVER_PORT: ${{ vars.TEST_SERVER_PORT }}
           TEST_SERVER_BASE_PATH: ${{ vars.TEST_SERVER_BASE_PATH }}
-          TEST_PROFILE: ${{ vars.TEST_PROFILE }}
-          
+
     steps:
      - name: Checkout code
        uses: actions/checkout@v4

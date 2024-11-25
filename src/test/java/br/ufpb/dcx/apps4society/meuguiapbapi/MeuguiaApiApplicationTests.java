@@ -2,7 +2,11 @@ package br.ufpb.dcx.apps4society.meuguiapbapi;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAuthentication;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.UserRequestUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -25,6 +29,14 @@ public class MeuguiaApiApplicationTests {
 
 	@BeforeAll
 	public void _setUp() {
+		RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
+            (type, s) -> {
+				ObjectMapper objectMapper = new ObjectMapper();
+				objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
+				return objectMapper;
+			})
+		);
+
 		log.info("Setting up RestAssured");
         log.debug("Port: {}", port);
         log.debug("BaseURI: {}", baseURI);

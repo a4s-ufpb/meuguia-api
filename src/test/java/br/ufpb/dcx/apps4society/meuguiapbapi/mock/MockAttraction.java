@@ -8,6 +8,14 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
 import java.util.List;
 
 public class MockAttraction {
+    private static MockAttraction instance;
+
+    public static MockAttraction getInstance() {
+        if (instance == null) {
+            instance = new MockAttraction();
+        }
+        return instance;
+    }
 
     public AttractionForm mockRequest(
             Integer num,

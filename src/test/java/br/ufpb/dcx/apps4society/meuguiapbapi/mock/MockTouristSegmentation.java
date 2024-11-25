@@ -4,6 +4,14 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
 
 public class MockTouristSegmentation {
+    private static MockTouristSegmentation instance;
+
+    public static MockTouristSegmentation getInstance() {
+        if (instance == null) {
+            instance = new MockTouristSegmentation();
+        }
+        return instance;
+    }
 
     public TourismSegmentation mockEntity(Integer num) {
         return TourismSegmentation.builder()
