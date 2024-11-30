@@ -1,20 +1,21 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.auth.controller;
+package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.service.AuthenticationService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.service.AuthenticationService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Slf4j
 @RequestMapping("/api/auth")
 public class AuthenticationController {
+    private final Logger log = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationService authenticationService;
 
     @Autowired
@@ -23,21 +24,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody @Valid RegisterForm request
+    public ResponseEntity<AuthenticationResponseData> register(
+            @RequestBody @Valid RegisterRequestData request
     ) {
         log.debug("Trying to register a new user");
-        AuthenticationResponse responseBody = authenticationService.register(request);
+        AuthenticationResponseData responseBody = authenticationService.register(request);
         log.debug("User registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody @Valid AuthenticationForm request
-    ) {
+    public ResponseEntity<AuthenticationResponseData> authenticate(
+            @RequestBody @Valid AuthenticationRequestData request
+            ) {
         log.debug("Trying to authenticate user request");
-        AuthenticationResponse responseBody = authenticationService.authenticate(request);
+        AuthenticationResponseData responseBody = authenticationService.authenticate(request);
         log.debug("User authenticated");
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }

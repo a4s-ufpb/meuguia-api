@@ -1,7 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
 import jakarta.validation.ValidationException;
-import lombok.Getter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,21 +67,37 @@ public class ResourceExceptionHandler {
         return error;
     }
 
-    @Getter
-    static class Error {
+    public static class Error {
         private final int status;
         private final String message;
         private final Long timeStamp = System.currentTimeMillis();
-        private List<FieldError> fieldErrors = new ArrayList<>();
+        private final List<FieldError> fieldErrors;
 
         Error(int status, String message) {
             this.status = status;
             this.message = message;
+            fieldErrors = new ArrayList<>();
         }
 
         public void addFieldError(String objectName, String path, String message) {
             FieldError error = new FieldError(objectName, path, message);
             fieldErrors.add(error);
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public Long getTimeStamp() {
+            return timeStamp;
+        }
+
+        public List<FieldError> getFieldErrors() {
+            return fieldErrors;
         }
     }
 }

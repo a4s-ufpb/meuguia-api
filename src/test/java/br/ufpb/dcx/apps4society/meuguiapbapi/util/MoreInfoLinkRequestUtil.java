@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
@@ -18,7 +18,7 @@ public class MoreInfoLinkRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public MoreInfoLink post(MoreInfoLinkForm request, String token) {
+    public MoreInfoLink post(MoreInfoLinkRequestData request, String token) {
         return given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")

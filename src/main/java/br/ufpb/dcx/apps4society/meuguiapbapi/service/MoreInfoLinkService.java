@@ -1,10 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.MoreInfoLinkRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import lombok.AllArgsConstructor;
+import br.ufpb.dcx.apps4society.meuguiapbapi.repository.MoreInfoLinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class MoreInfoLinkService {
 
+    private final MoreInfoLinkRepository moreInfoLinkRepository;
+
     @Autowired
-    private MoreInfoLinkRepository moreInfoLinkRepository;
+    public MoreInfoLinkService(MoreInfoLinkRepository moreInfoLinkRepository) {
+        this.moreInfoLinkRepository = moreInfoLinkRepository;
+    }
 
     public MoreInfoLink findById(Long id) {
         Optional<MoreInfoLink> obj = moreInfoLinkRepository.findById(id);
@@ -29,7 +31,7 @@ public class MoreInfoLinkService {
         return moreInfoLinkRepository.findAll();
     }
 
-    public MoreInfoLink create(MoreInfoLinkForm obj) {
+    public MoreInfoLink create(MoreInfoLinkRequestData obj) {
         MoreInfoLink moreInfoLink = MoreInfoLink.builder()
                 .link(obj.getLink())
                 .description(obj.getDescription())

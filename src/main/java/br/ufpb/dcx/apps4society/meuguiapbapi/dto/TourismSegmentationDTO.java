@@ -1,35 +1,34 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
-import jakarta.persistence.*;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "attraction_type")
-public class AttractionType {
+public class TourismSegmentationDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", length = 200, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 200, nullable = false)
     private String description;
 
-    public AttractionType() {
+    public TourismSegmentationDTO() {
     }
 
-    public AttractionType(Long id, String name, String description) {
+    public TourismSegmentationDTO(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public static AttractionTypeBuilder builder() {
-        return new AttractionTypeBuilder();
+    public TourismSegmentationDTO(TourismSegmentation obj) {
+        this.id = obj.getId();
+        this.name = obj.getName();
+        this.description = obj.getDescription();
+    }
+
+    public static TourismSegmentationDTOBuilder builder() {
+        return new TourismSegmentationDTOBuilder();
     }
 
     public Long getId() {
@@ -61,7 +60,7 @@ public class AttractionType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AttractionType that = (AttractionType) o;
+        TourismSegmentationDTO that = (TourismSegmentationDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
     }
 
@@ -74,38 +73,38 @@ public class AttractionType {
     }
 
     public String toString() {
-        return "AttractionType(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ")";
+        return "TourismSegmentationDTO(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ")";
     }
 
-    public static class AttractionTypeBuilder {
+    public static class TourismSegmentationDTOBuilder {
         private Long id;
         private String name;
         private String description;
 
-        AttractionTypeBuilder() {
+        TourismSegmentationDTOBuilder() {
         }
 
-        public AttractionTypeBuilder id(Long id) {
+        public TourismSegmentationDTOBuilder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public AttractionTypeBuilder name(String name) {
+        public TourismSegmentationDTOBuilder name(String name) {
             this.name = name;
             return this;
         }
 
-        public AttractionTypeBuilder description(String description) {
+        public TourismSegmentationDTOBuilder description(String description) {
             this.description = description;
             return this;
         }
 
-        public AttractionType build() {
-            return new AttractionType(this.id, this.name, this.description);
+        public TourismSegmentationDTO build() {
+            return new TourismSegmentationDTO(this.id, this.name, this.description);
         }
 
         public String toString() {
-            return "AttractionType.AttractionTypeBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ")";
+            return "TourismSegmentationDTO.TourismSegmentationDTOBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ")";
         }
     }
 }

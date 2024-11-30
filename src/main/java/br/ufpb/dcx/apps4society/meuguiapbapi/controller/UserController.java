@@ -1,10 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.RequestUserDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.ResponseUserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.UserService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
-@Slf4j
 public class UserController {
+    private final Logger log = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     @Autowired
@@ -26,9 +28,9 @@ public class UserController {
 // TODO: Update user, delete user, get user information for admin
 
     @GetMapping
-    public ResponseEntity<ResponseUserDTO> getAuthenticatedUser(Authentication authentication) {
+    public ResponseEntity<UserDTO> getAuthenticatedUser(Authentication authentication) {
         User logedUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(ResponseUserDTO.builder()
+        return ResponseEntity.ok(UserDTO.builder()
                 .id(logedUser.getId())
                 .email(logedUser.getEmail())
                 .firstName(logedUser.getFirstName())
@@ -37,9 +39,9 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseUserDTO> updateAuthenticatedUser(@RequestBody RequestUserDTO requestUserDTO, Authentication authentication) {
+    public ResponseEntity<UserDTO> updateAuthenticatedUser(@RequestBody UpdateUserRequestData updateUserRequestData, Authentication authentication) {
         User logedUser = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(userService.update(requestUserDTO, logedUser));
+        return ResponseEntity.ok(userService.update(updateUserRequestData, logedUser));
     }
 
     @DeleteMapping
@@ -50,5 +52,4 @@ public class UserController {
         log.info("User deleted");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }

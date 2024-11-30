@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TouristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.MoreInfoLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,8 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +24,21 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/more-info", produces = {"application/json"})
 @Tag(name = "More Info Link", description = "Endpoints para gerenciar os links para mais informações dos atrativos")
-@Slf4j
-@AllArgsConstructor
 public class MoreInfoLinkController {
+    private final Logger log = LoggerFactory.getLogger(MoreInfoLinkController.class);
+
+    private final MoreInfoLinkService moreInfoLinkService;
 
     @Autowired
-    private MoreInfoLinkService moreInfoLinkService;
+    public MoreInfoLinkController(MoreInfoLinkService moreInfoLinkService) {
+        this.moreInfoLinkService = moreInfoLinkService;
+    }
 
     @Operation(summary = "Buscar um link do atrativo por id", description = "Busca um link do atrativo por id",
             tags = {"More Info Link"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TuristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -59,7 +62,7 @@ public class MoreInfoLinkController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = TuristAttractionDTO.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = TouristAttractionDTO.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -80,14 +83,14 @@ public class MoreInfoLinkController {
             tags = {"More Info Link"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = TuristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
     @PostMapping
-    public ResponseEntity<MoreInfoLink> create(@RequestBody @Valid MoreInfoLinkForm obj) {
+    public ResponseEntity<MoreInfoLink> create(@RequestBody @Valid MoreInfoLinkRequestData obj) {
         log.info("Cadastrando novo link de mais informações: {}", obj);
         MoreInfoLink newObj = moreInfoLinkService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()

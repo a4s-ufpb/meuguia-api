@@ -7,16 +7,18 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Slf4j
 public class MeuguiaApiApplicationTests {
+	public final Logger log = LoggerFactory.getLogger(MeuguiaApiApplicationTests.class);
+
 	public final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyaWQiLCJuYW1lIjoiSm9obiBEb2UifQ.invalidsignature";
 	public final Long INVALID_ID = -1L;
 

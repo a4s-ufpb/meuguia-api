@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 
 import java.util.Random;
@@ -26,8 +26,8 @@ public class MockAuthentication {
                 .build();
     }
 
-    public RegisterForm mockRequest(Integer num) {
-        return RegisterForm.builder()
+    public RegisterRequestData mockRequest(Integer num) {
+        return RegisterRequestData.builder()
                 .firstName("mock User"+num)
                 .lastName("last name")
                 .email("mock.email@email.com")
@@ -35,8 +35,8 @@ public class MockAuthentication {
                 .build();
     }
 
-    public AuthenticationForm mockAuthentication() {
-        return AuthenticationForm.builder()
+    public AuthenticationRequestData mockAuthentication() {
+        return AuthenticationRequestData.builder()
                 .email("mock.email@email.com")
                 .password("12345678")
                 .build();

@@ -1,9 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
+import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class TourismSegmentationService {
 
+    private final TourismSegmentationRepository tourismSegmentationRepository;
+
     @Autowired
-    private TourismSegmentationRepository tourismSegmentationRepository;
+    public TourismSegmentationService(TourismSegmentationRepository tourismSegmentationRepository) {
+        this.tourismSegmentationRepository = tourismSegmentationRepository;
+    }
 
     public TourismSegmentation findById(Long id) {
         Optional<TourismSegmentation> obj = tourismSegmentationRepository.findById(id);
@@ -37,7 +41,7 @@ public class TourismSegmentationService {
                 .values());
     }
 
-    public TourismSegmentation create(TourismSegmentationForm obj) {
+    public TourismSegmentation create(TourismSegmentationRequestData obj) {
         TourismSegmentation tourismSegmentation = TourismSegmentation.builder()
                 .name(obj.getName())
                 .description(obj.getDescription())
