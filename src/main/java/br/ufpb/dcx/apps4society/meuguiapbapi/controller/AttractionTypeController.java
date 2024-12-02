@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TuristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TouristAttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,9 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -23,27 +23,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/types", produces = {"application/json"})
-@AllArgsConstructor
 @Tag(name = "Attractions Types", description = "Endpoints para gerenciar tipos de atrativos")
 public class AttractionTypeController {
 
     private static final Logger logger = LoggerFactory.getLogger(AttractionTypeController.class);
 
-    private AttractionTypeService attractionTypeService;
+    private final AttractionTypeService attractionTypeService;
+
+    @Autowired
+    public AttractionTypeController(AttractionTypeService attractionTypeService) {
+        this.attractionTypeService = attractionTypeService;
+    }
 
     @Operation(summary = "Cadastro de tipos de atrativos",
             description = "Cadastra um tipo de atrativo",
             tags = {"Attractions Types"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = TuristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
     @PostMapping
-    public ResponseEntity<AttractionType> create(@RequestBody @Valid AttractionTypeForm obj) {
+    public ResponseEntity<AttractionType> create(@RequestBody @Valid AttractionTypeRequestData obj) {
         logger.info("Criando novo tipo de atrativo: {}", obj);
         AttractionType newObj = attractionTypeService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -78,7 +82,7 @@ public class AttractionTypeController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = TuristAttractionDTO.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = TouristAttractionDTO.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),

@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.TourismSegmentationForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
@@ -18,7 +18,7 @@ public class TourismSegmentationRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public TourismSegmentation post(TourismSegmentationForm request, String token) {
+    public TourismSegmentation post(TourismSegmentationRequestData request, String token) {
         return given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")

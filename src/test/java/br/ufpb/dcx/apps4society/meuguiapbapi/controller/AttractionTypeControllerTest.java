@@ -1,11 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -19,16 +19,16 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
-    private final MockAttractionType mockAttractionType = new MockAttractionType();
+    private final AttractionTypeTestHelper attractionTypeTestHelper = new AttractionTypeTestHelper();
     private final AttractionTypeRequestUtil requestUtil = new AttractionTypeRequestUtil();
 
     private String token;
 
     @BeforeAll
     void setUP() {
-        RegisterForm registerForm = mockAuthentication.mockRequest(80);
-        AuthenticationResponse authenticationResponse = userRequestUtil.register(registerForm);
-        token = authenticationResponse.getToken();
+        RegisterRequestData registerRequestData = authenticationTestHelper.mockRequest(80);
+        AuthenticationResponseData authenticationResponseData = userRequestUtil.register(registerRequestData);
+        token = authenticationResponseData.getToken();
     }
 
     @AfterAll
@@ -38,7 +38,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn201_whenAttractionTypeIsValidAndUserIsAuthenticatedTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(1);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(1);
 
         Response response = given()
                 .header("Authorization", "Bearer "+ token)
@@ -62,7 +62,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn401_whenTokenInvalidTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(2);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(2);
 
         Response response = given()
                 .header("Authorization", "Bearer "+ INVALID_TOKEN)
@@ -82,7 +82,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn401_whenUserNotAuthenticatedTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(3);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(3);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -101,7 +101,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenAttractionTypeNameIsMissingTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(4);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(4);
         requestBody.setName(null);
 
         Response response = given()
@@ -122,7 +122,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenAttractionTypeDescriptionIsMissingTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(5);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(5);
         requestBody.setDescription(null);
 
         Response response = given()
@@ -144,7 +144,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenAttractionTypeNameIsInvalidTest() {
-        AttractionTypeForm requestBody = mockAttractionType.mockRequest(4);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(4);
         requestBody.setName("");
 
         Response response = given()
@@ -165,8 +165,8 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findAll_shouldReturn200AndListWith2Items_whenAttractionTypeExistsTest() {
-        AttractionTypeForm requestBody1 = mockAttractionType.mockRequest(6);
-        AttractionTypeForm requestBody2 = mockAttractionType.mockRequest(7);
+        AttractionTypeRequestData requestBody1 = attractionTypeTestHelper.mockRequest(6);
+        AttractionTypeRequestData requestBody2 = attractionTypeTestHelper.mockRequest(7);
 
         AttractionType attractionType1 = requestUtil.post(requestBody1, token);
         AttractionType attractionType2 = requestUtil.post(requestBody2, token);
@@ -202,7 +202,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn204_whenAttractionTypeIsDeletedTest() {
-        AttractionTypeForm request = mockAttractionType.mockRequest(8);
+        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(8);
         AttractionType response = requestUtil.post(request, token);
 
         given()
@@ -217,7 +217,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn403_whenTokenIsMissingTest() {
-        AttractionTypeForm request = mockAttractionType.mockRequest(9);
+        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(9);
         AttractionType attractionType = requestUtil.post(request, token);
 
         Response response = given()
@@ -234,7 +234,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn401_whenTokenInvalidTest() {
-        AttractionTypeForm request = mockAttractionType.mockRequest(10);
+        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(10);
         AttractionType attractionType = requestUtil.post(request, token);
 
         Response response = given()

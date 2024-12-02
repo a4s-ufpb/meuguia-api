@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 
@@ -33,7 +33,7 @@ public class AttractionRequestUtil extends RequestUtil {
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
-    public Attraction post(AttractionForm requestBody, String token) {
+    public Attraction post(AttractionRequestData requestBody, String token) {
         return given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)

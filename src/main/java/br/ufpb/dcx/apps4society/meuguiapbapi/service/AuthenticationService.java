@@ -1,12 +1,12 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.auth.service;
+package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
-import br.ufpb.dcx.apps4society.meuguiapbapi.service.JwtService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,9 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class AuthenticationService {
+    private final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
+
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -33,7 +34,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AuthenticationResponse authenticate(AuthenticationForm request) {
+    public AuthenticationResponseData authenticate(AuthenticationRequestData request) {
         log.debug("Authenticating user");
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -47,22 +48,22 @@ public class AuthenticationService {
         var token = jwtService.buildToken(user);
         log.debug("Token generated");
 
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseData.builder()
                 .token(token)
                 .build();
     }
 
-    public AuthenticationResponse register(RegisterForm registerForm) {
+    public AuthenticationResponseData register(RegisterRequestData registerRequestData) {
         User user = User.builder()
-                .email(registerForm.getEmail())
-                .password(passwordEncoder.encode(registerForm.getPassword()))
-                .firstName(registerForm.getFirstName())
-                .lastName(registerForm.getLastName())
+                .email(registerRequestData.getEmail())
+                .password(passwordEncoder.encode(registerRequestData.getPassword()))
+                .firstName(registerRequestData.getFirstName())
+                .lastName(registerRequestData.getLastName())
                 .build();
         userRepository.save(user);
 
         var jwtToken = jwtService.buildToken(user);
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseData.builder()
                 .token(jwtToken)
                 .build();
     }

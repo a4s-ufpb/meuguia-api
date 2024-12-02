@@ -1,13 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
-
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -15,12 +13,11 @@ import static br.ufpb.dcx.apps4society.meuguiapbapi.util.UserRequestUtil.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@Slf4j
 public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus201_whenDataIsValidTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(1);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(1);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -29,7 +26,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -38,13 +35,13 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .body("token", notNullValue())
                 .extract()
                 .body()
-                .as(AuthenticationResponse.class);
+                .as(AuthenticationResponseData.class);
     }
 
     @Test
     void register_shouldReturnStatus400_whenEmailAlreadyRegisteredTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(2);
-        AuthenticationResponse auth = userRequestUtil.register(requestBody);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(2);
+        AuthenticationResponseData auth = userRequestUtil.register(requestBody);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -61,7 +58,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenEmailIsInvalidTest() {
-        RegisterForm mockRequest = mockAuthentication.mockRequest(3);
+        RegisterRequestData mockRequest = authenticationTestHelper.mockRequest(3);
         mockRequest.setEmail("");
 
         Response response = given()
@@ -71,7 +68,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -81,7 +78,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenPasswordIsInvalidTest() {
-        RegisterForm mockRequest = mockAuthentication.mockRequest(4);
+        RegisterRequestData mockRequest = authenticationTestHelper.mockRequest(4);
         mockRequest.setPassword("");
 
         Response response = given()
@@ -91,7 +88,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -101,7 +98,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenFirstNameIsInvalidTest() {
-        RegisterForm mockRequest = mockAuthentication.mockRequest(5);
+        RegisterRequestData mockRequest = authenticationTestHelper.mockRequest(5);
         mockRequest.setFirstName("");
 
         Response response = given()
@@ -111,7 +108,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -121,7 +118,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenLastNameIsInvalidTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(6);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(6);
         requestBody.setLastName("");
 
         Response response = given()
@@ -131,7 +128,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -141,7 +138,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenEmailIsMissingTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(7);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(7);
         requestBody.setEmail(null);
 
         Response response = given()
@@ -151,7 +148,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -161,7 +158,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenPasswordIsMissingTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(8);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(8);
         requestBody.setPassword(null);
 
         Response response = given()
@@ -171,7 +168,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -181,7 +178,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenFirstNameIsMissingTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(9);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(9);
         requestBody.setFirstName(null);
 
         Response response = given()
@@ -191,7 +188,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -201,7 +198,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenLastNameIsMissingTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(10);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(10);
         requestBody.setLastName(null);
 
         Response response = given()
@@ -211,7 +208,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponse.class).getToken());
+            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -221,10 +218,10 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn200_whenUserExistTest() {
-        RegisterForm mockRequest = mockAuthentication.mockRequest(11);
-        AuthenticationResponse auth = userRequestUtil.register(mockRequest);
+        RegisterRequestData mockRequest = authenticationTestHelper.mockRequest(11);
+        AuthenticationResponseData auth = userRequestUtil.register(mockRequest);
 
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
@@ -241,7 +238,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn403_whenUserNotExistTest() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
 
         given()
                 .contentType(ContentType.JSON)
@@ -255,7 +252,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsInvalidTest() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         requestBody.setEmail("");
 
         given()
@@ -270,7 +267,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsInvalidTest() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         requestBody.setPassword("");
 
         given()
@@ -285,7 +282,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsMissingTest() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         requestBody.setEmail(null);
 
         given()
@@ -300,7 +297,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsMissingTest() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         requestBody.setPassword(null);
 
         given()
@@ -314,7 +311,7 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordLengthIsLessThan8Test() {
-        AuthenticationForm requestBody = mockAuthentication.mockAuthentication();
+        AuthenticationRequestData requestBody = authenticationTestHelper.mockAuthentication();
         requestBody.setPassword("1234567");
 
         given()
@@ -329,8 +326,8 @@ public class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturnStatus204_whenTokenIsValidTest() {
-        RegisterForm requestBody = mockAuthentication.mockRequest(12);
-        AuthenticationResponse auth = userRequestUtil.register(requestBody);
+        RegisterRequestData requestBody = authenticationTestHelper.mockRequest(12);
+        AuthenticationResponseData auth = userRequestUtil.register(requestBody);
 
         given()
                 .header("Authorization", "Bearer " + auth.getToken())

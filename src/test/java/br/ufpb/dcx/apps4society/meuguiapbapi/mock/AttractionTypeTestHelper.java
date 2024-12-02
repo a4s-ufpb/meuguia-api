@@ -1,14 +1,14 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionTypeForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
 
-public class MockAttractionType {
-    private static MockAttractionType instance;
+public class AttractionTypeTestHelper {
+    private static AttractionTypeTestHelper instance;
 
-    public static MockAttractionType getInstance() {
+    public static AttractionTypeTestHelper getInstance() {
         if (instance == null) {
-            instance = new MockAttractionType();
+            instance = new AttractionTypeTestHelper();
         }
         return instance;
     }
@@ -21,8 +21,8 @@ public class MockAttractionType {
                 .build();
     }
 
-    public AttractionTypeForm mockRequest(Integer num) {
-        return AttractionTypeForm.builder()
+    public AttractionTypeRequestData mockRequest(Integer num) {
+        return AttractionTypeRequestData.builder()
                 .name("mock Cultural"+num)
                 .description("Turismo cultural, visando pontos históricos")
                 .build();

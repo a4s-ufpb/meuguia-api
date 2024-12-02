@@ -3,7 +3,7 @@ app:
   name: ^project.name^
 
 server:
-  port: ${TEST_SERVER_PORT}
+  port: ${API_PORT}
 
 spring:
   test:
@@ -18,8 +18,6 @@ spring:
     jwt:
       secret-key: ${JWT_SECRET}
       expiration: ${JWT_EXPIRATION}
-  profiles:
-    default: ${TEST_PROFILE}
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb

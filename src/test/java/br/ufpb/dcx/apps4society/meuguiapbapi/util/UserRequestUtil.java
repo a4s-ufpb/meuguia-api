@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationForm;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.AuthenticationResponse;
-import br.ufpb.dcx.apps4society.meuguiapbapi.auth.dto.RegisterForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 
@@ -22,7 +22,7 @@ public class UserRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public AuthenticationResponse register(RegisterForm bodyRequest) {
+    public AuthenticationResponseData register(RegisterRequestData bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)
@@ -32,10 +32,10 @@ public class UserRequestUtil extends RequestUtil {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(AuthenticationResponse.class);
+                .as(AuthenticationResponseData.class);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationForm bodyRequest) {
+    public AuthenticationResponseData authenticate(AuthenticationRequestData bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)
@@ -45,7 +45,7 @@ public class UserRequestUtil extends RequestUtil {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(AuthenticationResponse.class);
+                .as(AuthenticationResponseData.class);
     }
 
     public void delete(String token) {

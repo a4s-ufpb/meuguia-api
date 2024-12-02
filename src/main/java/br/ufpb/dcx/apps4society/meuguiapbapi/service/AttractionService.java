@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.AttractionForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +31,26 @@ public class AttractionService {
         this.turistAttractionRepository = turistAttractionRepository;
     }
 
-    public Attraction create(AttractionForm obj) {
+    public Attraction create(AttractionRequestData obj) {
         validateFields(obj);
 
         Attraction attraction = Attraction.builder()
                 .name(obj.getName())
                 .description(obj.getDescription())
-                .map_link(obj.getMap_link())
+                .mapLink(obj.getMapLink())
                 .city(obj.getCity())
                 .state(obj.getState())
-                .image_link(obj.getImage_link())
-                .fonte(obj.getFonte())
+                .imageLink(obj.getImageLink())
+                .infoSource(obj.getInfoSource())
                 .segmentations(obj.getSegmentations())
-                .attractionTypes(obj.getAttractionTypes())
+                .attractionType(obj.getAttractionTypes())
                 .moreInfoLinkList(obj.getMoreInfoLinkList())
                 .build();
 
         return turistAttractionRepository.save(attraction);
     }
 
-    private void validateFields(AttractionForm obj) {
+    private void validateFields(AttractionRequestData obj) {
         if (!this.attractionTypeService.existsById(obj.getAttractionTypes().getId())) {
             throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionTypes().getId());
         }
@@ -102,17 +102,17 @@ public class AttractionService {
         turistAttractionRepository.deleteById(id);
     }
 
-    public Attraction update(Long id, AttractionForm obj) {
+    public Attraction update(Long id, AttractionRequestData obj) {
         validateFields(obj);
 
         Attraction attraction = findById(id);
         attraction.setName(obj.getName());
         attraction.setDescription(obj.getDescription());
-        attraction.setMap_link(obj.getMap_link());
+        attraction.setMapLink(obj.getMapLink());
         attraction.setCity(obj.getCity());
         attraction.setState(obj.getState());
-        attraction.setImage_link(obj.getImage_link());
-        attraction.setFonte(obj.getFonte());
+        attraction.setImageLink(obj.getImageLink());
+        attraction.setInfoSource(obj.getInfoSource());
         return turistAttractionRepository.save(attraction);
     }
 }

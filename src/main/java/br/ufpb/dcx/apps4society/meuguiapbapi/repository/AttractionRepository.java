@@ -16,7 +16,7 @@ public interface AttractionRepository extends JpaRepository<Attraction, Long> {
     @Query("SELECT obj FROM Attraction obj WHERE obj.city = :city")
     List<Attraction> findAllByCity(@Param(value = "city") String city);
 
-    @Query("SELECT a FROM Attraction a JOIN a.attractionTypes s WHERE s.name = :attractionTypesName")
+    @Query("SELECT a FROM Attraction a JOIN a.attractionType s WHERE s.name = :attractionTypesName")
     List<Attraction> findAllByType(@Param(value = "attractionTypesName") String attractionTypes);
 
     @Query("SELECT a FROM Attraction a JOIN a.segmentations s WHERE s.name = :segmentationName")

@@ -1,14 +1,14 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dtos.MoreInfoLinkForm;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
 
-public class MockMoreInfoLink {
-    private static MockMoreInfoLink instance;
+public class MoreInfoLinkTestHelper {
+    private static MoreInfoLinkTestHelper instance;
 
-    public static MockMoreInfoLink getInstance(){
+    public static MoreInfoLinkTestHelper getInstance(){
         if (instance == null) {
-            instance = new MockMoreInfoLink();
+            instance = new MoreInfoLinkTestHelper();
         }
         return instance;
     }
@@ -21,8 +21,8 @@ public class MockMoreInfoLink {
                 .build();
     }
 
-    public MoreInfoLinkForm mockRequest(Integer num) {
-        return MoreInfoLinkForm.builder()
+    public MoreInfoLinkRequestData mockRequest(Integer num) {
+        return MoreInfoLinkRequestData.builder()
                 .link("https://www.mock-link"+num+".com")
                 .description("description")
                 .build();
