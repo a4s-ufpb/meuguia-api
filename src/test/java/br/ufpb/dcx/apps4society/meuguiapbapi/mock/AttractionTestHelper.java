@@ -7,12 +7,12 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
 
 import java.util.List;
 
-public class MockAttraction {
-    private static MockAttraction instance;
+public class AttractionTestHelper {
+    private static AttractionTestHelper instance;
 
-    public static MockAttraction getInstance() {
+    public static AttractionTestHelper getInstance() {
         if (instance == null) {
-            instance = new MockAttraction();
+            instance = new AttractionTestHelper();
         }
         return instance;
     }

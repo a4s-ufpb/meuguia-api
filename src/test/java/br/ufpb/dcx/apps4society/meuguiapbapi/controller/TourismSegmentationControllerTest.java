@@ -5,7 +5,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockTouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TouristSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.TourismSegmentationRequestUtil;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -19,13 +19,13 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTests {
-    private final MockTouristSegmentation mockTouristSegmentation = new MockTouristSegmentation();
+    private final TouristSegmentationTestHelper touristSegmentationTestHelper = new TouristSegmentationTestHelper();
     private final TourismSegmentationRequestUtil requestUtil = new TourismSegmentationRequestUtil();
     private String token;
 
     @BeforeEach
     void setup(){
-        RegisterRequestData request = mockAuthentication.mockRequest(60);
+        RegisterRequestData request = authenticationTestHelper.mockRequest(60);
         AuthenticationResponseData response = userRequestUtil.register(request);
         token = response.getToken();
     }
@@ -37,7 +37,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn201_whenTourismSegmentationDataIsValidTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(1);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(1);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -62,7 +62,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn403_whenUserIsNotAuthenticatedTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(2);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(2);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -81,7 +81,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn401_whenTokenIsNotValidTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(3);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(3);
 
         Response response = given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
@@ -101,7 +101,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsInvalidTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(4);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(4);
         requestBody.setName("");
 
         Response response = given()
@@ -122,7 +122,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsNullTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(5);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(5);
         requestBody.setName(null);
 
         Response response = given()
@@ -143,7 +143,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationDescriptionNullTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(7);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(7);
         requestBody.setDescription(null);
 
         Response response = given()
@@ -164,7 +164,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void findById_shouldReturn200_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(8);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(8);
         TourismSegmentation segmentation = requestUtil.post(requestBody, token);
 
         Response response = given()
@@ -197,8 +197,8 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void findAll_shouldReturn200and2Items_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData request1 = mockTouristSegmentation.mockRequest(9);
-        TourismSegmentationRequestData request2 = mockTouristSegmentation.mockRequest(10);
+        TourismSegmentationRequestData request1 = touristSegmentationTestHelper.mockRequest(9);
+        TourismSegmentationRequestData request2 = touristSegmentationTestHelper.mockRequest(10);
 
         TourismSegmentation segmentation1 = requestUtil.post(request1, token);
         TourismSegmentation segmentation2 = requestUtil.post(request2, token);
@@ -235,7 +235,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn204_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(11);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(11);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
@@ -249,7 +249,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn403_whenUserIsNotAuthenticated() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(12);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(12);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
@@ -265,7 +265,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn401_whenTokenIsInvalidTest() {
-        TourismSegmentationRequestData requestBody = mockTouristSegmentation.mockRequest(13);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(13);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()

@@ -6,10 +6,10 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.*;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockMoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockTouristSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TouristSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
@@ -18,8 +18,6 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -31,10 +29,10 @@ import static org.hamcrest.Matchers.*;
 class AttractionControllerTest extends MeuguiaApiApplicationTests {
     private final Logger log = LoggerFactory.getLogger(AttractionControllerTest.class);
 
-    private final MockAttractionType mockAttractionType = MockAttractionType.getInstance();
-    private final MockMoreInfoLink mockMoreInfoLink = MockMoreInfoLink.getInstance();
-    private final MockTouristSegmentation mockTouristSegmentation = MockTouristSegmentation.getInstance();
-    private final MockAttraction mockAttraction = MockAttraction.getInstance();
+    private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
+    private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
+    private final TouristSegmentationTestHelper touristSegmentationTestHelper = TouristSegmentationTestHelper.getInstance();
+    private final AttractionTestHelper attractionTestHelper = AttractionTestHelper.getInstance();
 
     private final TourismSegmentationRequestUtil tourismSegmentationRequestUtil = TourismSegmentationRequestUtil.getInstance();
     private final AttractionTypeRequestUtil attractionTypeRequestUtil = AttractionTypeRequestUtil.getInstance();
@@ -45,14 +43,11 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     private AttractionType attractionType;
     private MoreInfoLink moreInfoLink;
 
-    @Autowired
-    private Environment env;
-
     private String token;
 
     @BeforeAll
     void setUp() {
-        RegisterRequestData registerRequestData = mockAuthentication.mockRequest(90);
+        RegisterRequestData registerRequestData = authenticationTestHelper.mockRequest(90);
         AuthenticationResponseData response = userRequestUtil.register(registerRequestData);
         token = response.getToken();
     }
@@ -64,9 +59,9 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeEach
     void setUpEach() {
-        TourismSegmentationRequestData segmentationRequest = mockTouristSegmentation.mockRequest(90);
-        AttractionTypeRequestData attractionTypeRequest = mockAttractionType.mockRequest(90);
-        MoreInfoLinkRequestData moreInfoLinkRequest = mockMoreInfoLink.mockRequest(90);
+        TourismSegmentationRequestData segmentationRequest = touristSegmentationTestHelper.mockRequest(90);
+        AttractionTypeRequestData attractionTypeRequest = attractionTypeTestHelper.mockRequest(90);
+        MoreInfoLinkRequestData moreInfoLinkRequest = moreInfoLinkTestHelper.mockRequest(90);
 
         segmentation = tourismSegmentationRequestUtil.post(segmentationRequest, token);
         attractionType = attractionTypeRequestUtil.post(attractionTypeRequest, token);
@@ -83,7 +78,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn201_whenIsAValidAttractionTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(1, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(1, segmentation, moreInfoLink, attractionType);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -131,7 +126,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn400_whenImportantFieldsIsEmptyTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(2, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(2, segmentation, moreInfoLink, attractionType);
         requestBody.setName("");
         requestBody.setCity("");
         requestBody.setState("");
@@ -154,8 +149,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn404_whenAttractionTypeNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(3, segmentation, moreInfoLink, attractionType);
-        requestBody.setAttractionTypes(mockAttractionType.mockEntity(INVALID_ID.intValue()));
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(3, segmentation, moreInfoLink, attractionType);
+        requestBody.setAttractionTypes(attractionTypeTestHelper.mockEntity(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -175,8 +170,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn404_whenSegmentationNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(4, segmentation, moreInfoLink, attractionType);
-        requestBody.setSegmentations(List.of(mockTouristSegmentation.mockEntity(INVALID_ID.intValue())));
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(4, segmentation, moreInfoLink, attractionType);
+        requestBody.setSegmentations(List.of(touristSegmentationTestHelper.mockEntity(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -196,8 +191,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn404_whenMoreInfoLinkNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(5, segmentation, moreInfoLink, attractionType);
-        requestBody.setMoreInfoLinkList(List.of(mockMoreInfoLink.mockEntity(INVALID_ID.intValue())));
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(5, segmentation, moreInfoLink, attractionType);
+        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.mockEntity(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -217,7 +212,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn401_whenTokenInvalidTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(6, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(6, segmentation, moreInfoLink, attractionType);
 
         Response response = given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
@@ -237,7 +232,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void crete_shouldReturn403_whenUserNotAuthenticatedTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(7, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(7, segmentation, moreInfoLink, attractionType);
 
         Response response = given()
                 .contentType("application/json")
@@ -256,7 +251,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn200_whenIsAValidAttractionTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(8, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(8, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
         requestBody.setName("Teatro Municipal de João Pessoa");
@@ -313,7 +308,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn400_whenImportantFieldsIsEmptyTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(9, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(9, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
         requestBody.setName("");
@@ -335,10 +330,10 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn404_whenAttractionTypeNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(10, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(10, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setAttractionTypes(mockAttractionType.mockEntity(INVALID_ID.intValue()));
+        requestBody.setAttractionTypes(attractionTypeTestHelper.mockEntity(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -357,10 +352,10 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn404_whenSegmentationNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(11, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(11, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setSegmentations(List.of(mockTouristSegmentation.mockEntity(INVALID_ID.intValue())));
+        requestBody.setSegmentations(List.of(touristSegmentationTestHelper.mockEntity(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -378,10 +373,10 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn404_whenMoreInfoLinkNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(12, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(12, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setMoreInfoLinkList(List.of(mockMoreInfoLink.mockEntity(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.mockEntity(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -399,7 +394,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn404_whenAttractionNotExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(13, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(13, segmentation, moreInfoLink, attractionType);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -419,7 +414,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn401_whenTokenInvalidTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(14, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(14, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
         attraction.setName("Updated Name 1");
 
@@ -440,7 +435,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void update_shouldReturn403_whenTokenIsMissing() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(15, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(15, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
         attraction.setName("Updated Name 2");
 
@@ -460,7 +455,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturn204_whenAuthenticatedTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(16, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(16, segmentation, moreInfoLink, attractionType);
         Attraction response = attractionRequestUtil.post(requestBody, token);
 
         given()
@@ -510,7 +505,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByName_shouldReturn200_whenAttractionWithNameExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(18, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(18, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()
@@ -537,7 +532,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByName_shouldReturn200AndEmptyList_whenAttractionWithNameNoExistsTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(19, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(19, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()
@@ -555,14 +550,14 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByName_shouldReturn200And2Items_whenExists2AttractionsWithNameTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(20, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(20, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(14), token);
-        AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(11), token);
-        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(12), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(touristSegmentationTestHelper.mockRequest(14), token);
+        AttractionType attractionType2 = attractionTypeRequestUtil.post(attractionTypeTestHelper.mockRequest(11), token);
+        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(moreInfoLinkTestHelper.mockRequest(12), token);
 
-        requestBody = mockAttraction.mockRequest(21, segmentation2, moreInfoLink2, attractionType2);
+        requestBody = attractionTestHelper.mockRequest(21, segmentation2, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()
@@ -596,7 +591,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByCity_shouldReturn200_whenAttractionExistsInCityTest() {
-        AttractionRequestData request = mockAttraction.mockRequest(22, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData request = attractionTestHelper.mockRequest(22, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(request, token);
 
         Response response = given()
@@ -623,7 +618,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByCity_shouldReturn200AndEmptyList_whenAttractionNoExistsInCityTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(23, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(23, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()
@@ -653,14 +648,14 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findByCity_shouldReturn200And2Items_when2AttractionsExistsInCityTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(24, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(24, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(mockTouristSegmentation.mockRequest(15), token);
-        AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(12), token);
-        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(13), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(touristSegmentationTestHelper.mockRequest(15), token);
+        AttractionType attractionType2 = attractionTypeRequestUtil.post(attractionTypeTestHelper.mockRequest(12), token);
+        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(moreInfoLinkTestHelper.mockRequest(13), token);
 
-        requestBody = mockAttraction.mockRequest(25, segmentation2, moreInfoLink2, attractionType2);
+        requestBody = attractionTestHelper.mockRequest(25, segmentation2, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()
@@ -693,7 +688,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findBySegmentation_shouldReturn200_whenAttractionExistsInSegmentationTest() {
-        AttractionRequestData request = mockAttraction.mockRequest(26, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData request = attractionTestHelper.mockRequest(26, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(request, token);
 
         Response response = given()
@@ -720,10 +715,10 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findBySegmentation_shouldReturn200AndEmptyList_whenAttractionNoExistsInSegmentationTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(27, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(27, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentationRequestData segmentationRequest = mockTouristSegmentation.mockRequest(16);
+        TourismSegmentationRequestData segmentationRequest = touristSegmentationTestHelper.mockRequest(16);
         TourismSegmentation segmentation1 = tourismSegmentationRequestUtil.post(segmentationRequest, token);
 
         Response response = given()
@@ -742,13 +737,13 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void findBySegmentation_shouldReturn200And2Items_when2AttractionsExistsInSegmentationTest() {
-        AttractionRequestData requestBody = mockAttraction.mockRequest(28, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody = attractionTestHelper.mockRequest(28, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        AttractionType attractionType2 = attractionTypeRequestUtil.post(mockAttractionType.mockRequest(13), token);
-        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(mockMoreInfoLink.mockRequest(14), token);
+        AttractionType attractionType2 = attractionTypeRequestUtil.post(attractionTypeTestHelper.mockRequest(13), token);
+        MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(moreInfoLinkTestHelper.mockRequest(14), token);
 
-        requestBody = mockAttraction.mockRequest(29, segmentation, moreInfoLink2, attractionType2);
+        requestBody = attractionTestHelper.mockRequest(29, segmentation, moreInfoLink2, attractionType2);
         Attraction attraction2 = attractionRequestUtil.post(requestBody, token);
 
         Response response = given()

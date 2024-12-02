@@ -6,12 +6,12 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 
 import java.util.Random;
 
-public class MockAuthentication {
-    private static MockAuthentication instance;
+public class AuthenticationTestHelper {
+    private static AuthenticationTestHelper instance;
 
-    public static MockAuthentication getInstance() {
+    public static AuthenticationTestHelper getInstance() {
         if (instance == null) {
-            instance = new MockAuthentication();
+            instance = new AuthenticationTestHelper();
         }
         return instance;
     }

@@ -3,12 +3,12 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
 
-public class MockAttractionType {
-    private static MockAttractionType instance;
+public class AttractionTypeTestHelper {
+    private static AttractionTypeTestHelper instance;
 
-    public static MockAttractionType getInstance() {
+    public static AttractionTypeTestHelper getInstance() {
         if (instance == null) {
-            instance = new MockAttractionType();
+            instance = new AttractionTypeTestHelper();
         }
         return instance;
     }

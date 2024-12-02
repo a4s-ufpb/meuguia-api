@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MockAuthentication;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.UserRequestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -22,7 +22,7 @@ public class MeuguiaApiApplicationTests {
 	public final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyaWQiLCJuYW1lIjoiSm9obiBEb2UifQ.invalidsignature";
 	public final Long INVALID_ID = -1L;
 
-	public final MockAuthentication mockAuthentication = new MockAuthentication();
+	public final AuthenticationTestHelper authenticationTestHelper = new AuthenticationTestHelper();
 	public final UserRequestUtil userRequestUtil = new UserRequestUtil();
 
     public static int port;
