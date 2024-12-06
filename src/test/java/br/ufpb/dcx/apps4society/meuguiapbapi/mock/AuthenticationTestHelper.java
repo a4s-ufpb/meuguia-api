@@ -4,8 +4,6 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 
-import java.util.Random;
-
 public class AuthenticationTestHelper {
     private static AuthenticationTestHelper instance;
 
@@ -16,28 +14,28 @@ public class AuthenticationTestHelper {
         return instance;
     }
 
-    public User mockEntity(Integer num) {
+    public User getUser(Integer mockId) {
         return User.builder()
-                .id(new Random().nextLong(1,100))
-                .firstName("mock User"+num)
+                .id(mockId.longValue())
+                .firstName("test user"+mockId)
                 .lastName("last name")
-                .email("mock.email@email.com")
+                .email("test@test.com")
                 .password("12345678")
                 .build();
     }
 
-    public RegisterRequestData mockRequest(Integer num) {
+    public RegisterRequestData getRegisterRequestData(Integer num) {
         return RegisterRequestData.builder()
                 .firstName("mock User"+num)
                 .lastName("last name")
-                .email("mock.email@email.com")
+                .email("test@test.com")
                 .password("12345678")
                 .build();
     }
 
-    public AuthenticationRequestData mockAuthentication() {
+    public AuthenticationRequestData getAuthenticationRequestData() {
         return AuthenticationRequestData.builder()
-                .email("mock.email@email.com")
+                .email("test@test.com")
                 .password("12345678")
                 .build();
     }

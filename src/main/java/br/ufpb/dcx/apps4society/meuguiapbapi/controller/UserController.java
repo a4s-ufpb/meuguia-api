@@ -24,9 +24,6 @@ public class UserController {
         this.userService = userService;
     }
 
-// TODO: Update user, delete user, get user information
-// TODO: Update user, delete user, get user information for admin
-
     @GetMapping
     public ResponseEntity<UserDTO> getAuthenticatedUser(Authentication authentication) {
         User logedUser = (User) authentication.getPrincipal();

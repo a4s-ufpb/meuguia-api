@@ -4,12 +4,14 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,16 +38,10 @@ public class AuthenticationService {
 
     public AuthenticationResponseData authenticate(AuthenticationRequestData request) {
         log.debug("Authenticating user");
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        UsernamePasswordAuthenticationToken user = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+        Authentication auth = authenticationManager.authenticate(user);
         log.debug("Authenticated");
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        var token = jwtService.buildToken(user);
+        var token = jwtService.buildToken((User) auth.getPrincipal());
         log.debug("Token generated");
 
         return AuthenticationResponseData.builder()
@@ -53,18 +49,19 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponseData register(RegisterRequestData registerRequestData) {
-        User user = User.builder()
+    public UserDTO register(RegisterRequestData registerRequestData) {
+        User registedUser = userRepository.save(User.builder()
                 .email(registerRequestData.getEmail())
                 .password(passwordEncoder.encode(registerRequestData.getPassword()))
                 .firstName(registerRequestData.getFirstName())
                 .lastName(registerRequestData.getLastName())
-                .build();
-        userRepository.save(user);
+                .build());
 
-        var jwtToken = jwtService.buildToken(user);
-        return AuthenticationResponseData.builder()
-                .token(jwtToken)
+        return UserDTO.builder()
+                .id(registedUser.getId())
+                .email(registedUser.getEmail())
+                .firstName(registedUser.getFirstName())
+                .lastName(registedUser.getLastName())
                 .build();
     }
 }

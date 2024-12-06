@@ -18,7 +18,7 @@ import static br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUt
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
+class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
     private final AttractionTypeTestHelper attractionTypeTestHelper = new AttractionTypeTestHelper();
     private final AttractionTypeRequestUtil requestUtil = new AttractionTypeRequestUtil();
 
@@ -26,8 +26,8 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUP() {
-        RegisterRequestData registerRequestData = authenticationTestHelper.mockRequest(80);
-        AuthenticationResponseData authenticationResponseData = userRequestUtil.register(registerRequestData);
+        RegisterRequestData registerRequestData = authenticationTestHelper.getRegisterRequestData(80);
+        AuthenticationResponseData authenticationResponseData = userRequestUtil.registerAndAuthenticate(registerRequestData);
         token = authenticationResponseData.getToken();
     }
 
@@ -38,7 +38,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn201_whenAttractionTypeIsValidAndUserIsAuthenticatedTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(1);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(1);
 
         Response response = given()
                 .header("Authorization", "Bearer "+ token)
@@ -52,7 +52,6 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
                 .body("name", equalTo(requestBody.getName()))
@@ -62,7 +61,7 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void create_shouldReturn401_whenTokenInvalidTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(2);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(2);
 
         Response response = given()
                 .header("Authorization", "Bearer "+ INVALID_TOKEN)
@@ -76,13 +75,12 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     void create_shouldReturn401_whenUserNotAuthenticatedTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(3);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(3);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -95,13 +93,12 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
     void create_shouldReturn400_whenAttractionTypeNameIsMissingTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(4);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(4);
         requestBody.setName(null);
 
         Response response = given()
@@ -116,13 +113,12 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void create_shouldReturn400_whenAttractionTypeDescriptionIsMissingTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(5);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(5);
         requestBody.setDescription(null);
 
         Response response = given()
@@ -137,14 +133,13 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
 
     @Test
     void create_shouldReturn400_whenAttractionTypeNameIsInvalidTest() {
-        AttractionTypeRequestData requestBody = attractionTypeTestHelper.mockRequest(4);
+        AttractionTypeRequestData requestBody = attractionTypeTestHelper.createAttractionTypeRequestData(4);
         requestBody.setName("");
 
         Response response = given()
@@ -159,14 +154,13 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void findAll_shouldReturn200AndListWith2Items_whenAttractionTypeExistsTest() {
-        AttractionTypeRequestData requestBody1 = attractionTypeTestHelper.mockRequest(6);
-        AttractionTypeRequestData requestBody2 = attractionTypeTestHelper.mockRequest(7);
+        AttractionTypeRequestData requestBody1 = attractionTypeTestHelper.createAttractionTypeRequestData(6);
+        AttractionTypeRequestData requestBody2 = attractionTypeTestHelper.createAttractionTypeRequestData(7);
 
         AttractionType attractionType1 = requestUtil.post(requestBody1, token);
         AttractionType attractionType2 = requestUtil.post(requestBody2, token);
@@ -180,7 +174,6 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         requestUtil.delete(attractionType2, token);
 
         response.then()
-                .log().body()
                 .body("size()", is(2))
                 .body("id.flatten()", hasItems(attractionType1.getId().intValue(), attractionType2.getId().intValue()))
                 .body("name.flatten()", hasItems(attractionType1.getName(), attractionType2.getName()))
@@ -195,14 +188,13 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .when()
                 .get(PATH_ATTRACTION_TYPE)
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
 
     @Test
     void delete_shouldReturn204_whenAttractionTypeIsDeletedTest() {
-        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(8);
+        AttractionTypeRequestData request = attractionTypeTestHelper.createAttractionTypeRequestData(8);
         AttractionType response = requestUtil.post(request, token);
 
         given()
@@ -211,13 +203,12 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .when()
                 .delete(PATH_ATTRACTION_TYPE+"/"+response.getId())
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     void delete_shouldReturn403_whenTokenIsMissingTest() {
-        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(9);
+        AttractionTypeRequestData request = attractionTypeTestHelper.createAttractionTypeRequestData(9);
         AttractionType attractionType = requestUtil.post(request, token);
 
         Response response = given()
@@ -228,13 +219,12 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         requestUtil.delete(attractionType, token);
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
     void delete_shouldReturn401_whenTokenInvalidTest() {
-        AttractionTypeRequestData request = attractionTypeTestHelper.mockRequest(10);
+        AttractionTypeRequestData request = attractionTypeTestHelper.createAttractionTypeRequestData(10);
         AttractionType attractionType = requestUtil.post(request, token);
 
         Response response = given()
@@ -246,7 +236,6 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
         requestUtil.delete(attractionType, token);
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -258,7 +247,6 @@ public class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .when()
                 .delete(PATH_ATTRACTION_TYPE+"/"+INVALID_ID)
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

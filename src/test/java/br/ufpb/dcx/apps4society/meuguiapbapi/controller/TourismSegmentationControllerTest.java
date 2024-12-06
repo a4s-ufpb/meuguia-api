@@ -18,15 +18,15 @@ import static br.ufpb.dcx.apps4society.meuguiapbapi.util.TourismSegmentationRequ
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTests {
+class TourismSegmentationControllerTest extends MeuguiaApiApplicationTests {
     private final TouristSegmentationTestHelper touristSegmentationTestHelper = new TouristSegmentationTestHelper();
     private final TourismSegmentationRequestUtil requestUtil = new TourismSegmentationRequestUtil();
     private String token;
 
     @BeforeEach
     void setup(){
-        RegisterRequestData request = authenticationTestHelper.mockRequest(60);
-        AuthenticationResponseData response = userRequestUtil.register(request);
+        RegisterRequestData request = authenticationTestHelper.getRegisterRequestData(60);
+        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(request);
         token = response.getToken();
     }
 
@@ -37,7 +37,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn201_whenTourismSegmentationDataIsValidTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(1);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(1);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -51,7 +51,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
                 .body("name", equalTo(requestBody.getName()))
@@ -62,7 +61,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void create_shouldReturn403_whenUserIsNotAuthenticatedTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(2);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(2);
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -75,13 +74,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
     void create_shouldReturn401_whenTokenIsNotValidTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(3);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(3);
 
         Response response = given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
@@ -95,13 +93,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsInvalidTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(4);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(4);
         requestBody.setName("");
 
         Response response = given()
@@ -116,13 +113,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationNameIsNullTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(5);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(5);
         requestBody.setName(null);
 
         Response response = given()
@@ -137,13 +133,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void create_shouldReturn400_whenTourismSegmentationDescriptionNullTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(7);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(7);
         requestBody.setDescription(null);
 
         Response response = given()
@@ -158,13 +153,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         }
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void findById_shouldReturn200_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(8);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(8);
         TourismSegmentation segmentation = requestUtil.post(requestBody, token);
 
         Response response = given()
@@ -175,7 +169,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         requestUtil.delete(segmentation, token);
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(segmentation.getId().intValue()))
                 .body("name", equalTo(segmentation.getName()))
@@ -191,14 +184,13 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .get(PATH_TOURISM_SEGMENTATION + "/" + INVALID_ID)
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void findAll_shouldReturn200and2Items_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData request1 = touristSegmentationTestHelper.mockRequest(9);
-        TourismSegmentationRequestData request2 = touristSegmentationTestHelper.mockRequest(10);
+        TourismSegmentationRequestData request1 = touristSegmentationTestHelper.createTourismSegmentationRequestData(9);
+        TourismSegmentationRequestData request2 = touristSegmentationTestHelper.createTourismSegmentationRequestData(10);
 
         TourismSegmentation segmentation1 = requestUtil.post(request1, token);
         TourismSegmentation segmentation2 = requestUtil.post(request2, token);
@@ -212,7 +204,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
         requestUtil.delete(segmentation2, token);
 
         response.then()
-                .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2))
                 .body("id.flatten()", hasItems(segmentation1.getId().intValue(), segmentation2.getId().intValue()))
@@ -227,7 +218,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .get(PATH_TOURISM_SEGMENTATION)
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
 
@@ -235,7 +225,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn204_whenTourismSegmentationExistsTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(11);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(11);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
@@ -243,13 +233,12 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .delete(PATH_TOURISM_SEGMENTATION + "/" + response.getId())
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     void delete_shouldReturn403_whenUserIsNotAuthenticated() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(12);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(12);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
@@ -257,7 +246,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .delete(PATH_TOURISM_SEGMENTATION + "/" + response.getId())
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.FORBIDDEN.value());
 
         requestUtil.delete(response, token);
@@ -265,7 +253,7 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
 
     @Test
     void delete_shouldReturn401_whenTokenIsInvalidTest() {
-        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.mockRequest(13);
+        TourismSegmentationRequestData requestBody = touristSegmentationTestHelper.createTourismSegmentationRequestData(13);
         TourismSegmentation response = requestUtil.post(requestBody, token);
 
         given()
@@ -274,7 +262,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .delete(PATH_TOURISM_SEGMENTATION + "/" + response.getId())
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
 
         requestUtil.delete(response, token);
@@ -287,7 +274,6 @@ public class TourismSegmentationControllerTest extends MeuguiaApiApplicationTest
                 .when()
                 .delete(PATH_TOURISM_SEGMENTATION + "/" + INVALID_ID)
                 .then()
-                .log().body()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

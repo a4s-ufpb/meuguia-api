@@ -1,8 +1,10 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 
@@ -22,7 +24,7 @@ public class UserRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public AuthenticationResponseData register(RegisterRequestData bodyRequest) {
+    public UserDTO register(RegisterRequestData bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)
@@ -32,20 +34,47 @@ public class UserRequestUtil extends RequestUtil {
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(AuthenticationResponseData.class);
+                .as(UserDTO.class);
     }
 
-    public AuthenticationResponseData authenticate(AuthenticationRequestData bodyRequest) {
-
+    public AuthenticationResponseData authenticate(User user) {
         return given()
                 .contentType(ContentType.JSON)
-                .body(bodyRequest)
+                .body(
+                        AuthenticationRequestData.builder()
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .build()
+                )
                 .when()
                 .post(PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(AuthenticationResponseData.class);
+    }
+
+    public AuthenticationResponseData registerAndAuthenticate(RegisterRequestData bodyRequest) {
+        register(bodyRequest);
+        return authenticate(User.builder()
+                .email(bodyRequest.getEmail())
+                .password(bodyRequest.getPassword())
+                .build());
+    }
+
+    public void delete(UserDTO userDTO) {
+        String token = authenticate(User.builder()
+                .email(userDTO.getEmail())
+                .password("12345678")
+                .build()).getToken();
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .when()
+                .delete(PATH_USER)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     public void delete(String token) {
