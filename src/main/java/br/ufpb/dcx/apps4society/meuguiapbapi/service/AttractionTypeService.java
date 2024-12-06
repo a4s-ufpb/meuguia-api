@@ -29,10 +29,10 @@ public class AttractionTypeService {
         return attractionTypeRepository.save(attractionType);
     }
 
-    public void findById(Long id) {
+    public AttractionType findById(Long id) {
         Optional<AttractionType> obj = attractionTypeRepository.findById(id);
-        obj.orElseThrow(() -> new ObjectNotFoundException(
-                "Objeto não encontrado! Id: " + id + ", Tipo: " + Attraction.class.getName()));
+        return obj.orElseThrow(() -> new ObjectNotFoundException(
+                "Objeto não encontrado! Id: " + id + ", Tipo: " + AttractionType.class.getName()));
     }
 
     public List<AttractionType> findAll() {

@@ -3,6 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -24,11 +25,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponseData> register(
+    public ResponseEntity<UserDTO> register(
             @RequestBody @Valid RegisterRequestData request
     ) {
         log.debug("Trying to register a new user");
-        AuthenticationResponseData responseBody = authenticationService.register(request);
+        UserDTO responseBody = authenticationService.register(request);
         log.debug("User registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }

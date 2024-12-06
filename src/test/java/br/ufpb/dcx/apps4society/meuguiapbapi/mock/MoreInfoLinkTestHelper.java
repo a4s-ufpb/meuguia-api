@@ -3,6 +3,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
 
+import java.util.List;
+
 public class MoreInfoLinkTestHelper {
     private static MoreInfoLinkTestHelper instance;
 
@@ -13,19 +15,27 @@ public class MoreInfoLinkTestHelper {
         return instance;
     }
 
-    public MoreInfoLink mockEntity(Integer num) {
+    public MoreInfoLink createMoreInfoLink(Integer id) {
         return MoreInfoLink.builder()
-                .id(num.longValue())
-                .link("https://www.mock-link"+num+".com")
+                .id(id.longValue())
+                .link("https://www.mock-link"+id+".com")
                 .description("description")
                 .build();
     }
 
-    public MoreInfoLinkRequestData mockRequest(Integer num) {
+    public MoreInfoLinkRequestData createMoreInfoLinkRequestData(Integer num) {
         return MoreInfoLinkRequestData.builder()
                 .link("https://www.mock-link"+num+".com")
                 .description("description")
                 .build();
 
+    }
+
+    public List<MoreInfoLink> getListOfMoreInfoLinks() {
+        return List.of(
+                createMoreInfoLink(1),
+                createMoreInfoLink(2),
+                createMoreInfoLink(3)
+        );
     }
 }
