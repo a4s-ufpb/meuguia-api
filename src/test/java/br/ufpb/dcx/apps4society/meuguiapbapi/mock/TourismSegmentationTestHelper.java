@@ -5,12 +5,12 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 
 import java.util.List;
 
-public class TouristSegmentationTestHelper {
-    private static TouristSegmentationTestHelper instance;
+public class TourismSegmentationTestHelper {
+    private static TourismSegmentationTestHelper instance;
 
-    public static TouristSegmentationTestHelper getInstance() {
+    public static TourismSegmentationTestHelper getInstance() {
         if (instance == null) {
-            instance = new TouristSegmentationTestHelper();
+            instance = new TourismSegmentationTestHelper();
         }
         return instance;
     }
