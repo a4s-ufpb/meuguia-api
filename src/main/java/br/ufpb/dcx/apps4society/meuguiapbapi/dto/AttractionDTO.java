@@ -8,7 +8,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import java.util.List;
 import java.util.Objects;
 
-public class TouristAttractionDTO {
+public class AttractionDTO {
 
     private Long id;
 
@@ -32,10 +32,10 @@ public class TouristAttractionDTO {
 
     private List<MoreInfoLink> moreInfoLinkList;
 
-    public TouristAttractionDTO() {
+    public AttractionDTO() {
     }
 
-    public TouristAttractionDTO(Attraction obj) {
+    public AttractionDTO(Attraction obj) {
         this.id = obj.getId();
         this.name = obj.getName();
         this.description = obj.getDescription();
@@ -49,7 +49,7 @@ public class TouristAttractionDTO {
         this.moreInfoLinkList = obj.getMoreInfoLinkList();
     }
 
-    public TouristAttractionDTO(Long id, String name, String description, String mapLink, String city, String state, String imageLink, String infoSource, List<TourismSegmentation> segmentations, AttractionType attractionTypes, List<MoreInfoLink> moreInfoLinkList) {
+    public AttractionDTO(Long id, String name, String description, String mapLink, String city, String state, String imageLink, String infoSource, List<TourismSegmentation> segmentations, AttractionType attractionTypes, List<MoreInfoLink> moreInfoLinkList) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -160,7 +160,7 @@ public class TouristAttractionDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TouristAttractionDTO that = (TouristAttractionDTO) o;
+        AttractionDTO that = (AttractionDTO) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(infoSource, that.infoSource) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionTypes, that.attractionTypes) && Objects.equals(moreInfoLinkList, that.moreInfoLinkList);
     }
 
@@ -255,8 +255,8 @@ public class TouristAttractionDTO {
             return this;
         }
 
-        public TouristAttractionDTO build() {
-            return new TouristAttractionDTO(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.infoSource, this.segmentations, this.attractionTypes, this.moreInfoLinkList);
+        public AttractionDTO build() {
+            return new AttractionDTO(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.infoSource, this.segmentations, this.attractionTypes, this.moreInfoLinkList);
         }
 
         public String toString() {
