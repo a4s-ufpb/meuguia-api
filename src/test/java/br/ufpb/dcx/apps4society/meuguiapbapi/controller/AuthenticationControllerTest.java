@@ -212,7 +212,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         RegisterRequestData mockRequest = authenticationTestHelper.getRegisterRequestData(11);
         AuthenticationResponseData auth = userRequestUtil.registerAndAuthenticate(mockRequest);
 
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData(11);
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
@@ -228,7 +228,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn403_whenUserNotExistTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
 
         given()
                 .contentType(ContentType.JSON)
@@ -241,7 +241,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsInvalidTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
         requestBody.setEmail("");
 
         given()
@@ -255,7 +255,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsInvalidTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
         requestBody.setPassword("");
 
         given()
@@ -269,7 +269,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsMissingTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
         requestBody.setEmail(null);
 
         given()
@@ -283,7 +283,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsMissingTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
         requestBody.setPassword(null);
 
         given()
@@ -297,7 +297,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn400_whenPasswordLengthIsLessThan8Test() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
         requestBody.setPassword("1234567");
 
         given()

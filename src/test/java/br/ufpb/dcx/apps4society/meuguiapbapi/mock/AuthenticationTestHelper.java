@@ -28,15 +28,19 @@ public class AuthenticationTestHelper {
         return RegisterRequestData.builder()
                 .firstName("mock User"+num)
                 .lastName("last name")
-                .email("test@test.com")
+                .email(num+"test@test.com")
                 .password("12345678")
                 .build();
     }
 
-    public AuthenticationRequestData getAuthenticationRequestData() {
+    public AuthenticationRequestData createAuthenticationRequestData(Integer num) {
         return AuthenticationRequestData.builder()
-                .email("test@test.com")
+                .email(num+"test@test.com")
                 .password("12345678")
                 .build();
+    }
+
+    public AuthenticationRequestData createAuthenticationRequestData() {
+        return createAuthenticationRequestData(1);
     }
 }

@@ -44,7 +44,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUserTest() {
-        AuthenticationRequestData requestData = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestData = authenticationTestHelper.createAuthenticationRequestData();
         when(authenticationManager.authenticate(any(Authentication.class))).thenAnswer(invocationOnMock -> {
             Authentication auth = invocationOnMock.getArgument(0);
             User user = User.builder().email((String) auth.getPrincipal()).password((String) auth.getCredentials()).build();
@@ -60,7 +60,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUser_InvalidCredentialsTest() {
-        AuthenticationRequestData requestData = authenticationTestHelper.getAuthenticationRequestData();
+        AuthenticationRequestData requestData = authenticationTestHelper.createAuthenticationRequestData();
         when(authenticationManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("Invalid credentials"));
 
         assertThrows(BadCredentialsException.class, () -> authenticationService.authenticate(requestData));
