@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
 
 import java.util.List;
@@ -42,6 +43,15 @@ public class AttractionTestHelper {
                 .build();
     }
 
+    public AttractionRequestData createAttractionRequestData(Integer num) {
+        return createAttractionRequestData(
+                num,
+                tourismSegmentationTestHelper.createTourismSegmentation(num),
+                moreInfoLinkTestHelper.createMoreInfoLink(num),
+                attractionTypeTestHelper.createAttractionType(num)
+        );
+    }
+
     public Attraction createAttraction(
             Integer num,
             TourismSegmentation segmentation,
@@ -78,5 +88,21 @@ public class AttractionTestHelper {
                 createAttraction(2, tourismSegmentationTestHelper.createTourismSegmentation(2), moreInfoLinkTestHelper.createMoreInfoLink(2), attractionTypeTestHelper.createAttractionType(2)),
                 createAttraction(3, tourismSegmentationTestHelper.createTourismSegmentation(3), moreInfoLinkTestHelper.createMoreInfoLink(3), attractionTypeTestHelper.createAttractionType(3))
         );
+    }
+
+    public AttractionDTO createAttractionDTO(Integer id) {
+        return AttractionDTO.builder()
+                .id(id.longValue())
+                .name("mock Teatro municipal " + id)
+                .description("Teatro municipal de joão pessoa")
+                .mapLink("https://mapa.com")
+                .city("João Pessoa")
+                .state("Paraíba (PB)")
+                .imageLink("https://imagem.com")
+                .infoSource("Fonte: https://fonte.com")
+                .segmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(id)))
+                .attractionTypes(attractionTypeTestHelper.createAttractionType(id))
+                .moreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(id)))
+                .build();
     }
 }

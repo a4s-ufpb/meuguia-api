@@ -48,10 +48,6 @@ public class AttractionTypeRequestData {
         return Objects.equals(name, that.name) && Objects.equals(description, that.description);
     }
 
-    protected boolean canEqual(final Object other) {
-        return other instanceof AttractionTypeRequestData;
-    }
-
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;

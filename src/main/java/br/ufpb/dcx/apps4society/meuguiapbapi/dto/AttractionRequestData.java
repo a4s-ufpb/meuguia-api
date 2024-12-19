@@ -32,7 +32,7 @@ public class AttractionRequestData {
     )
     private String state;
 
-    @NotEmpty(
+    @NotBlank(
             message = "Link da Imagem é obrigatório"
     )
     @Pattern(
