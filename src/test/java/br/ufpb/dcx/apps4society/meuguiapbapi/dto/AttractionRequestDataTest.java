@@ -45,8 +45,8 @@ class AttractionRequestDataTest {
         assertEquals("https://teste.com", result.getImageLink());
         assertEquals("Test", result.getInfoSource());
         assertEquals(segmentations, result.getSegmentations());
-        assertEquals(attractionType, result.getAttractionTypes());
-        assertEquals(moreInfoLinks, result.getMoreInfoLinkList());
+        assertEquals(attractionType, result.getAttractionType());
+        assertEquals(moreInfoLinks, result.getMoreInfoLinks());
     }
 
     @Test

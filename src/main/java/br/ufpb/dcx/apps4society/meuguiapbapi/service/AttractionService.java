@@ -43,16 +43,16 @@ public class AttractionService {
                 .imageLink(obj.getImageLink())
                 .infoSource(obj.getInfoSource())
                 .segmentations(obj.getSegmentations())
-                .attractionType(obj.getAttractionTypes())
-                .moreInfoLinkList(obj.getMoreInfoLinkList())
+                .attractionType(obj.getAttractionType())
+                .moreInfoLinkList(obj.getMoreInfoLinks())
                 .build();
 
         return turistAttractionRepository.save(attraction);
     }
 
     private void validateFields(AttractionRequestData obj) {
-        if (!this.attractionTypeService.existsById(obj.getAttractionTypes().getId())) {
-            throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionTypes().getId());
+        if (!this.attractionTypeService.existsById(obj.getAttractionType().getId())) {
+            throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionType().getId());
         }
 
         for (TourismSegmentation segmentation : obj.getSegmentations()) {
@@ -61,7 +61,7 @@ public class AttractionService {
             }
         }
 
-        for (MoreInfoLink moreInfoLink : obj.getMoreInfoLinkList()) {
+        for (MoreInfoLink moreInfoLink : obj.getMoreInfoLinks()) {
             if (!this.moreInfoLinkService.existsById(moreInfoLink.getId())) {
                 throw new ObjectNotFoundException("Link de mais informações não encontrado! Id: " + moreInfoLink.getId());
             }

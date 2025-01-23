@@ -36,7 +36,7 @@ public class AttractionRequestData {
             message = "Link da Imagem é obrigatório"
     )
     @Pattern(
-            regexp = "^(https?)://[^\\s/$.?#].\\S*$",
+            regexp = "^(https?)://[^\\s/$.?#].\\S*$|^www\\.\\S+$",
             message = "Link da Imagem inválido. Link deve iniciar com http ou https"
     )
     private String imageLink;
@@ -49,14 +49,14 @@ public class AttractionRequestData {
     private List<@Valid TourismSegmentation> segmentations;
 
     @NotNull(
-            message = "Tipos de Atração são obrigatórios"
+            message = "Tipo de Atração é obrigatório"
     )
-    private @Valid AttractionType attractionTypes;
+    private @Valid AttractionType attractionType;
 
     @NotEmpty(
             message = "Links de Mais Informações são obrigatórios"
     )
-    private List<@Valid MoreInfoLink> moreInfoLinkList;
+    private List<@Valid MoreInfoLink> moreInfoLinks;
 
     public AttractionRequestData(String name,
                                  String description,
@@ -66,8 +66,8 @@ public class AttractionRequestData {
                                  String imageLink,
                                  String infoSource,
                                  List<TourismSegmentation> segmentations,
-                                 AttractionType attractionTypes,
-                                 List<MoreInfoLink> moreInfoLinkList) {
+                                 AttractionType attractionType,
+                                 List<MoreInfoLink> moreInfoLinks) {
         this.name = name;
         this.description = description;
         this.mapLink = mapLink;
@@ -76,8 +76,8 @@ public class AttractionRequestData {
         this.imageLink = imageLink;
         this.infoSource = infoSource;
         this.segmentations = segmentations;
-        this.attractionTypes = attractionTypes;
-        this.moreInfoLinkList = moreInfoLinkList;
+        this.attractionType = attractionType;
+        this.moreInfoLinks = moreInfoLinks;
     }
 
     public AttractionRequestData() {
@@ -119,12 +119,12 @@ public class AttractionRequestData {
         return this.segmentations;
     }
 
-    public AttractionType getAttractionTypes() {
-        return this.attractionTypes;
+    public AttractionType getAttractionType() {
+        return this.attractionType;
     }
 
-    public List<MoreInfoLink> getMoreInfoLinkList() {
-        return this.moreInfoLinkList;
+    public List<MoreInfoLink> getMoreInfoLinks() {
+        return this.moreInfoLinks;
     }
 
     public void setName(String name) {
@@ -160,11 +160,11 @@ public class AttractionRequestData {
     }
 
     public void setAttractionTypes(AttractionType attractionTypes) {
-        this.attractionTypes = attractionTypes;
+        this.attractionType = attractionTypes;
     }
 
-    public void setMoreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-        this.moreInfoLinkList = moreInfoLinkList;
+    public void setMoreInfoLinks(List<MoreInfoLink> moreInfoLinks) {
+        this.moreInfoLinks = moreInfoLinks;
     }
 
     @Override
@@ -173,7 +173,7 @@ public class AttractionRequestData {
         if (o == null || getClass() != o.getClass()) return false;
 
         AttractionRequestData that = (AttractionRequestData) o;
-        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(infoSource, that.infoSource) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionTypes, that.attractionTypes) && Objects.equals(moreInfoLinkList, that.moreInfoLinkList);
+        return Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(infoSource, that.infoSource) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinks, that.moreInfoLinks);
     }
 
     @Override
@@ -186,13 +186,13 @@ public class AttractionRequestData {
         result = 31 * result + Objects.hashCode(imageLink);
         result = 31 * result + Objects.hashCode(infoSource);
         result = 31 * result + Objects.hashCode(segmentations);
-        result = 31 * result + Objects.hashCode(attractionTypes);
-        result = 31 * result + Objects.hashCode(moreInfoLinkList);
+        result = 31 * result + Objects.hashCode(attractionType);
+        result = 31 * result + Objects.hashCode(moreInfoLinks);
         return result;
     }
 
     public String toString() {
-        return "AttractionRequestData(name=" + this.getName() + ", description=" + this.getDescription() + ", map_link=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", image_link=" + this.getImageLink() + ", fonte=" + this.getInfoSource() + ", segmentations=" + this.getSegmentations() + ", attractionTypes=" + this.getAttractionTypes() + ", moreInfoLinkList=" + this.getMoreInfoLinkList() + ")";
+        return "AttractionRequestData(name=" + this.getName() + ", description=" + this.getDescription() + ", map_link=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", image_link=" + this.getImageLink() + ", fonte=" + this.getInfoSource() + ", segmentations=" + this.getSegmentations() + ", attractionTypes=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinks() + ")";
     }
 
     public static class AttractionRequestDataBuilder {

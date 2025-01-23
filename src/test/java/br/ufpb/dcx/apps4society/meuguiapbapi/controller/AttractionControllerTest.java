@@ -147,7 +147,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenAttractionTypeNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(3, segmentation, moreInfoLink, attractionType);
-        requestBody.setAttractionTypes(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -187,7 +187,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenMoreInfoLinkNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(5, segmentation, moreInfoLink, attractionType);
-        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -239,6 +239,73 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         response.then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    void create_shouldReturn409_whenAttractionAlreadyExistsTest() {
+        AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(17, segmentation, moreInfoLink, attractionType);
+        Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
+
+        Response response = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @Test
+    void create_shouldReturn201_whenMoreThanOneAttractionIsCreatedTest() {
+        AttractionRequestData requestBody1 = attractionTestHelper.createAttractionRequestData(30, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody2 = attractionTestHelper.createAttractionRequestData(31, segmentation, moreInfoLink, attractionType);
+
+        Response response1 = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody1)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        Response response2 = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody2)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        attractionRequestUtil.delete(response1.as(Attraction.class), token);
+        attractionRequestUtil.delete(response2.as(Attraction.class), token);
+
+        response1.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("name", equalTo(requestBody1.getName()))
+                .body("description", equalTo(requestBody1.getDescription()))
+                .body("map_link", equalTo(requestBody1.getMapLink()))
+                .body("city", equalTo(requestBody1.getCity()))
+                .body("state", equalTo(requestBody1.getState()))
+                .body("image_link", equalTo(requestBody1.getImageLink()))
+                .body("info_source", equalTo(requestBody1.getInfoSource()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
+
+        response2.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("name", equalTo(requestBody2.getName()))
+                .body("description", equalTo(requestBody2.getDescription()))
+                .body("map_link", equalTo(requestBody2.getMapLink()))
+                .body("city", equalTo(requestBody2.getCity()))
+                .body("state", equalTo(requestBody2.getState()))
+                .body("image_link", equalTo(requestBody2.getImageLink()))
+                .body("info_source", equalTo(requestBody2.getInfoSource()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -322,7 +389,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(10, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setAttractionTypes(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -363,7 +430,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(12, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)

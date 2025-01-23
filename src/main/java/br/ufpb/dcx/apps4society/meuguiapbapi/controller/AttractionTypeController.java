@@ -75,6 +75,15 @@ public class AttractionTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<AttractionType>> search(@RequestParam(value= "name", required = false, defaultValue = "") String name) {
+        logger.info("Buscando tipo de atrativo pelo link: {}", name);
+        List<AttractionType> list = attractionTypeService.search(name);
+        logger.info("Tipo de atrativo encontrado: {}", list.size());
+        return ResponseEntity.ok().body(list);
+
+    }
+
     @Operation(summary = "Listagem de todos os tipos de atrativos", description = "Lista todos os tipos de atrativos",
             tags = {"Attractions Types"},
             responses = {
