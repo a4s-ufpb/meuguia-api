@@ -64,7 +64,21 @@ class MoreInfoLinkRequestDataTest {
 
     @Test
     void testValidation() {
-        var requestData = new MoreInfoLinkRequestData("https://test.com/image.png", "description");
+        var requestData = new MoreInfoLinkRequestData("https://test.com/", "description");
+        var violations = validator.validate(requestData);
+        assertEquals(0, violations.size());
+    }
+
+    @Test
+    void testValidationWWWLink() {
+        var requestData = new MoreInfoLinkRequestData("www.test.com/", "description");
+        var violations = validator.validate(requestData);
+        assertEquals(0, violations.size());
+    }
+
+    @Test
+    void testValidationHttpsWWWLink() {
+        var requestData = new MoreInfoLinkRequestData("https://www.test.com/", "description");
         var violations = validator.validate(requestData);
         assertEquals(0, violations.size());
     }
