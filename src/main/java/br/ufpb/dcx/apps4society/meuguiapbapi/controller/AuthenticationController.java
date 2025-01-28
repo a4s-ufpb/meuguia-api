@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AuthenticationService;
@@ -26,7 +26,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(
-            @RequestBody @Valid RegisterRequestData request
+            @RequestBody @Valid RegisterUserRequestData request
     ) {
         log.debug("Trying to register a new user");
         UserDTO responseBody = authenticationService.register(request);

@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TouristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,7 +39,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -61,7 +61,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionRequestData.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
@@ -103,7 +103,7 @@ public class AttractionController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = TouristAttractionDTO.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = AttractionDTO.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -112,10 +112,10 @@ public class AttractionController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<TouristAttractionDTO>> findAll() {
+    public ResponseEntity<List<AttractionDTO>> findAll() {
         log.info("Buscando todos os atrativos");
         List<Attraction> list = attractionService.findAll();
-        List<TouristAttractionDTO> listDTO = list.stream().map(TouristAttractionDTO::new).collect(Collectors.toList());
+        List<AttractionDTO> listDTO = list.stream().map(AttractionDTO::new).collect(Collectors.toList());
         log.info("Atrativos encontrados: {}", listDTO.size());
         return ResponseEntity.ok().body(listDTO);
     }
@@ -124,7 +124,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -144,7 +144,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -164,7 +164,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -184,7 +184,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),

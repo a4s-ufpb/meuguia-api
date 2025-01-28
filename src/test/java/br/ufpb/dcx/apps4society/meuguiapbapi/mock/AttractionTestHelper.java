@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class AttractionTestHelper {
 
     private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
     private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
-    private final TouristSegmentationTestHelper touristSegmentationTestHelper = TouristSegmentationTestHelper.getInstance();
+    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
 
     public static AttractionTestHelper getInstance() {
         if (instance == null) {
@@ -42,6 +43,15 @@ public class AttractionTestHelper {
                 .build();
     }
 
+    public AttractionRequestData createAttractionRequestData(Integer num) {
+        return createAttractionRequestData(
+                num,
+                tourismSegmentationTestHelper.createTourismSegmentation(num),
+                moreInfoLinkTestHelper.createMoreInfoLink(num),
+                attractionTypeTestHelper.createAttractionType(num)
+        );
+    }
+
     public Attraction createAttraction(
             Integer num,
             TourismSegmentation segmentation,
@@ -63,11 +73,36 @@ public class AttractionTestHelper {
 
     }
 
+    public Attraction createAttraction(Integer num) {
+        return createAttraction(
+                num,
+                tourismSegmentationTestHelper.createTourismSegmentation(num),
+                moreInfoLinkTestHelper.createMoreInfoLink(num),
+                attractionTypeTestHelper.createAttractionType(num)
+        );
+    }
+
     public List<Attraction> createAttractionList() {
         return List.of(
-                createAttraction(1, touristSegmentationTestHelper.createTourismSegmentation(1), moreInfoLinkTestHelper.createMoreInfoLink(1), attractionTypeTestHelper.createAttractionType(1)),
-                createAttraction(2, touristSegmentationTestHelper.createTourismSegmentation(2), moreInfoLinkTestHelper.createMoreInfoLink(2), attractionTypeTestHelper.createAttractionType(2)),
-                createAttraction(3, touristSegmentationTestHelper.createTourismSegmentation(3), moreInfoLinkTestHelper.createMoreInfoLink(3), attractionTypeTestHelper.createAttractionType(3))
+                createAttraction(1, tourismSegmentationTestHelper.createTourismSegmentation(1), moreInfoLinkTestHelper.createMoreInfoLink(1), attractionTypeTestHelper.createAttractionType(1)),
+                createAttraction(2, tourismSegmentationTestHelper.createTourismSegmentation(2), moreInfoLinkTestHelper.createMoreInfoLink(2), attractionTypeTestHelper.createAttractionType(2)),
+                createAttraction(3, tourismSegmentationTestHelper.createTourismSegmentation(3), moreInfoLinkTestHelper.createMoreInfoLink(3), attractionTypeTestHelper.createAttractionType(3))
         );
+    }
+
+    public AttractionDTO createAttractionDTO(Integer id) {
+        return AttractionDTO.builder()
+                .id(id.longValue())
+                .name("mock Teatro municipal " + id)
+                .description("Teatro municipal de joão pessoa")
+                .mapLink("https://mapa.com")
+                .city("João Pessoa")
+                .state("Paraíba (PB)")
+                .imageLink("https://imagem.com")
+                .infoSource("Fonte: https://fonte.com")
+                .segmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(id)))
+                .attractionTypes(attractionTypeTestHelper.createAttractionType(id))
+                .moreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(id)))
+                .build();
     }
 }

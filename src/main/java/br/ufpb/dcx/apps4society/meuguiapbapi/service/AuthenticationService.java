@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +48,12 @@ public class AuthenticationService {
                 .build();
     }
 
-    public UserDTO register(RegisterRequestData registerRequestData) {
+    public UserDTO register(RegisterUserRequestData registerUserRequestData) {
         User registedUser = userRepository.save(User.builder()
-                .email(registerRequestData.getEmail())
-                .password(passwordEncoder.encode(registerRequestData.getPassword()))
-                .firstName(registerRequestData.getFirstName())
-                .lastName(registerRequestData.getLastName())
+                .email(registerUserRequestData.getEmail())
+                .password(passwordEncoder.encode(registerUserRequestData.getPassword()))
+                .firstName(registerUserRequestData.getFirstName())
+                .lastName(registerUserRequestData.getLastName())
                 .build());
 
         return UserDTO.builder()

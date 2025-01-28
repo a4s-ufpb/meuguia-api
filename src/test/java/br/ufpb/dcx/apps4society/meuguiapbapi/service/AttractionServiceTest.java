@@ -9,7 +9,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TouristSegmentationTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 class AttractionServiceTest {
     private final AttractionTestHelper attractionTestHelper = AttractionTestHelper.getInstance();
-    private final TouristSegmentationTestHelper touristSegmentationTestHelper = TouristSegmentationTestHelper.getInstance();
+    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
     private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
     private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
 
@@ -50,7 +50,7 @@ class AttractionServiceTest {
     void setUp() {
         openMocks(this);
 
-        segmentation = touristSegmentationTestHelper.createTourismSegmentation(1);
+        segmentation = tourismSegmentationTestHelper.createTourismSegmentation(1);
         attractionType = attractionTypeTestHelper.createAttractionType(1);
         moreInfoLink = moreInfoLinkTestHelper.createMoreInfoLink(1);
     }

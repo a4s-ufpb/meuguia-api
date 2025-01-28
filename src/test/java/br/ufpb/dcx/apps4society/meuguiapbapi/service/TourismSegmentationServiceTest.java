@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TouristSegmentationTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class TourismSegmentationServiceTest {
-    private final TouristSegmentationTestHelper tourismSegmentationTestHelper = TouristSegmentationTestHelper.getInstance();
+    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
 
     @Mock
     private TourismSegmentationRepository tourismSegmentationRepository;

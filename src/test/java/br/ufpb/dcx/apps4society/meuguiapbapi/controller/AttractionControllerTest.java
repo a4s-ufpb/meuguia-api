@@ -9,7 +9,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.*;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TouristSegmentationTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionTypeRequestUtil;
 import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
@@ -31,7 +31,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
     private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
-    private final TouristSegmentationTestHelper touristSegmentationTestHelper = TouristSegmentationTestHelper.getInstance();
+    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
     private final AttractionTestHelper attractionTestHelper = AttractionTestHelper.getInstance();
 
     private final TourismSegmentationRequestUtil tourismSegmentationRequestUtil = TourismSegmentationRequestUtil.getInstance();
@@ -47,8 +47,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUp() {
-        RegisterRequestData registerRequestData = authenticationTestHelper.getRegisterRequestData(90);
-        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(registerRequestData);
+        RegisterUserRequestData registerUserRequestData = authenticationTestHelper.getRegisterRequestData(90);
+        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(registerUserRequestData);
         token = response.getToken();
     }
 
@@ -59,7 +59,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeEach
     void setUpEach() {
-        TourismSegmentationRequestData segmentationRequest = touristSegmentationTestHelper.createTourismSegmentationRequestData(90);
+        TourismSegmentationRequestData segmentationRequest = tourismSegmentationTestHelper.createTourismSegmentationRequestData(90);
         AttractionTypeRequestData attractionTypeRequest = attractionTypeTestHelper.createAttractionTypeRequestData(90);
         MoreInfoLinkRequestData moreInfoLinkRequest = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(90);
 
@@ -147,7 +147,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenAttractionTypeNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(3, segmentation, moreInfoLink, attractionType);
-        requestBody.setAttractionTypes(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -167,7 +167,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenSegmentationNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(4, segmentation, moreInfoLink, attractionType);
-        requestBody.setSegmentations(List.of(touristSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
+        requestBody.setSegmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -187,7 +187,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenMoreInfoLinkNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(5, segmentation, moreInfoLink, attractionType);
-        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -239,6 +239,73 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
         response.then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    void create_shouldReturn409_whenAttractionAlreadyExistsTest() {
+        AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(17, segmentation, moreInfoLink, attractionType);
+        Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
+
+        Response response = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        attractionRequestUtil.delete(savedAttraction, token);
+
+        response.then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @Test
+    void create_shouldReturn201_whenMoreThanOneAttractionIsCreatedTest() {
+        AttractionRequestData requestBody1 = attractionTestHelper.createAttractionRequestData(30, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestBody2 = attractionTestHelper.createAttractionRequestData(31, segmentation, moreInfoLink, attractionType);
+
+        Response response1 = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody1)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        Response response2 = given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(requestBody2)
+                .when()
+                .post(PATH_CREATE_ATTRACTION);
+
+        attractionRequestUtil.delete(response1.as(Attraction.class), token);
+        attractionRequestUtil.delete(response2.as(Attraction.class), token);
+
+        response1.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("name", equalTo(requestBody1.getName()))
+                .body("description", equalTo(requestBody1.getDescription()))
+                .body("map_link", equalTo(requestBody1.getMapLink()))
+                .body("city", equalTo(requestBody1.getCity()))
+                .body("state", equalTo(requestBody1.getState()))
+                .body("image_link", equalTo(requestBody1.getImageLink()))
+                .body("info_source", equalTo(requestBody1.getInfoSource()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
+
+        response2.then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("name", equalTo(requestBody2.getName()))
+                .body("description", equalTo(requestBody2.getDescription()))
+                .body("map_link", equalTo(requestBody2.getMapLink()))
+                .body("city", equalTo(requestBody2.getCity()))
+                .body("state", equalTo(requestBody2.getState()))
+                .body("image_link", equalTo(requestBody2.getImageLink()))
+                .body("info_source", equalTo(requestBody2.getInfoSource()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
+                .body("more_info_link_list[0].id", equalTo(moreInfoLink.getId().intValue()));
     }
 
     @Test
@@ -322,7 +389,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(10, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setAttractionTypes(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -343,7 +410,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(11, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setSegmentations(List.of(touristSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
+        requestBody.setSegmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -363,7 +430,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(12, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setMoreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -530,7 +597,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(20, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(touristSegmentationTestHelper.createTourismSegmentationRequestData(14), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(tourismSegmentationTestHelper.createTourismSegmentationRequestData(14), token);
         AttractionType attractionType2 = attractionTypeRequestUtil.post(attractionTypeTestHelper.createAttractionTypeRequestData(11), token);
         MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(moreInfoLinkTestHelper.createMoreInfoLinkRequestData(12), token);
 
@@ -624,7 +691,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(24, segmentation, moreInfoLink, attractionType);
         Attraction attraction1 = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(touristSegmentationTestHelper.createTourismSegmentationRequestData(15), token);
+        TourismSegmentation segmentation2 = tourismSegmentationRequestUtil.post(tourismSegmentationTestHelper.createTourismSegmentationRequestData(15), token);
         AttractionType attractionType2 = attractionTypeRequestUtil.post(attractionTypeTestHelper.createAttractionTypeRequestData(12), token);
         MoreInfoLink moreInfoLink2 = moreInfoLinkRequestUtil.post(moreInfoLinkTestHelper.createMoreInfoLinkRequestData(13), token);
 
@@ -689,7 +756,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(27, segmentation, moreInfoLink, attractionType);
         Attraction attraction = attractionRequestUtil.post(requestBody, token);
 
-        TourismSegmentationRequestData segmentationRequest = touristSegmentationTestHelper.createTourismSegmentationRequestData(16);
+        TourismSegmentationRequestData segmentationRequest = tourismSegmentationTestHelper.createTourismSegmentationRequestData(16);
         TourismSegmentation segmentation1 = tourismSegmentationRequestUtil.post(segmentationRequest, token);
 
         Response response = given()

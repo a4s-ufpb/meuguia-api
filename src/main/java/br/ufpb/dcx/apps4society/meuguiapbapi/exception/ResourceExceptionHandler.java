@@ -33,10 +33,20 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandardError> handleDataIntegrityViolation(DataIntegrityViolationException e, ServletRequest request) {
         String errorMessage = "Duplicate data error: " + e.getMostSpecificCause().getMessage();
         StandardError error = new StandardError(
-                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 errorMessage,
                 System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<StandardError> handleResourceAlreadyExistsException(ResourceAlreadyExistsException e, ServletRequest request) {
+        String errorMessage = "Resource already exists: " + e.getLocalizedMessage();
+        StandardError error = new StandardError(
+                HttpStatus.CONFLICT.value(),
+                errorMessage,
+                System.currentTimeMillis());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
     @ExceptionHandler(ValidationException.class)

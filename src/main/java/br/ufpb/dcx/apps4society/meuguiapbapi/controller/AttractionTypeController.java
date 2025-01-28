@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TouristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,7 +40,7 @@ public class AttractionTypeController {
             tags = {"Attractions Types"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
@@ -75,6 +75,15 @@ public class AttractionTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<AttractionType>> search(@RequestParam(value= "name", required = false, defaultValue = "") String name) {
+        logger.info("Buscando tipo de atrativo pelo link: {}", name);
+        List<AttractionType> list = attractionTypeService.search(name);
+        logger.info("Tipo de atrativo encontrado: {}", list.size());
+        return ResponseEntity.ok().body(list);
+
+    }
+
     @Operation(summary = "Listagem de todos os tipos de atrativos", description = "Lista todos os tipos de atrativos",
             tags = {"Attractions Types"},
             responses = {
@@ -82,7 +91,7 @@ public class AttractionTypeController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = TouristAttractionDTO.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = AttractionDTO.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),

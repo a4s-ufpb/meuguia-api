@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TouristAttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.MoreInfoLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,7 +38,7 @@ public class MoreInfoLinkController {
             tags = {"More Info Link"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "200",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "No Content", responseCode = "204", content = @Content),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -62,7 +62,7 @@ public class MoreInfoLinkController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            array = @ArraySchema(schema = @Schema(implementation = TouristAttractionDTO.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = AttractionDTO.class))
                                     )
                             }),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
@@ -83,7 +83,7 @@ public class MoreInfoLinkController {
             tags = {"More Info Link"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = TouristAttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),

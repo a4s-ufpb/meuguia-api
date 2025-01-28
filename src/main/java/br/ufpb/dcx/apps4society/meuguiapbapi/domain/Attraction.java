@@ -43,7 +43,7 @@ public class Attraction {
     )
     private List<TourismSegmentation> segmentations = new ArrayList<>();
 
-    @OneToOne
+    @ManyToOne
     @JoinTable(
         name = "attraction_attraction_type",
         joinColumns = @JoinColumn(name = "attraction_id"),

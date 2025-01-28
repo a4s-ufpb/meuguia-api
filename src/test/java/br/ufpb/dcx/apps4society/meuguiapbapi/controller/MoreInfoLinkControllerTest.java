@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
@@ -28,7 +28,7 @@ class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUp() {
-        RegisterRequestData request = authenticationTestHelper.getRegisterRequestData(70);
+        RegisterUserRequestData request = authenticationTestHelper.getRegisterRequestData(70);
         AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(request);
         token = response.getToken();
     }

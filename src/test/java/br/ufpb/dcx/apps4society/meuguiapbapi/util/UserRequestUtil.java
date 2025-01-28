@@ -3,7 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class UserRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public UserDTO register(RegisterRequestData bodyRequest) {
+    public UserDTO register(RegisterUserRequestData bodyRequest) {
 
         return given()
                 .contentType(ContentType.JSON)
@@ -54,7 +54,7 @@ public class UserRequestUtil extends RequestUtil {
                 .as(AuthenticationResponseData.class);
     }
 
-    public AuthenticationResponseData registerAndAuthenticate(RegisterRequestData bodyRequest) {
+    public AuthenticationResponseData registerAndAuthenticate(RegisterUserRequestData bodyRequest) {
         register(bodyRequest);
         return authenticate(User.builder()
                 .email(bodyRequest.getEmail())

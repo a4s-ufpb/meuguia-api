@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 
 public class AuthenticationTestHelper {
@@ -24,19 +24,23 @@ public class AuthenticationTestHelper {
                 .build();
     }
 
-    public RegisterRequestData getRegisterRequestData(Integer num) {
-        return RegisterRequestData.builder()
+    public RegisterUserRequestData getRegisterRequestData(Integer num) {
+        return RegisterUserRequestData.builder()
                 .firstName("mock User"+num)
                 .lastName("last name")
-                .email("test@test.com")
+                .email(num+"test@test.com")
                 .password("12345678")
                 .build();
     }
 
-    public AuthenticationRequestData getAuthenticationRequestData() {
+    public AuthenticationRequestData createAuthenticationRequestData(Integer num) {
         return AuthenticationRequestData.builder()
-                .email("test@test.com")
+                .email(num+"test@test.com")
                 .password("12345678")
                 .build();
+    }
+
+    public AuthenticationRequestData createAuthenticationRequestData() {
+        return createAuthenticationRequestData(1);
     }
 }
