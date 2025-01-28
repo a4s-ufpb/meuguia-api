@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegisterRequestDataTest {
+class RegisterUserRequestDataTest {
     private final AuthenticationTestHelper testHelper = AuthenticationTestHelper.getInstance();
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
     void builder() {
-        var result = RegisterRequestData.builder()
+        var result = RegisterUserRequestData.builder()
                 .email("test@test.com")
                 .password("12345678")
                 .firstName("test")

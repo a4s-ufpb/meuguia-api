@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
@@ -25,7 +25,7 @@ class TourismSegmentationControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeEach
     void setup(){
-        RegisterRequestData request = authenticationTestHelper.getRegisterRequestData(60);
+        RegisterUserRequestData request = authenticationTestHelper.getRegisterRequestData(60);
         AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(request);
         token = response.getToken();
     }

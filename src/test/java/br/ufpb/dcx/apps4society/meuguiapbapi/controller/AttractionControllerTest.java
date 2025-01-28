@@ -47,8 +47,8 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUp() {
-        RegisterRequestData registerRequestData = authenticationTestHelper.getRegisterRequestData(90);
-        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(registerRequestData);
+        RegisterUserRequestData registerUserRequestData = authenticationTestHelper.getRegisterRequestData(90);
+        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(registerUserRequestData);
         token = response.getToken();
     }
 

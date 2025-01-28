@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
@@ -68,7 +68,7 @@ class AuthenticationServiceTest {
 
     @Test
     void registerUserTest() {
-        RegisterRequestData requestData = authenticationTestHelper.getRegisterRequestData(1);
+        RegisterUserRequestData requestData = authenticationTestHelper.getRegisterRequestData(1);
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenAnswer(invocationOnMock -> {
             User user = invocationOnMock.getArgument(0);

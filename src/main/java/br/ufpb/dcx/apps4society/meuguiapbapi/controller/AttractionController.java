@@ -61,7 +61,7 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = AttractionDTO.class))
+                            content = @Content(schema = @Schema(implementation = AttractionRequestData.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),

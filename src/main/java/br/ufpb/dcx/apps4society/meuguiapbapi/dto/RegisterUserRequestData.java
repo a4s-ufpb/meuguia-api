@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
-public class RegisterRequestData {
+public class RegisterUserRequestData {
     @NotBlank(
         message = "O email não pode ser vazio"
     )
@@ -34,14 +34,14 @@ public class RegisterRequestData {
     )
     private String lastName;
 
-    public RegisterRequestData(String email, String password, String firstName, String lastName) {
+    public RegisterUserRequestData(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public RegisterRequestData() {
+    public RegisterUserRequestData() {
     }
 
     public static RegisterRequestDataBuilder builder() {
@@ -85,7 +85,7 @@ public class RegisterRequestData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RegisterRequestData that = (RegisterRequestData) o;
+        RegisterUserRequestData that = (RegisterUserRequestData) o;
         return Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
     }
 
@@ -131,8 +131,8 @@ public class RegisterRequestData {
             return this;
         }
 
-        public RegisterRequestData build() {
-            return new RegisterRequestData(this.email, this.password, this.firstName, this.lastName);
+        public RegisterUserRequestData build() {
+            return new RegisterUserRequestData(this.email, this.password, this.firstName, this.lastName);
         }
 
         public String toString() {

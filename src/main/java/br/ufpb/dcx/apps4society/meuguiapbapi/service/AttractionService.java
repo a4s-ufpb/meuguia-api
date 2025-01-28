@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ResourceAlreadyExistsException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,22 @@ public class AttractionService {
     private final TourismSegmentationService tourismSegmentationService;
     private final AttractionTypeService attractionTypeService;
     private final MoreInfoLinkService moreInfoLinkService;
+    private final AttractionRepository attractionRepository;
 
     @Autowired
     public AttractionService(MoreInfoLinkService moreInfoLinkService,
                              AttractionTypeService attractionTypeService,
                              TourismSegmentationService tourismSegmentationService,
-                             AttractionRepository turistAttractionRepository) {
+                             AttractionRepository turistAttractionRepository, AttractionRepository attractionRepository) {
         this.moreInfoLinkService = moreInfoLinkService;
         this.attractionTypeService = attractionTypeService;
         this.tourismSegmentationService = tourismSegmentationService;
         this.turistAttractionRepository = turistAttractionRepository;
+        this.attractionRepository = attractionRepository;
     }
 
     public Attraction create(AttractionRequestData obj) {
+        verifyExistence(obj);
         validateFields(obj);
 
         Attraction attraction = Attraction.builder()
@@ -48,6 +52,12 @@ public class AttractionService {
                 .build();
 
         return turistAttractionRepository.save(attraction);
+    }
+
+    public void verifyExistence(AttractionRequestData obj) {
+        if (attractionRepository.findByNameAndCity(obj.getName(), obj.getCity()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Atração com nome '" + obj.getName() + "' já cadastrada para a cidade '" + obj.getCity() + "'.");
+        }
     }
 
     private void validateFields(AttractionRequestData obj) {

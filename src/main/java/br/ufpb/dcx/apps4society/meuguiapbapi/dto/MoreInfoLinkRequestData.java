@@ -10,7 +10,7 @@ public class MoreInfoLinkRequestData {
                 message = "O link não pode ser vazio"
         )
     @Pattern(
-            regexp = "^(https?|ftp)://[^\\s/$.?#].\\S*$",
+            regexp = "^(https?)://(www.)?[^\\s/$.?#].\\S*$|^www\\.\\S+$",
             message = "URL inválida"
     )
     private String link;

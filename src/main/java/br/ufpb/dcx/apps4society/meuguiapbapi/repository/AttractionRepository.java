@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AttractionRepository extends JpaRepository<Attraction, Long> {
@@ -21,4 +22,6 @@ public interface AttractionRepository extends JpaRepository<Attraction, Long> {
 
     @Query("SELECT a FROM Attraction a JOIN a.segmentations s WHERE s.name = :segmentationName")
     List<Attraction> findAllBySegmentationName(@Param("segmentationName") String segmentationName);
+
+    Optional<Attraction> findByNameAndCity(String name, String city);
 }

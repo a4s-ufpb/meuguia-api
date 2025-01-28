@@ -117,4 +117,12 @@ public class TourismSegmentationController {
         log.info("Segmentação turística deletada com sucesso");
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<List<TourismSegmentation>> search(@RequestParam(value = "name", required = false) String name) {
+        log.info("Buscando segmentações turísticas por nome: {}", name);
+        List<TourismSegmentation> list = tourismSegmentationService.searchByName(name);
+        log.info("Total de segmentações encontradas: {}", list.size());
+        return ResponseEntity.ok().body(list);
+    }
 }

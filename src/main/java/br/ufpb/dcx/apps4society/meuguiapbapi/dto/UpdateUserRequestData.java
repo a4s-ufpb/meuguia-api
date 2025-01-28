@@ -1,10 +1,27 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 public class UpdateUserRequestData {
+    @NotBlank(
+            message = "O email não pode ser vazio"
+    )
+    @Email (
+            message = "'${validatedValue}' não é um email válido"
+    )
     private String email;
+
+    @NotBlank(
+            message = "O nome não pode ser vazio"
+    )
     private String firstName;
+
+    @NotBlank(
+            message = "O sobrenome não pode ser vazio"
+    )
     private String lastName;
 
     public UpdateUserRequestData(String email, String firstName, String lastName) {

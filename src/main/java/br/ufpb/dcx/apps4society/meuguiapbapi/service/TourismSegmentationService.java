@@ -49,6 +49,10 @@ public class TourismSegmentationService {
         return tourismSegmentationRepository.save(tourismSegmentation);
     }
 
+    public List<TourismSegmentation> searchByName(String name) {
+        return tourismSegmentationRepository.findByNameContainingIgnoreCase(name);
+    }
+
     public void delete(Long id) {
         findById(id);
         tourismSegmentationRepository.deleteById(id);

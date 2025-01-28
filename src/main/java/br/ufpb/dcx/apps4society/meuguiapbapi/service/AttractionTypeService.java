@@ -1,6 +1,5 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionTypeRepository;
@@ -37,6 +36,10 @@ public class AttractionTypeService {
 
     public List<AttractionType> findAll() {
         return attractionTypeRepository.findAll();
+    }
+
+    public List<AttractionType> search(String name) {
+        return attractionTypeRepository.findByNameContainingIgnoreCase(name);
     }
 
     public void delete(Long id) {

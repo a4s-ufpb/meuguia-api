@@ -159,7 +159,7 @@ public class AttractionRequestData {
         this.segmentations = segmentations;
     }
 
-    public void setAttractionTypes(AttractionType attractionTypes) {
+    public void setAttractionType(AttractionType attractionTypes) {
         this.attractionType = attractionTypes;
     }
 

@@ -2,7 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
@@ -26,8 +26,8 @@ class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     void setUP() {
-        RegisterRequestData registerRequestData = authenticationTestHelper.getRegisterRequestData(80);
-        AuthenticationResponseData authenticationResponseData = userRequestUtil.registerAndAuthenticate(registerRequestData);
+        RegisterUserRequestData registerUserRequestData = authenticationTestHelper.getRegisterRequestData(80);
+        AuthenticationResponseData authenticationResponseData = userRequestUtil.registerAndAuthenticate(registerUserRequestData);
         token = authenticationResponseData.getToken();
     }
 
