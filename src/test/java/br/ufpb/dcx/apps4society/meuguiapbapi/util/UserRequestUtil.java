@@ -13,7 +13,7 @@ import static io.restassured.RestAssured.*;
 public class UserRequestUtil extends RequestUtil {
     public static final String PATH_USER_REGISTER = "/auth/register";
     public static final String PATH_USER_AUTHENTICATE = "/auth/authenticate";
-    public static final String PATH_USER = "/user";
+    public static final String PATH_USER = "/users";
 
     private static UserRequestUtil instance;
 

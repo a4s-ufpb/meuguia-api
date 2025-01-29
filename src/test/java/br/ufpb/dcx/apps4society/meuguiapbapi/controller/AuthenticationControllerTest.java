@@ -39,7 +39,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    void register_shouldReturnStatus400_whenEmailAlreadyRegisteredTest() {
+    void register_shouldReturnStatus409_whenEmailAlreadyRegisteredTest() {
         RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(2);
         AuthenticationResponseData auth = userRequestUtil.registerAndAuthenticate(requestBody);
 
@@ -52,7 +52,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         userRequestUtil.delete(auth.getToken());
 
         response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 
     @Test

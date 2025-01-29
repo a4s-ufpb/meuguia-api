@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/tourists", produces = {"application/json"})
+@RequestMapping(value = "/api/attractions", produces = {"application/json"})
 @Tag(name = "Attractions", description = "Endpoints para gerenciar atrativos")
 public class AttractionController {
     private final Logger log = LoggerFactory.getLogger(AttractionController.class);
@@ -67,12 +67,12 @@ public class AttractionController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
-    @PostMapping(value = "/create")
+    @PostMapping()
     public ResponseEntity<Attraction> create(@RequestBody @Valid AttractionRequestData obj) {
         log.info("Criando novo atrativo: {}", obj);
         Attraction newObj = attractionService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/tourists/{id}")
+                .path("/attractions/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
         log.info("Atrativo criado com sucesso: {}", newObj);
         return ResponseEntity.created(uri).body(newObj);

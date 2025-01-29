@@ -30,7 +30,7 @@ public class WebSecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tourists/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/attractions/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/segmentations/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/types/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/more-info/**").permitAll()

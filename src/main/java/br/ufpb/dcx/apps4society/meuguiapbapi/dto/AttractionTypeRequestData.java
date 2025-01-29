@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
@@ -9,6 +10,9 @@ public class AttractionTypeRequestData {
             message = "O nome do tipo de atrativo é obrigatório"
     )
     private String name;
+    @NotNull(
+            message = "Objeto json deve conter o atributo 'description'"
+    )
     private String description;
 
     public AttractionTypeRequestData(String name, String description) {

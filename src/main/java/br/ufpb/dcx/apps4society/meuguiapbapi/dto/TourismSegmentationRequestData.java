@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
@@ -9,6 +10,10 @@ public class TourismSegmentationRequestData {
         message = "O nome do segmento turístico é obrigatório"
     )
     private String name;
+
+    @NotNull(
+            message = "Objeto json deve conter o atributo 'description'"
+    )
     private String description;
 
     public TourismSegmentationRequestData(String name, String description) {

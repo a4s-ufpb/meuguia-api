@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.util.Objects;
@@ -14,6 +15,9 @@ public class MoreInfoLinkRequestData {
             message = "URL inválida"
     )
     private String link;
+    @NotNull(
+            message = "Objeto json deve conter o atributo 'description'"
+    )
     private String description;
 
     public MoreInfoLinkRequestData(String link, String description) {

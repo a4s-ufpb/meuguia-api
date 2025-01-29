@@ -5,6 +5,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.EmailAlreadyInUseException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,10 @@ public class AuthenticationService {
     }
 
     public UserDTO register(RegisterUserRequestData registerUserRequestData) {
+        if (userRepository.findByEmail(registerUserRequestData.getEmail()).isPresent()) {
+            throw new EmailAlreadyInUseException("Email já está em uso");
+        }
+
         User registedUser = userRepository.save(User.builder()
                 .email(registerUserRequestData.getEmail())
                 .password(passwordEncoder.encode(registerUserRequestData.getPassword()))

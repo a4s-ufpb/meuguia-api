@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import static io.restassured.RestAssured.given;
 
 public class AttractionRequestUtil extends RequestUtil {
-    public static final String PATH_ATTRACTION = "/tourists";
-    public static final String PATH_CREATE_ATTRACTION = "/tourists/create";
-    public static final String PATH_FIND_ATTRACTION_BY_NAME = "/tourists/byName";
-    public static final String PATH_FIND_ATTRACTION_BY_CITY = "/tourists/byCity";
-    public static final String PATH_FIND_ATTRACTION_BY_SEGMENTATION = "/tourists/bySegmentations";
+    public static final String PATH_ATTRACTION = "/attractions";
+    public static final String PATH_CREATE_ATTRACTION = PATH_ATTRACTION;
+    public static final String PATH_FIND_ATTRACTION_BY_NAME = "/attractions/byName";
+    public static final String PATH_FIND_ATTRACTION_BY_CITY = "/attractions/byCity";
+    public static final String PATH_FIND_ATTRACTION_BY_SEGMENTATION = "/attractions/bySegmentations";
 
     private static AttractionRequestUtil instance;
 
