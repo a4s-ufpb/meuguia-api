@@ -34,6 +34,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/segmentations/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/types/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/more-info/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

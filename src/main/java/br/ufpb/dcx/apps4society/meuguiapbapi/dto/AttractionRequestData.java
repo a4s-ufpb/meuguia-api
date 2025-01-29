@@ -1,13 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,31 +36,23 @@ public class AttractionRequestData {
 
     private String infoSource;
 
-    @NotEmpty(
+    @NotNull(
             message = "Segmentações da Atração são obrigatórias"
     )
-    private List<@Valid TourismSegmentation> segmentations;
+    private List<@Positive Long> segmentations;
 
     @NotNull(
             message = "Tipo de Atração é obrigatório"
     )
-    private @Valid AttractionType attractionType;
+    @Positive
+    private Long attractionType;
 
-    @NotEmpty(
+    @NotNull(
             message = "Links de Mais Informações são obrigatórios"
     )
-    private List<@Valid MoreInfoLink> moreInfoLinks;
+    private List<@Positive Long> moreInfoLinks;
 
-    public AttractionRequestData(String name,
-                                 String description,
-                                 String mapLink,
-                                 String city,
-                                 String state,
-                                 String imageLink,
-                                 String infoSource,
-                                 List<TourismSegmentation> segmentations,
-                                 AttractionType attractionType,
-                                 List<MoreInfoLink> moreInfoLinks) {
+    public AttractionRequestData(String name, String description, String mapLink, String city, String state, String imageLink, String infoSource, List<Long> segmentations, Long attractionType, List<Long> moreInfoLinks) {
         this.name = name;
         this.description = description;
         this.mapLink = mapLink;
@@ -115,16 +100,16 @@ public class AttractionRequestData {
         return this.infoSource;
     }
 
-    public List<TourismSegmentation> getSegmentations() {
-        return this.segmentations;
+    public List<Long> getSegmentations() {
+        return segmentations;
     }
 
-    public AttractionType getAttractionType() {
-        return this.attractionType;
+    public Long getAttractionType() {
+        return attractionType;
     }
 
-    public List<MoreInfoLink> getMoreInfoLinks() {
-        return this.moreInfoLinks;
+    public List<Long> getMoreInfoLinks() {
+        return moreInfoLinks;
     }
 
     public void setName(String name) {
@@ -155,15 +140,15 @@ public class AttractionRequestData {
         this.infoSource = infoSource;
     }
 
-    public void setSegmentations(List<TourismSegmentation> segmentations) {
+    public void setSegmentations(List<Long> segmentations) {
         this.segmentations = segmentations;
     }
 
-    public void setAttractionType(AttractionType attractionTypes) {
-        this.attractionType = attractionTypes;
+    public void setAttractionType(Long attractionType) {
+        this.attractionType = attractionType;
     }
 
-    public void setMoreInfoLinks(List<MoreInfoLink> moreInfoLinks) {
+    public void setMoreInfoLinks(List<Long> moreInfoLinks) {
         this.moreInfoLinks = moreInfoLinks;
     }
 
@@ -195,7 +180,7 @@ public class AttractionRequestData {
         return "AttractionRequestData(name=" + this.getName() + ", description=" + this.getDescription() + ", map_link=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", image_link=" + this.getImageLink() + ", fonte=" + this.getInfoSource() + ", segmentations=" + this.getSegmentations() + ", attractionTypes=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinks() + ")";
     }
 
-    public static class AttractionRequestDataBuilder {
+    public static final class AttractionRequestDataBuilder {
         private String name;
         private String description;
         private String mapLink;
@@ -203,11 +188,15 @@ public class AttractionRequestData {
         private String state;
         private String imageLink;
         private String infoSource;
-        private List<TourismSegmentation> segmentations;
-        private AttractionType attractionTypes;
-        private List<MoreInfoLink> moreInfoLinkList;
+        private List<Long> segmentations;
+        private Long attractionType;
+        private List<Long> moreInfoLinks;
 
-        AttractionRequestDataBuilder() {
+        private AttractionRequestDataBuilder() {
+        }
+
+        public static AttractionRequestDataBuilder anAttractionRequestData() {
+            return new AttractionRequestDataBuilder();
         }
 
         public AttractionRequestDataBuilder name(String name) {
@@ -245,27 +234,23 @@ public class AttractionRequestData {
             return this;
         }
 
-        public AttractionRequestDataBuilder segmentations(List<TourismSegmentation> segmentations) {
+        public AttractionRequestDataBuilder segmentations(List<Long> segmentations) {
             this.segmentations = segmentations;
             return this;
         }
 
-        public AttractionRequestDataBuilder attractionTypes(AttractionType attractionTypes) {
-            this.attractionTypes = attractionTypes;
+        public AttractionRequestDataBuilder attractionType(Long attractionType) {
+            this.attractionType = attractionType;
             return this;
         }
 
-        public AttractionRequestDataBuilder moreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-            this.moreInfoLinkList = moreInfoLinkList;
+        public AttractionRequestDataBuilder moreInfoLinks(List<Long> moreInfoLinks) {
+            this.moreInfoLinks = moreInfoLinks;
             return this;
         }
 
         public AttractionRequestData build() {
-            return new AttractionRequestData(this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.infoSource, this.segmentations, this.attractionTypes, this.moreInfoLinkList);
-        }
-
-        public String toString() {
-            return "AttractionRequestData.AttractionRequestDataBuilder(name=" + this.name + ", description=" + this.description + ", map_link=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", image_link=" + this.imageLink + ", fonte=" + this.infoSource + ", segmentations=" + this.segmentations + ", attractionTypes=" + this.attractionTypes + ", moreInfoLinkList=" + this.moreInfoLinkList + ")";
+            return new AttractionRequestData(name, description, mapLink, city, state, imageLink, infoSource, segmentations, attractionType, moreInfoLinks);
         }
     }
 }

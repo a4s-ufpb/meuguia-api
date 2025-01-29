@@ -38,6 +38,10 @@ public class AttractionService {
         verifyExistence(obj);
         validateFields(obj);
 
+        var segmentations = obj.getSegmentations().stream().map(tourismSegmentationService::findById).toList();
+        var attractionType = attractionTypeService.findById(obj.getAttractionType());
+        var moreInfoLinks = obj.getMoreInfoLinks().stream().map(moreInfoLinkService::findById).toList();
+
         Attraction attraction = Attraction.builder()
                 .name(obj.getName())
                 .description(obj.getDescription())
@@ -46,9 +50,9 @@ public class AttractionService {
                 .state(obj.getState())
                 .imageLink(obj.getImageLink())
                 .infoSource(obj.getInfoSource())
-                .segmentations(obj.getSegmentations())
-                .attractionType(obj.getAttractionType())
-                .moreInfoLinkList(obj.getMoreInfoLinks())
+                .segmentations(segmentations)
+                .attractionType(attractionType)
+                .moreInfoLinkList(moreInfoLinks)
                 .build();
 
         return turistAttractionRepository.save(attraction);
@@ -61,19 +65,19 @@ public class AttractionService {
     }
 
     private void validateFields(AttractionRequestData obj) {
-        if (!this.attractionTypeService.existsById(obj.getAttractionType().getId())) {
-            throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionType().getId());
+        if (!this.attractionTypeService.existsById(obj.getAttractionType())) {
+            throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionType());
         }
 
-        for (TourismSegmentation segmentation : obj.getSegmentations()) {
-            if (!this.tourismSegmentationService.existsById(segmentation.getId())) {
-                throw new ObjectNotFoundException("Segmentação não encontrada! Id: " + segmentation.getId());
+        for (Long segmentationId: obj.getSegmentations()) {
+            if (!this.tourismSegmentationService.existsById(segmentationId)) {
+                throw new ObjectNotFoundException("Segmentação não encontrada! Id: " + segmentationId);
             }
         }
 
-        for (MoreInfoLink moreInfoLink : obj.getMoreInfoLinks()) {
-            if (!this.moreInfoLinkService.existsById(moreInfoLink.getId())) {
-                throw new ObjectNotFoundException("Link de mais informações não encontrado! Id: " + moreInfoLink.getId());
+        for (Long moreInfoLinkId: obj.getMoreInfoLinks()) {
+            if (!this.moreInfoLinkService.existsById(moreInfoLinkId)) {
+                throw new ObjectNotFoundException("Link de mais informações não encontrado! Id: " + moreInfoLinkId);
             }
         }
     }
