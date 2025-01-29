@@ -20,7 +20,7 @@ public class MeuguiaApiApplicationTests {
 	public final Logger log = LoggerFactory.getLogger(MeuguiaApiApplicationTests.class);
 
 	public final String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyaWQiLCJuYW1lIjoiSm9obiBEb2UifQ.invalidsignature";
-	public final Long INVALID_ID = -1L;
+	public final Long INVALID_ID = 999999L;
 
 	public final AuthenticationTestHelper authenticationTestHelper = new AuthenticationTestHelper();
 	public final UserRequestUtil userRequestUtil = new UserRequestUtil();

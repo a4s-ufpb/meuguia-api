@@ -37,9 +37,9 @@ public class AttractionTestHelper {
                 .state("Paraíba (PB)")
                 .imageLink("https://imagem.com")
                 .infoSource("Fonte: https://fonte.com")
-                .segmentations(List.of(segmentation))
-                .attractionTypes(attractionType)
-                .moreInfoLinkList(List.of(moreInfoLink))
+                .segmentations(List.of(segmentation.getId()))
+                .attractionType(attractionType.getId())
+                .moreInfoLinks(List.of(moreInfoLink.getId()))
                 .build();
     }
 

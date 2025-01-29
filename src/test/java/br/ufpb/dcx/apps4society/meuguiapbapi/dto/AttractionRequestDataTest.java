@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
@@ -19,9 +21,9 @@ class AttractionRequestDataTest {
 
     @Test
     void builder() {
-        var segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations();
-        var attractionType = attractionTypeTestHelper.createAttractionType(1);
-        var moreInfoLinks = moreInfoLinkTestHelper.getListOfMoreInfoLinks();
+        var segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations().stream().map(TourismSegmentation::getId).toList();
+        var attractionType = attractionTypeTestHelper.createAttractionType(1).getId();
+        var moreInfoLinks = moreInfoLinkTestHelper.getListOfMoreInfoLinks().stream().map(MoreInfoLink::getId).toList();
 
         var result = AttractionRequestData.builder()
                 .name("Test")
@@ -32,8 +34,8 @@ class AttractionRequestDataTest {
                 .imageLink("https://teste.com")
                 .infoSource("Test")
                 .segmentations(segmentations)
-                .attractionTypes(attractionType)
-                .moreInfoLinkList(moreInfoLinks)
+                .attractionType(attractionType)
+                .moreInfoLinks(moreInfoLinks)
                 .build();
 
         assertNotNull(result);

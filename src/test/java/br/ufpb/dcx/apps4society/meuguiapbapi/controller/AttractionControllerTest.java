@@ -147,7 +147,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenAttractionTypeNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(3, segmentation, moreInfoLink, attractionType);
-        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(INVALID_ID);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -167,7 +167,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenSegmentationNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(4, segmentation, moreInfoLink, attractionType);
-        requestBody.setSegmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
+        requestBody.setSegmentations(List.of(INVALID_ID));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -187,7 +187,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
     @Test
     void create_shouldReturn404_whenMoreInfoLinkNotExistsTest() {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(5, segmentation, moreInfoLink, attractionType);
-        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(INVALID_ID));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -389,7 +389,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(10, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setAttractionType(attractionTypeTestHelper.createAttractionType(INVALID_ID.intValue()));
+        requestBody.setAttractionType(INVALID_ID);
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -410,7 +410,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(11, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setSegmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(INVALID_ID.intValue())));
+        requestBody.setSegmentations(List.of(INVALID_ID));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
@@ -430,7 +430,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         AttractionRequestData requestBody = attractionTestHelper.createAttractionRequestData(12, segmentation, moreInfoLink, attractionType);
         Attraction savedAttraction = attractionRequestUtil.post(requestBody, token);
 
-        requestBody.setMoreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLink(INVALID_ID.intValue())));
+        requestBody.setMoreInfoLinks(List.of(INVALID_ID));
 
         Response response = given()
                 .header("Authorization", "Bearer " + token)
