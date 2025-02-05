@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "attraction")
 public class Attraction {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 200, nullable = false)
@@ -32,6 +32,7 @@ public class Attraction {
     @Column(name = "image_link", length = 500, nullable = false)
     private String imageLink;
 
+    // TODO: remover
     @Column(name = "info_source", length = 300, nullable = false)
     private String infoSource;
 
@@ -43,18 +44,16 @@ public class Attraction {
     )
     private List<TourismSegmentation> segmentations = new ArrayList<>();
 
+    // TODO: ver melhor
     @ManyToOne
-    @JoinTable(
-        name = "attraction_attraction_type",
-        joinColumns = @JoinColumn(name = "attraction_id"),
-        inverseJoinColumns = @JoinColumn(name = "attraction_type_id")
-    )
+    @JoinColumn(name = "type_id")
     private AttractionType attractionType;
 
     @OneToMany
     @JoinColumn(name = "attraction_id")
     private List<MoreInfoLink> moreInfoLinkList = new ArrayList<>();
 
+    // TODO: atributos
     public Attraction() {
     }
 
