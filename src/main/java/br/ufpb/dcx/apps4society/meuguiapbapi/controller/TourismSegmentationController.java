@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.TourismSegmentationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

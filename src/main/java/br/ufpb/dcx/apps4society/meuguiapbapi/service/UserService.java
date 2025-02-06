@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UpdateUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

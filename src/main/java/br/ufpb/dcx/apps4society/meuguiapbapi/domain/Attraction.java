@@ -3,7 +3,6 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,32 +31,28 @@ public class Attraction {
     @Column(name = "image_link", length = 500, nullable = false)
     private String imageLink;
 
-    // TODO: remover
-    @Column(name = "info_source", length = 300, nullable = false)
-    private String infoSource;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "attraction_tourism_segmentation",
+            joinColumns = @JoinColumn(name = "attraction_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tourism_segmentation_id", referencedColumnName = "id"))
+    private List<TourismSegmentation> segmentations;
 
-    @ManyToMany
-    @JoinTable(
-        name = "attraction_segmentation",
-        joinColumns = @JoinColumn(name = "attraction_id"),
-        inverseJoinColumns = @JoinColumn(name = "segmentation_id")
-    )
-    private List<TourismSegmentation> segmentations = new ArrayList<>();
-
-    // TODO: ver melhor
     @ManyToOne
     @JoinColumn(name = "type_id")
     private AttractionType attractionType;
 
-    @OneToMany
-    @JoinColumn(name = "attraction_id")
-    private List<MoreInfoLink> moreInfoLinkList = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "more_info_link",
+            joinColumns = @JoinColumn(name = "attraction_id")
+    )
+    private List<MoreInfoLink> moreInfoLinks;
 
-    // TODO: atributos
     public Attraction() {
+        this(0L, "", "", "", "", "", "", null, null, null);
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink, String infoSource) {
+    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -65,10 +60,9 @@ public class Attraction {
         this.city = city;
         this.state = state;
         this.imageLink = imageLink;
-        this.infoSource = infoSource;
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink, String infoSource, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinkList) {
+    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -76,12 +70,10 @@ public class Attraction {
         this.city = city;
         this.state = state;
         this.imageLink = imageLink;
-        this.infoSource = infoSource;
         this.segmentations = segmentations;
         this.attractionType = attractionType;
-        this.moreInfoLinkList = moreInfoLinkList;
+        this.moreInfoLinks = moreInfoLinks;
     }
-
 
     public static AttractionBuilder builder() {
         return new AttractionBuilder();
@@ -115,10 +107,6 @@ public class Attraction {
         return this.imageLink;
     }
 
-    public String getInfoSource() {
-        return this.infoSource;
-    }
-
     public List<TourismSegmentation> getSegmentations() {
         return this.segmentations;
     }
@@ -127,8 +115,8 @@ public class Attraction {
         return this.attractionType;
     }
 
-    public List<MoreInfoLink> getMoreInfoLinkList() {
-        return this.moreInfoLinkList;
+    public List<MoreInfoLink> getMoreInfoLinks() {
+        return this.moreInfoLinks;
     }
 
     public void setId(Long id) {
@@ -159,10 +147,6 @@ public class Attraction {
         this.imageLink = imageLink;
     }
 
-    public void setInfoSource(String infoSource) {
-        this.infoSource = infoSource;
-    }
-
     public void setSegmentations(List<TourismSegmentation> segmentations) {
         this.segmentations = segmentations;
     }
@@ -171,8 +155,8 @@ public class Attraction {
         this.attractionType = attractionType;
     }
 
-    public void setMoreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-        this.moreInfoLinkList = moreInfoLinkList;
+    public void setMoreInfoLinks(List<MoreInfoLink> moreInfoLinkList) {
+        this.moreInfoLinks = moreInfoLinkList;
     }
 
     @Override
@@ -181,7 +165,7 @@ public class Attraction {
         if (o == null || getClass() != o.getClass()) return false;
 
         Attraction that = (Attraction) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(infoSource, that.infoSource) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinkList, that.moreInfoLinkList);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinks, that.moreInfoLinks);
     }
 
     @Override
@@ -193,15 +177,14 @@ public class Attraction {
         result = 31 * result + Objects.hashCode(city);
         result = 31 * result + Objects.hashCode(state);
         result = 31 * result + Objects.hashCode(imageLink);
-        result = 31 * result + Objects.hashCode(infoSource);
         result = 31 * result + Objects.hashCode(segmentations);
         result = 31 * result + Objects.hashCode(attractionType);
-        result = 31 * result + Objects.hashCode(moreInfoLinkList);
+        result = 31 * result + Objects.hashCode(moreInfoLinks);
         return result;
     }
 
     public String toString() {
-        return "Attraction(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", imageLink=" + this.getImageLink() + ", infoSource=" + this.getInfoSource() + ", segmentations=" + this.getSegmentations() + ", attractionType=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinkList() + ")";
+        return "Attraction(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", imageLink=" + this.getImageLink() + ", segmentations=" + this.getSegmentations() + ", attractionType=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinks() + ")";
     }
 
     public static class AttractionBuilder {
@@ -212,10 +195,9 @@ public class Attraction {
         private String city;
         private String state;
         private String imageLink;
-        private String infoSource;
         private List<TourismSegmentation> segmentations;
         private AttractionType attractionType;
-        private List<MoreInfoLink> moreInfoLinkList;
+        private List<MoreInfoLink> moreInfoLinks;
 
         AttractionBuilder() {
         }
@@ -255,11 +237,6 @@ public class Attraction {
             return this;
         }
 
-        public AttractionBuilder infoSource(String infoSource) {
-            this.infoSource = infoSource;
-            return this;
-        }
-
         public AttractionBuilder segmentations(List<TourismSegmentation> segmentations) {
             this.segmentations = segmentations;
             return this;
@@ -270,17 +247,17 @@ public class Attraction {
             return this;
         }
 
-        public AttractionBuilder moreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-            this.moreInfoLinkList = moreInfoLinkList;
+        public AttractionBuilder moreInfoLinks(List<MoreInfoLink> moreInfoLinks) {
+            this.moreInfoLinks = moreInfoLinks;
             return this;
         }
 
         public Attraction build() {
-            return new Attraction(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.infoSource, this.segmentations, this.attractionType, this.moreInfoLinkList);
+            return new Attraction(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.segmentations, this.attractionType, this.moreInfoLinks);
         }
 
         public String toString() {
-            return "Attraction.AttractionBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", imageLink=" + this.imageLink + ", infoSource=" + this.infoSource + ", segmentations=" + this.segmentations + ", attractionType=" + this.attractionType + ", moreInfoLinkList=" + this.moreInfoLinkList + ")";
+            return "Attraction.AttractionBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", imageLink=" + this.imageLink + ", segmentations=" + this.segmentations + ", attractionType=" + this.attractionType + ", moreInfoLinkList=" + this.moreInfoLinks + ")";
         }
     }
 }

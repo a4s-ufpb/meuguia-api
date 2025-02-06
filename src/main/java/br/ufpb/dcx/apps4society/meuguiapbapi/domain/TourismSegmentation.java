@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,6 +18,9 @@ public class TourismSegmentation {
 
     @Column(name = "description", length = 200, nullable = false)
     private String description;
+
+    @ManyToMany(mappedBy = "segmentations", fetch = FetchType.LAZY)
+    private List<Attraction> attractions;
 
     public TourismSegmentation() {
     }

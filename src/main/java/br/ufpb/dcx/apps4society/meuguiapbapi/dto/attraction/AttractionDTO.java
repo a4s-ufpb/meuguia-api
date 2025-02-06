@@ -1,9 +1,9 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,15 +24,15 @@ public class AttractionDTO {
 
     private String imageLink;
 
-    private String infoSource;
 
-    private List<TourismSegmentation> segmentations;
+    private List<TourismSegmentationDTO> segmentations;
 
-    private AttractionType attractionTypes;
+    private AttractionTypeDTO attractionType;
 
-    private List<MoreInfoLink> moreInfoLinkList;
+    private List<MoreInfoLinkDTO> moreInfoLinks;
 
     public AttractionDTO() {
+        this(0L, "", "", "", "", "","", null, null, null);
     }
 
     public AttractionDTO(Attraction obj) {
@@ -43,13 +43,12 @@ public class AttractionDTO {
         this.city = obj.getCity();
         this.state = obj.getState();
         this.imageLink = obj.getImageLink();
-        this.infoSource = obj.getInfoSource();
-        this.segmentations = obj.getSegmentations();
-        this.attractionTypes = obj.getAttractionType();
-        this.moreInfoLinkList = obj.getMoreInfoLinkList();
+        this.segmentations = obj.getSegmentations().stream().map(TourismSegmentationDTO::new).toList();
+        this.attractionType = new AttractionTypeDTO(obj.getAttractionType());
+        this.moreInfoLinks = obj.getMoreInfoLinks().stream().map(MoreInfoLinkDTO::new).toList();
     }
 
-    public AttractionDTO(Long id, String name, String description, String mapLink, String city, String state, String imageLink, String infoSource, List<TourismSegmentation> segmentations, AttractionType attractionTypes, List<MoreInfoLink> moreInfoLinkList) {
+    public AttractionDTO(Long id, String name, String description, String mapLink, String city, String state, String imageLink, List<TourismSegmentationDTO> segmentations, AttractionTypeDTO attractionType, List<MoreInfoLinkDTO> moreInfoLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -57,10 +56,9 @@ public class AttractionDTO {
         this.city = city;
         this.state = state;
         this.imageLink = imageLink;
-        this.infoSource = infoSource;
         this.segmentations = segmentations;
-        this.attractionTypes = attractionTypes;
-        this.moreInfoLinkList = moreInfoLinkList;
+        this.attractionType = attractionType;
+        this.moreInfoLinks = moreInfoLinks;
     }
 
     public static TouristAttractionDTOBuilder builder() {
@@ -95,20 +93,16 @@ public class AttractionDTO {
         return this.imageLink;
     }
 
-    public String getInfoSource() {
-        return this.infoSource;
-    }
-
-    public List<TourismSegmentation> getSegmentations() {
+    public List<TourismSegmentationDTO> getSegmentations() {
         return this.segmentations;
     }
 
-    public AttractionType getAttractionTypes() {
-        return this.attractionTypes;
+    public AttractionTypeDTO getAttractionType() {
+        return this.attractionType;
     }
 
-    public List<MoreInfoLink> getMoreInfoLinkList() {
-        return this.moreInfoLinkList;
+    public List<MoreInfoLinkDTO> getMoreInfoLinks() {
+        return this.moreInfoLinks;
     }
 
     public void setId(Long id) {
@@ -139,20 +133,16 @@ public class AttractionDTO {
         this.imageLink = imageLink;
     }
 
-    public void setInfoSource(String infoSource) {
-        this.infoSource = infoSource;
-    }
-
-    public void setSegmentations(List<TourismSegmentation> segmentations) {
+    public void setSegmentations(List<TourismSegmentationDTO> segmentations) {
         this.segmentations = segmentations;
     }
 
-    public void setAttractionTypes(AttractionType attractionTypes) {
-        this.attractionTypes = attractionTypes;
+    public void setAttractionType(AttractionTypeDTO attractionType) {
+        this.attractionType = attractionType;
     }
 
-    public void setMoreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-        this.moreInfoLinkList = moreInfoLinkList;
+    public void setMoreInfoLinks(List<MoreInfoLinkDTO> moreInfoLinks) {
+        this.moreInfoLinks = moreInfoLinks;
     }
 
     @Override
@@ -161,7 +151,7 @@ public class AttractionDTO {
         if (o == null || getClass() != o.getClass()) return false;
 
         AttractionDTO that = (AttractionDTO) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(infoSource, that.infoSource) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionTypes, that.attractionTypes) && Objects.equals(moreInfoLinkList, that.moreInfoLinkList);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinks, that.moreInfoLinks);
     }
 
     @Override
@@ -173,15 +163,14 @@ public class AttractionDTO {
         result = 31 * result + Objects.hashCode(city);
         result = 31 * result + Objects.hashCode(state);
         result = 31 * result + Objects.hashCode(imageLink);
-        result = 31 * result + Objects.hashCode(infoSource);
         result = 31 * result + Objects.hashCode(segmentations);
-        result = 31 * result + Objects.hashCode(attractionTypes);
-        result = 31 * result + Objects.hashCode(moreInfoLinkList);
+        result = 31 * result + Objects.hashCode(attractionType);
+        result = 31 * result + Objects.hashCode(moreInfoLinks);
         return result;
     }
 
     public String toString() {
-        return "TouristAttractionDTO(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", imageLink=" + this.getImageLink() + ", infoSource=" + this.getInfoSource() + ", segmentations=" + this.getSegmentations() + ", attractionTypes=" + this.getAttractionTypes() + ", moreInfoLinkList=" + this.getMoreInfoLinkList() + ")";
+        return "TouristAttractionDTO(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", imageLink=" + this.getImageLink() + ", segmentations=" + this.getSegmentations() + ", attractionTypes=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinks() + ")";
     }
 
     public static class TouristAttractionDTOBuilder {
@@ -192,10 +181,9 @@ public class AttractionDTO {
         private String city;
         private String state;
         private String imageLink;
-        private String infoSource;
-        private List<TourismSegmentation> segmentations;
-        private AttractionType attractionTypes;
-        private List<MoreInfoLink> moreInfoLinkList;
+        private List<TourismSegmentationDTO> segmentations;
+        private AttractionTypeDTO attractionType;
+        private List<MoreInfoLinkDTO> moreInfoLinks;
 
         TouristAttractionDTOBuilder() {
         }
@@ -235,32 +223,27 @@ public class AttractionDTO {
             return this;
         }
 
-        public TouristAttractionDTOBuilder infoSource(String infoSource) {
-            this.infoSource = infoSource;
-            return this;
-        }
-
-        public TouristAttractionDTOBuilder segmentations(List<TourismSegmentation> segmentations) {
+        public TouristAttractionDTOBuilder segmentations(List<TourismSegmentationDTO> segmentations) {
             this.segmentations = segmentations;
             return this;
         }
 
-        public TouristAttractionDTOBuilder attractionTypes(AttractionType attractionTypes) {
-            this.attractionTypes = attractionTypes;
+        public TouristAttractionDTOBuilder attractionTypes(AttractionTypeDTO attractionTypes) {
+            this.attractionType = attractionTypes;
             return this;
         }
 
-        public TouristAttractionDTOBuilder moreInfoLinkList(List<MoreInfoLink> moreInfoLinkList) {
-            this.moreInfoLinkList = moreInfoLinkList;
+        public TouristAttractionDTOBuilder moreInfoLinks(List<MoreInfoLinkDTO> moreInfoLinks) {
+            this.moreInfoLinks = moreInfoLinks;
             return this;
         }
 
         public AttractionDTO build() {
-            return new AttractionDTO(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.infoSource, this.segmentations, this.attractionTypes, this.moreInfoLinkList);
+            return new AttractionDTO(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.segmentations, this.attractionType, this.moreInfoLinks);
         }
 
         public String toString() {
-            return "TouristAttractionDTO.TouristAttractionDTOBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", imageLink=" + this.imageLink + ", infoSource=" + this.infoSource + ", segmentations=" + this.segmentations + ", attractionTypes=" + this.attractionTypes + ", moreInfoLinkList=" + this.moreInfoLinkList + ")";
+            return "TouristAttractionDTO.TouristAttractionDTOBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", imageLink=" + this.imageLink + ", segmentations=" + this.segmentations + ", attractionTypes=" + this.attractionType + ", moreInfoLinkList=" + this.moreInfoLinks + ")";
         }
     }
 }

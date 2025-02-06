@@ -2,6 +2,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +21,12 @@ public class AttractionType {
     @Column(name = "description", length = 200, nullable = false)
     private String description;
 
+    // TODO: getter and setter
+    @OneToMany(mappedBy = "attractionType", fetch = FetchType.LAZY)
+    private List<Attraction> attractions = new ArrayList<>();
+
     public AttractionType() {
+        this(0L, "", "");
     }
 
     public AttractionType(Long id, String name, String description) {

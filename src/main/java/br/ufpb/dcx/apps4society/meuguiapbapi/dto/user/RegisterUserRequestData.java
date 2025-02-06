@@ -1,4 +1,4 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

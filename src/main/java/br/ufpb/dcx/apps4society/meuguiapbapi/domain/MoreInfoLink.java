@@ -1,16 +1,13 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
-@Entity
+@Embeddable
 @Table(name = "more_info_link")
 public class MoreInfoLink {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "link", length = 200, nullable = false)
     private String link;
@@ -18,11 +15,20 @@ public class MoreInfoLink {
     @Column(name = "decription", length = 200, nullable = false)
     private String description;
 
-    public MoreInfoLink() {
+    @ManyToOne
+    @JoinColumn(name = "attraction_id", insertable = false, updatable = false)
+    private Attraction attraction;
+
+
+    public MoreInfoLink(MoreInfoLinkRequestData dto) {
+        this(dto.getLink(), dto.getDescription());
     }
 
-    public MoreInfoLink(Long id, String link, String description) {
-        this.id = id;
+    public MoreInfoLink() {
+        this("", "");
+    }
+
+    public MoreInfoLink(String link, String description) {
         this.link = link;
         this.description = description;
     }
@@ -31,12 +37,13 @@ public class MoreInfoLink {
         return new MoreInfoLinkBuilder();
     }
 
-    public Long getId() {
-        return this.id;
+
+    public Attraction getAttraction() {
+        return attraction;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAttraction(Attraction attraction) {
+        this.attraction = attraction;
     }
 
     public String getLink() {
@@ -61,32 +68,25 @@ public class MoreInfoLink {
         if (o == null || getClass() != o.getClass()) return false;
 
         MoreInfoLink that = (MoreInfoLink) o;
-        return Objects.equals(id, that.id) && Objects.equals(link, that.link) && Objects.equals(description, that.description);
+        return Objects.equals(link, that.link) && Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(id);
-        result = 31 * result + Objects.hashCode(link);
+        int result = Objects.hashCode(link);
         result = 31 * result + Objects.hashCode(description);
         return result;
     }
 
     public String toString() {
-        return "MoreInfoLink(id=" + this.getId() + ", link=" + this.getLink() + ", description=" + this.getDescription() + ")";
+        return "MoreInfoLink(link=" + this.getLink() + ", description=" + this.getDescription() + ")";
     }
 
     public static class MoreInfoLinkBuilder {
-        private Long id;
         private String link;
         private String description;
 
         MoreInfoLinkBuilder() {
-        }
-
-        public MoreInfoLinkBuilder id(Long id) {
-            this.id = id;
-            return this;
         }
 
         public MoreInfoLinkBuilder link(String link) {
@@ -100,11 +100,11 @@ public class MoreInfoLink {
         }
 
         public MoreInfoLink build() {
-            return new MoreInfoLink(this.id, this.link, this.description);
+            return new MoreInfoLink(this.link, this.description);
         }
 
         public String toString() {
-            return "MoreInfoLink.MoreInfoLinkBuilder(id=" + this.id + ", link=" + this.link + ", description=" + this.description + ")";
+            return "MoreInfoLink.MoreInfoLinkBuilder(link=" + this.link + ", description=" + this.description + ")";
         }
     }
 }

@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -61,21 +61,28 @@ public class AttractionController {
             tags = {"Attractions"},
             responses = {
                     @ApiResponse(description = "Success", responseCode = "201",
-                            content = @Content(schema = @Schema(implementation = AttractionRequestData.class))
+                            content = @Content(schema = @Schema(implementation = Attraction.class))
                     ),
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
     @PostMapping()
-    public ResponseEntity<Attraction> create(@RequestBody @Valid AttractionRequestData obj) {
-        log.info("Criando novo atrativo: {}", obj);
-        Attraction newObj = attractionService.create(obj);
+    public ResponseEntity<AttractionDTO> create(@RequestBody @Valid AttractionRequestData obj) {
+        log.info("Criando novo atrativo: {}", obj.getName());
+        log.debug("Atrativo: {}", obj);
+
+        Attraction createdAttraction = attractionService.create(obj);
+        AttractionDTO dto = new AttractionDTO(createdAttraction);
+
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/attractions/{id}")
-                .buildAndExpand(newObj.getId()).toUri();
-        log.info("Atrativo criado com sucesso: {}", newObj);
-        return ResponseEntity.created(uri).body(newObj);
+                .buildAndExpand(createdAttraction.getId()).toUri();
+
+        log.info("Atrativo criado com sucesso: {}", createdAttraction.getName());
+        log.debug("Atrativo criado: {}", createdAttraction);
+
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -133,11 +140,11 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/byName")
-    public ResponseEntity<List<Attraction>> findByName(@RequestParam String name) {
+    public ResponseEntity<List<AttractionDTO>> findByName(@RequestParam String name) {
         log.info("Buscando atrativo pelo nome: {}", name);
-        List<Attraction> list = attractionService.findByName(name);
-        log.info("Atrativo encontrado pelo nome: {}", list.size());
-        return ResponseEntity.ok().body(list);
+        List<AttractionDTO> result = attractionService.findByName(name).stream().map(AttractionDTO::new).toList();
+        log.info("Atrativo encontrado pelo nome: {}", result.size());
+        return ResponseEntity.ok().body(result);
     }
 
     @Operation(summary = "Buscar atrativo por cidade", description = "Busca um atrativo por cidade",
@@ -153,11 +160,11 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/byCity")
-    public ResponseEntity<List<Attraction>> findByCity(@RequestParam String city) {
+    public ResponseEntity<List<AttractionDTO>> findByCity(@RequestParam String city) {
         log.info("Buscando atrativo pela cidade: {}", city);
-        List<Attraction> list = attractionService.findByCity(city);
-        log.info("Atrativos encontrados pela cidade: {}", list.size());
-        return ResponseEntity.ok().body(list);
+        List<AttractionDTO> result = attractionService.findByCity(city).stream().map(AttractionDTO::new).toList();
+        log.info("Atrativo encontrado pelo nome: {}", result.size());
+        return ResponseEntity.ok().body(result);
     }
 
     @Operation(summary = "Buscar atrativo por segmentação", description = "Busca um atrativo pela segmentação",
@@ -173,11 +180,11 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/bySegmentations")
-    public ResponseEntity<List<Attraction>> findBySegmentations(@RequestParam String segmentation) {
+    public ResponseEntity<List<AttractionDTO>> findBySegmentations(@RequestParam String segmentation) {
         log.info("Buscando atrativo pela segmentação: {}", segmentation);
-        List<Attraction> list = attractionService.findBySegmentation(segmentation);
-        log.info("Atrativos encontrados pela segmentação: {}", list.size());
-        return ResponseEntity.ok().body(list);
+        List<AttractionDTO> result = attractionService.findBySegmentation(segmentation).stream().map(AttractionDTO::new).toList();
+        log.info("Atrativo encontrado pelo nome: {}", result.size());
+        return ResponseEntity.ok().body(result);
     }
 
     @Operation(summary = "Buscar atrativo por tipo", description = "Busca um atrativo pelo tipo",
@@ -193,18 +200,22 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/byType")
-    public ResponseEntity<List<Attraction>> findByType(@RequestParam String attractionType) {
+    public ResponseEntity<List<AttractionDTO>> findByType(@RequestParam String attractionType) {
         log.info("Buscando atrativo pelo tipo: {}", attractionType);
-        List<Attraction> list = attractionService.findByType(attractionType);
-        log.info("Atrativos encontrados pelo tipo: {}", list.size());
-        return ResponseEntity.ok().body(list);
+        List<AttractionDTO> result = attractionService.findByType(attractionType).stream().map(AttractionDTO::new).toList();
+        log.info("Atrativo encontrado pelo nome: {}", result.size());
+        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Attraction> update(@PathVariable Long id, @RequestBody @Valid AttractionRequestData objDto) {
+    public ResponseEntity<AttractionDTO> update(@PathVariable Long id, @RequestBody @Valid AttractionRequestData objDto) {
         log.info("Atualizando atrativo com ID: {}", id);
-        Attraction newObj = attractionService.update(id, objDto);
-        log.info("Atrativo atualizado com sucesso: {}", newObj);
-        return ResponseEntity.ok().body(newObj);
+
+        Attraction updatedAttraction = attractionService.update(id, objDto);
+        AttractionDTO updatedAttractionDTO = new AttractionDTO(updatedAttraction);
+
+        log.info("Atrativo atualizado com sucesso: {}", updatedAttraction);
+
+        return ResponseEntity.ok().body(updatedAttractionDTO);
     }
 }

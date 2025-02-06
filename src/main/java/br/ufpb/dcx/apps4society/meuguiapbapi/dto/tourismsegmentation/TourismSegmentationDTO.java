@@ -1,4 +1,4 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
 
@@ -13,6 +13,7 @@ public class TourismSegmentationDTO {
     private String description;
 
     public TourismSegmentationDTO() {
+        this(0L, "", "");
     }
 
     public TourismSegmentationDTO(Long id, String name, String description) {

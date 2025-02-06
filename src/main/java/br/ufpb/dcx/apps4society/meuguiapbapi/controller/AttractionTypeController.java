@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.AttractionTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

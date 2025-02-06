@@ -1,40 +1,29 @@
-package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+package br.ufpb.dcx.apps4society.meuguiapbapi.dto.user;
 
 import java.util.Objects;
 
-public class UpdateUserRequestData {
-    @NotBlank(
-            message = "O email não pode ser vazio"
-    )
-    @Email (
-            message = "'${validatedValue}' não é um email válido"
-    )
+public class UserDTO {
+    private Long id;
     private String email;
-
-    @NotBlank(
-            message = "O nome não pode ser vazio"
-    )
     private String firstName;
-
-    @NotBlank(
-            message = "O sobrenome não pode ser vazio"
-    )
     private String lastName;
 
-    public UpdateUserRequestData(String email, String firstName, String lastName) {
+    public UserDTO(Long id, String email, String firstName, String lastName) {
+        this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public UpdateUserRequestData() {
+    public UserDTO() {
     }
 
     public static UserDTOBuilder builder() {
         return new UserDTOBuilder();
+    }
+
+    public Long getId() {
+        return this.id;
     }
 
     public String getEmail() {
@@ -47,6 +36,10 @@ public class UpdateUserRequestData {
 
     public String getLastName() {
         return this.lastName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setEmail(String email) {
@@ -66,28 +59,35 @@ public class UpdateUserRequestData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UpdateUserRequestData that = (UpdateUserRequestData) o;
-        return Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(email, userDTO.email) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(email);
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(email);
         result = 31 * result + Objects.hashCode(firstName);
         result = 31 * result + Objects.hashCode(lastName);
         return result;
     }
 
     public String toString() {
-        return "UserDTO(email=" + this.getEmail() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ")";
+        return "UserDTO(id=" + this.getId() + ", email=" + this.getEmail() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ")";
     }
 
     public static class UserDTOBuilder {
+        private Long id;
         private String email;
         private String firstName;
         private String lastName;
 
         UserDTOBuilder() {
+        }
+
+        public UserDTOBuilder id(Long id) {
+            this.id = id;
+            return this;
         }
 
         public UserDTOBuilder email(String email) {
@@ -105,12 +105,12 @@ public class UpdateUserRequestData {
             return this;
         }
 
-        public UpdateUserRequestData build() {
-            return new UpdateUserRequestData(this.email, this.firstName, this.lastName);
+        public UserDTO build() {
+            return new UserDTO(this.id, this.email, this.firstName, this.lastName);
         }
 
         public String toString() {
-            return "UserDTO.UserDTOBuilder(email=" + this.email + ", firstName=" + this.firstName + ", lastName=" + this.lastName + ")";
+            return "UserDTO.UserDTOBuilder(id=" + this.id + ", email=" + this.email + ", firstName=" + this.firstName + ", lastName=" + this.lastName + ")";
         }
     }
 }

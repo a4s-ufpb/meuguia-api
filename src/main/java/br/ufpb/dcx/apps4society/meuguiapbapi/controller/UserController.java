@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UpdateUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
