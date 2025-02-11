@@ -2,6 +2,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 
+import java.util.Objects;
+
 public class MoreInfoLinkDTO {
     private final String link;
     private final String description;
@@ -32,6 +34,28 @@ public class MoreInfoLinkDTO {
         return description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MoreInfoLinkDTO that = (MoreInfoLinkDTO) o;
+        return Objects.equals(link, that.link) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(link);
+        result = 31 * result + Objects.hashCode(description);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MoreInfoLinkDTO(" +
+                "link='" + link + "'" +
+                ", description='" + description + "'" +
+                ")";
+    }
 
     public static final class MoreInfoLinkDTOBuilder {
         private String link;

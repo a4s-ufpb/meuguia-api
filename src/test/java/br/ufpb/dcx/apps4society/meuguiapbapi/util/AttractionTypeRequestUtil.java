@@ -1,7 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 

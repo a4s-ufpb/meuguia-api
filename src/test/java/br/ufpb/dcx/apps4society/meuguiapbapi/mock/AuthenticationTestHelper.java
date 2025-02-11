@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.authentication.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
 
 public class AuthenticationTestHelper {

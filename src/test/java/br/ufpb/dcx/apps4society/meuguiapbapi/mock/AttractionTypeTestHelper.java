@@ -1,7 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
 
 import java.util.List;
 
@@ -17,6 +18,14 @@ public class AttractionTypeTestHelper {
 
     public AttractionType createAttractionType(Integer num) {
         return AttractionType.builder()
+                .id(num.longValue())
+                .name("mock Cultural"+num)
+                .description("Turismo cultural, visando pontos históricos")
+                .build();
+    }
+
+    public AttractionTypeDTO createAttractionTypeDTO(Integer num) {
+        return AttractionTypeDTO.builder()
                 .id(num.longValue())
                 .name("mock Cultural"+num)
                 .description("Turismo cultural, visando pontos históricos")

@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionRequestData;
 import io.restassured.http.ContentType;
 import org.springframework.http.HttpStatus;
 
@@ -23,14 +23,18 @@ public class AttractionRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public void delete(Attraction attraction, String token) {
+    public void delete(Long attractionId, String token) {
         given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
                 .when()
-                .delete(PATH_ATTRACTION + "/" + attraction.getId())
+                .delete(PATH_ATTRACTION + "/" + attractionId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void delete(Attraction attraction, String token) {
+        delete(attraction.getId(), token);
     }
 
     public Attraction post(AttractionRequestData requestBody, String token) {

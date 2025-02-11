@@ -2,6 +2,8 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 
+import java.util.Objects;
+
 public class AttractionTypeDTO {
     private final Long id;
     private final String name;
@@ -39,6 +41,30 @@ public class AttractionTypeDTO {
         return this.description;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AttractionTypeDTO that = (AttractionTypeDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(description);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "AttractionTypeDTO(" +
+                "id=" + id +
+                ", name='" + name + "'" +
+                ", description='" + description + "'" +
+                ")";
+    }
 
     public static final class AttractionTypeDTOBuilder {
         private Long id;

@@ -1,10 +1,13 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,8 +51,8 @@ class AttractionTest {
 
     @Test
     void testBuilder() {
-        var segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations();
-        var attractionType = attractionTypeTestHelper.createAttractionType(1);
+        List<TourismSegmentation> segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations();
+        AttractionType attractionType = attractionTypeTestHelper.createAttractionType(1);
         var moreInfoLinks = moreInfoLinkTestHelper.getListOfMoreInfoLinks();
         var result = Attraction.builder()
                 .id(1L)
@@ -59,10 +62,9 @@ class AttractionTest {
                 .city("Test")
                 .state("Test")
                 .imageLink("https://teste.com/test.jpg")
-                .infoSource("Test")
                 .segmentations(segmentations)
                 .attractionType(attractionType)
-                .moreInfoLinkList(moreInfoLinks)
+                .moreInfoLinks(moreInfoLinks)
                 .build();
 
         assertEquals(1L, result.getId());
@@ -72,10 +74,9 @@ class AttractionTest {
         assertEquals("Test", result.getCity());
         assertEquals("Test", result.getState());
         assertEquals("https://teste.com/test.jpg", result.getImageLink());
-        assertEquals("Test", result.getInfoSource());
         assertEquals(segmentations, result.getSegmentations());
         assertEquals(attractionType, result.getAttractionType());
-        assertEquals(moreInfoLinks, result.getMoreInfoLinkList());
+        assertEquals(moreInfoLinks, result.getMoreInfoLinks());
     }
 
     @Test
@@ -89,7 +90,7 @@ class AttractionTest {
     @Test
     void testToString() {
         Attraction attraction = attractionTestHelper.createAttraction(1);
-        String expected = "Attraction(id=null, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, infoSource=Fonte: https://fonte.com, segmentations=[TourismSegmentation(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionType=AttractionType(id=1, name=mock Cultural1, description=Turismo cultural, visando pontos históricos), moreInfoLinkList=[MoreInfoLink(id=1, link=https://www.mock-link1.com, description=description)])";
+        String expected = "Attraction(id=1, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, segmentations=[TourismSegmentation(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionType=AttractionType(id=1, name=mock Cultural1, description=Turismo cultural, visando pontos históricos), moreInfoLinkList=[MoreInfoLink(link=https://www.mock-link1.com, description=description)])";
         assertEquals(expected, attraction.toString());
     }
 }

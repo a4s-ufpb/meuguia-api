@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;

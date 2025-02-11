@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationRequestData;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;

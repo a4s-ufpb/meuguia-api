@@ -2,6 +2,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
@@ -23,7 +24,7 @@ class AttractionRequestDataTest {
     void builder() {
         var segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations().stream().map(TourismSegmentation::getId).toList();
         var attractionType = attractionTypeTestHelper.createAttractionType(1).getId();
-        var moreInfoLinks = moreInfoLinkTestHelper.getListOfMoreInfoLinks().stream().map(MoreInfoLink::getId).toList();
+        var moreInfoLinks = moreInfoLinkTestHelper.getListOfMoreInfoLinksRequestData();
 
         var result = AttractionRequestData.builder()
                 .name("Test")
@@ -32,10 +33,9 @@ class AttractionRequestDataTest {
                 .city("Test")
                 .state("Test")
                 .imageLink("https://teste.com")
-                .infoSource("Test")
                 .segmentations(segmentations)
-                .attractionType(attractionType)
                 .moreInfoLinks(moreInfoLinks)
+                .attractionType(attractionType)
                 .build();
 
         assertNotNull(result);
@@ -45,7 +45,6 @@ class AttractionRequestDataTest {
         assertEquals("Test", result.getCity());
         assertEquals("Test", result.getState());
         assertEquals("https://teste.com", result.getImageLink());
-        assertEquals("Test", result.getInfoSource());
         assertEquals(segmentations, result.getSegmentations());
         assertEquals(attractionType, result.getAttractionType());
         assertEquals(moreInfoLinks, result.getMoreInfoLinks());
@@ -91,7 +90,7 @@ class AttractionRequestDataTest {
     @Test
     void testToString() {
         var attractionRequestData = attractionTestHelper.createAttraction(1);
-        var expected = "Attraction(id=null, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, infoSource=Fonte: https://fonte.com, segmentations=[TourismSegmentation(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionType=AttractionType(id=1, name=mock Cultural1, description=Turismo cultural, visando pontos históricos), moreInfoLinkList=[MoreInfoLink(id=1, link=https://www.mock-link1.com, description=description)])";
+        var expected = "Attraction(id=1, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, segmentations=[TourismSegmentation(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionType=AttractionType(id=1, name=mock Cultural1, description=Turismo cultural, visando pontos históricos), moreInfoLinkList=[MoreInfoLink(link=https://www.mock-link1.com, description=description)])";
         assertEquals(expected, attractionRequestData.toString());
     }
 

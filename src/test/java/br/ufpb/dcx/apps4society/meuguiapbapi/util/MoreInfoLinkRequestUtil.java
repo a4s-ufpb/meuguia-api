@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
@@ -32,13 +32,13 @@ public class MoreInfoLinkRequestUtil extends RequestUtil {
     }
 
     public void delete(MoreInfoLink request, String token) {
-        given()
-                .header("Authorization", "Bearer " + token)
-                .contentType("application/json")
-                .body(request)
-                .when()
-                .delete(PATH_MORE_INFO_LINK + "/" + request.getId())
-                .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+//        given()
+//                .header("Authorization", "Bearer " + token)
+//                .contentType("application/json")
+//                .body(request)
+//                .when()
+//                .delete(PATH_MORE_INFO_LINK + "/" + request.getId())
+//                .then()
+//                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

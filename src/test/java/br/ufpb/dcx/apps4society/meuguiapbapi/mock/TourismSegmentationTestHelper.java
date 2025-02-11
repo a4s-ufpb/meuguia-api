@@ -1,7 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationRequestData;
 
 import java.util.List;
 
@@ -23,6 +24,15 @@ public class TourismSegmentationTestHelper {
                 .build();
     }
 
+    public TourismSegmentationDTO createTourismSegmentationDTO(Integer id) {
+        return TourismSegmentationDTO.builder()
+                .id(id.longValue())
+                .name("mock Turismo de sol e mar"+id)
+                .description("descrição")
+                .build();
+    }
+
+
     public TourismSegmentationRequestData createTourismSegmentationRequestData(Integer num) {
         return TourismSegmentationRequestData.builder()
                 .name("mock Turismo de sol e mar"+num)
@@ -37,6 +47,15 @@ public class TourismSegmentationTestHelper {
                 createTourismSegmentation(3)
         );
     }
+
+    public List<TourismSegmentationDTO> getListOfTourismSegmentationsDTO() {
+        return List.of(
+                createTourismSegmentationDTO(1),
+                createTourismSegmentationDTO(2),
+                createTourismSegmentationDTO(3)
+        );
+    }
+
 
     public List<TourismSegmentation> getListOfDuplicatedTourismSegmentation() {
         return List.of(

@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

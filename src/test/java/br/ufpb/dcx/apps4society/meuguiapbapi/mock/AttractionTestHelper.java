@@ -4,10 +4,13 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AttractionTestHelper {
     private static AttractionTestHelper instance;
@@ -26,7 +29,7 @@ public class AttractionTestHelper {
     public AttractionRequestData createAttractionRequestData(
             Integer num,
             TourismSegmentation segmentation,
-            MoreInfoLink moreInfoLink,
+            MoreInfoLinkRequestData moreInfoLinkRequestData,
             AttractionType attractionType
     ) {
         return AttractionRequestData.builder()
@@ -36,10 +39,9 @@ public class AttractionTestHelper {
                 .city("João Pessoa")
                 .state("Paraíba (PB)")
                 .imageLink("https://imagem.com")
-                .infoSource("Fonte: https://fonte.com")
                 .segmentations(List.of(segmentation.getId()))
                 .attractionType(attractionType.getId())
-                .moreInfoLinks(List.of(moreInfoLink.getId()))
+                .moreInfoLinks(List.of(moreInfoLinkRequestData))
                 .build();
     }
 
@@ -47,7 +49,7 @@ public class AttractionTestHelper {
         return createAttractionRequestData(
                 num,
                 tourismSegmentationTestHelper.createTourismSegmentation(num),
-                moreInfoLinkTestHelper.createMoreInfoLink(num),
+                moreInfoLinkTestHelper.createMoreInfoLinkRequestData(num),
                 attractionTypeTestHelper.createAttractionType(num)
         );
     }
@@ -59,16 +61,16 @@ public class AttractionTestHelper {
             AttractionType attractionType
     ) {
         return Attraction.builder()
+                .id(num.longValue())
                 .name("mock Teatro municipal " + num)
                 .description("Teatro municipal de joão pessoa")
                 .mapLink("https://mapa.com")
                 .city("João Pessoa")
                 .state("Paraíba (PB)")
                 .imageLink("https://imagem.com")
-                .infoSource("Fonte: https://fonte.com")
                 .segmentations(List.of(segmentation))
                 .attractionType(attractionType)
-                .moreInfoLinkList(List.of(moreInfoLink))
+                .moreInfoLinks(List.of(moreInfoLink))
                 .build();
 
     }
@@ -99,10 +101,18 @@ public class AttractionTestHelper {
                 .city("João Pessoa")
                 .state("Paraíba (PB)")
                 .imageLink("https://imagem.com")
-                .infoSource("Fonte: https://fonte.com")
-                .segmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentation(id)))
-                .attractionTypes(attractionTypeTestHelper.createAttractionType(id))
-                .moreInfoLinkList(List.of(moreInfoLinkTestHelper.createMoreInfoLink(id)))
+                .segmentations(List.of(tourismSegmentationTestHelper.createTourismSegmentationDTO(id)))
+                .attractionTypes(attractionTypeTestHelper.createAttractionTypeDTO(id))
+                .moreInfoLinks(List.of(moreInfoLinkTestHelper.createMoreInfoLinkDTO(id)))
                 .build();
+    }
+
+    public void assertAttractionEqualsToRequestData(Attraction attraction, AttractionRequestData attractionRequestData) {
+        assertEquals(attractionRequestData.getName(), attraction.getName());
+        assertEquals(attractionRequestData.getDescription(), attraction.getDescription());
+        assertEquals(attractionRequestData.getMapLink(), attraction.getMapLink());
+        assertEquals(attractionRequestData.getCity(), attraction.getCity());
+        assertEquals(attractionRequestData.getState(), attraction.getState());
+        assertEquals(attractionRequestData.getImageLink(), attraction.getImageLink());
     }
 }

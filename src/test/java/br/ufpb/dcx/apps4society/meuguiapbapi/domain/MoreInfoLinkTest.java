@@ -11,12 +11,10 @@ class MoreInfoLinkTest {
     @Test
     void builder() {
         var result = MoreInfoLink.builder()
-                .id(1L)
                 .link("https://www.google.com")
                 .description("description")
                 .build();
 
-        assertEquals(1L, result.getId());
         assertEquals("https://www.google.com", result.getLink());
         assertEquals("description", result.getDescription());
     }
@@ -64,7 +62,7 @@ class MoreInfoLinkTest {
     @Test
     void testToString() {
         var moreInfoLink = moreInfoLinkTestHelper.createMoreInfoLink(1);
-        String expected = "MoreInfoLink(id=1, link=https://www.mock-link1.com, description=description)";
+        String expected = "MoreInfoLink(link=https://www.mock-link1.com, description=description)";
 
         assertEquals(expected, moreInfoLink.toString());
     }

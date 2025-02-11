@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UpdateUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.UserTestHelper;

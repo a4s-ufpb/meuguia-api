@@ -1,5 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
@@ -7,6 +13,8 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,9 +28,9 @@ class AttractionDTOTest {
 
     @Test
     void testBuilder() {
-        var segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations();
-        var attractionType = attractionTypeTestHelper.createAttractionType(1);
-        var moreInfoLinkList = moreInfoLinkTestHelper.getListOfMoreInfoLinks();
+        List<TourismSegmentationDTO> segmentationsDTO = tourismSegmentationTestHelper.getListOfTourismSegmentationsDTO();
+        AttractionTypeDTO attractionTypeDTO = attractionTypeTestHelper.createAttractionTypeDTO(1);
+        List<MoreInfoLinkDTO> moreInfoLinksDTO = moreInfoLinkTestHelper.getListOfMoreInfoLinksDTO();
 
         var result = AttractionDTO.builder()
                 .id(1L)
@@ -32,10 +40,9 @@ class AttractionDTOTest {
                 .city("Test city")
                 .state("Test state")
                 .imageLink("https://www.google.com/image")
-                .infoSource("Test info source")
-                .segmentations(segmentations)
-                .attractionTypes(attractionType)
-                .moreInfoLinkList(moreInfoLinkList)
+                .segmentations(segmentationsDTO)
+                .attractionTypes(attractionTypeDTO)
+                .moreInfoLinks(moreInfoLinksDTO)
                 .build();
 
         assertNotNull(result);
@@ -46,10 +53,9 @@ class AttractionDTOTest {
         assertEquals("Test city", result.getCity());
         assertEquals("Test state", result.getState());
         assertEquals("https://www.google.com/image", result.getImageLink());
-        assertEquals("Test info source", result.getInfoSource());
-        assertEquals(segmentations, result.getSegmentations());
-        assertEquals(attractionType, result.getAttractionTypes());
-        assertEquals(moreInfoLinkList, result.getMoreInfoLinkList());
+        assertEquals(segmentationsDTO, result.getSegmentations());
+        assertEquals(attractionTypeDTO, result.getAttractionType());
+        assertEquals(moreInfoLinksDTO, result.getMoreInfoLinks());
     }
 
     @Test
@@ -93,7 +99,7 @@ class AttractionDTOTest {
     @Test
     void testToString() {
         AttractionDTO attractionDto = attractionTestHelper.createAttractionDTO(1);
-        String expected = "TouristAttractionDTO(id=1, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, infoSource=Fonte: https://fonte.com, segmentations=[TourismSegmentation(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionTypes=AttractionType(id=1, name=mock Cultural1, description=Turismo cultural, visando pontos históricos), moreInfoLinkList=[MoreInfoLink(id=1, link=https://www.mock-link1.com, description=description)])";
+        String expected = "TouristAttractionDTO(id=1, name=mock Teatro municipal 1, description=Teatro municipal de joão pessoa, mapLink=https://mapa.com, city=João Pessoa, state=Paraíba (PB), imageLink=https://imagem.com, segmentations=[TourismSegmentationDTO(id=1, name=mock Turismo de sol e mar1, description=descrição)], attractionTypes=AttractionTypeDTO(id=1, name='mock Cultural1', description='Turismo cultural, visando pontos históricos'), moreInfoLinkList=[MoreInfoLinkDTO(link='https://www.mock-link1.com', description='description')])";
 
         assertEquals(expected, attractionDto.toString());
     }
