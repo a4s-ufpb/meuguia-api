@@ -1,13 +1,15 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 import org.springframework.http.HttpStatus;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionRequestUtil.PATH_ATTRACTION;
 import static io.restassured.RestAssured.given;
 
 public class MoreInfoLinkRequestUtil extends RequestUtil {
-    public static final String PATH_MORE_INFO_LINK = "/more-info";
+    public static final String PATH_MORE_INFO_LINK = "/more-info-links";
 
     private static MoreInfoLinkRequestUtil instance;
 
@@ -18,27 +20,27 @@ public class MoreInfoLinkRequestUtil extends RequestUtil {
         return instance;
     }
 
-    public MoreInfoLink post(MoreInfoLinkRequestData request, String token) {
+    public MoreInfoLinkDTO post(MoreInfoLinkRequestData request, Long attractionId, String token) {
         return given()
                 .header("Authorization", "Bearer " + token)
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post(PATH_MORE_INFO_LINK)
+                .post(PATH_ATTRACTION + "/" + attractionId + PATH_MORE_INFO_LINK)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
-                .as(MoreInfoLink.class);
+                .as(MoreInfoLinkDTO.class);
     }
 
-    public void delete(MoreInfoLink request, String token) {
-//        given()
-//                .header("Authorization", "Bearer " + token)
-//                .contentType("application/json")
-//                .body(request)
-//                .when()
-//                .delete(PATH_MORE_INFO_LINK + "/" + request.getId())
-//                .then()
-//                .statusCode(HttpStatus.NO_CONTENT.value());
+    public void delete(MoreInfoLinkDTO request, Long attractionId, String token) {
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType("application/json")
+                .body(request)
+                .when()
+                .post(PATH_ATTRACTION + "/" + attractionId + PATH_MORE_INFO_LINK + "?link=" + request.getLink())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

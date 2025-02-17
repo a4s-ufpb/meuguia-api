@@ -8,6 +8,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,9 +69,9 @@ public class AttractionTestHelper {
                 .city("João Pessoa")
                 .state("Paraíba (PB)")
                 .imageLink("https://imagem.com")
-                .segmentations(List.of(segmentation))
+                .segmentations(new ArrayList<>(List.of(segmentation)))
                 .attractionType(attractionType)
-                .moreInfoLinks(List.of(moreInfoLink))
+                .moreInfoLinks(new ArrayList<>(List.of(moreInfoLink)))
                 .build();
 
     }

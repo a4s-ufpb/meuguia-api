@@ -12,7 +12,7 @@ public class MoreInfoLink {
     @Column(name = "link", length = 200, nullable = false)
     private String link;
 
-    @Column(name = "decription", length = 200, nullable = false)
+    @Column(name = "description", length = 200, nullable = false)
     private String description;
 
     @ManyToOne
