@@ -1,8 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
 
 import java.util.List;
 

@@ -1,10 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.AttractionTypeRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -67,7 +68,7 @@ class AttractionTypeServiceTest {
         Exception thrown = assertThrows(ObjectNotFoundException.class,
                 () -> attractionTypeService.findById(1L));
 
-        assertEquals("Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType", thrown.getMessage());
+        assertEquals("Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType", thrown.getMessage());
     }
 
     @Test
@@ -106,7 +107,7 @@ class AttractionTypeServiceTest {
         Exception thrown = assertThrows(ObjectNotFoundException.class,
                 () -> attractionTypeService.delete(1L));
 
-        assertEquals(thrown.getMessage(), "Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.domain.AttractionType");
+        assertEquals(thrown.getMessage(), "Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType");
     }
 
     @Test

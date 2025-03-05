@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.authentication.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

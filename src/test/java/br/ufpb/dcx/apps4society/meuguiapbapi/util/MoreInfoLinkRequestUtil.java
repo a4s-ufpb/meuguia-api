@@ -1,8 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.util;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkRequestData;
 import org.springframework.http.HttpStatus;
 
 import static br.ufpb.dcx.apps4society.meuguiapbapi.util.AttractionRequestUtil.PATH_ATTRACTION;

@@ -1,7 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.mock;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UpdateUserRequestData;
 
 public class UserTestHelper {
     private static UserTestHelper instance;

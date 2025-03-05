@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.UserTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

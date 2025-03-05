@@ -1,12 +1,13 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UpdateUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UpdateUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.UserTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

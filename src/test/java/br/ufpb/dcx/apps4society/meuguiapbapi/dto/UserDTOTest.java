@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.user.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,10 +1,11 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.repository.TourismSegmentationRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.TourismSegmentationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -53,7 +54,7 @@ class TourismSegmentationServiceTest {
             tourismSegmentationService.findById(1L);
         });
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation", thrown.getMessage());
+        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation", thrown.getMessage());
     }
 
     @Test
@@ -126,7 +127,7 @@ class TourismSegmentationServiceTest {
             tourismSegmentationService.delete(1L);
         });
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation", thrown.getMessage());
+        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation", thrown.getMessage());
     }
 
     @Test

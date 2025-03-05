@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
 import org.junit.jupiter.api.Test;
 

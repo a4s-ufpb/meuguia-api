@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.config;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
