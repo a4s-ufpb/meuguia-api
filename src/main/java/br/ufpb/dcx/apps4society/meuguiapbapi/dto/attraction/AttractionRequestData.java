@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.City;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkRequestData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -18,10 +19,7 @@ public class AttractionRequestData {
 
     private String mapLink;
 
-    @NotBlank(
-            message = "Cidade da Atração é obrigatória"
-    )
-    private String city;
+    private City city;
 
     @NotBlank(
             message = "Estado da Atração é obrigatório"
@@ -56,7 +54,7 @@ public class AttractionRequestData {
     public AttractionRequestData(String name,
                                  String description,
                                  String mapLink,
-                                 String city,
+                                 City city,
                                  String state,
                                  String imageLink,
                                  List<Long> segmentations,
@@ -74,7 +72,7 @@ public class AttractionRequestData {
     }
 
     public AttractionRequestData() {
-        this("", "", "", "", "", "", List.of(), 0L, List.of());
+        this("", "", "", null, "", "", List.of(), 0L, List.of());
     }
 
     public static AttractionRequestDataBuilder builder() {
@@ -93,7 +91,7 @@ public class AttractionRequestData {
         return this.mapLink;
     }
 
-    public String getCity() {
+    public City getCity() {
         return this.city;
     }
 
@@ -129,7 +127,7 @@ public class AttractionRequestData {
         this.mapLink = mapLink;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -184,7 +182,7 @@ public class AttractionRequestData {
         private String name;
         private String description;
         private String mapLink;
-        private String city;
+        private City city;
         private String state;
         private String imageLink;
         private List<Long> segmentations;
@@ -213,7 +211,7 @@ public class AttractionRequestData {
             return this;
         }
 
-        public AttractionRequestDataBuilder city(String city) {
+        public AttractionRequestDataBuilder city(City city) {
             this.city = city;
             return this;
         }

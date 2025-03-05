@@ -77,10 +77,16 @@ public class AttractionService {
     }
 
     public Attraction findById(Long id) {
+        log.debug("Buscando atrativo por id: {}", id);
+
         Optional<Attraction> obj = attractionRepository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException(
-                "Objeto não encontrado! Id: " + id + ", Tipo: " + Attraction.class.getName()));
-    }
+        Attraction attraction = obj.orElseThrow(() ->
+                new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Attraction.class.getName()));
+
+        log.debug("Atrativo encontrado com sucesso");
+        log.debug("Atrativo encontrado: {}", attraction);
+
+        return attraction; }
 
     public List<Attraction> findAll() {
         return attractionRepository.findAll();
@@ -120,6 +126,10 @@ public class AttractionService {
         attraction.setCity(obj.getCity());
         attraction.setState(obj.getState());
         attraction.setImageLink(obj.getImageLink());
+        return attractionRepository.save(attraction);
+    }
+
+    public Attraction save(Attraction attraction) {
         return attractionRepository.save(attraction);
     }
 }

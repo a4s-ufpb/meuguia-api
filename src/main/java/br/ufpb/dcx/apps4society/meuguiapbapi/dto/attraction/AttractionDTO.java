@@ -1,6 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto.attraction;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.domain.City;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.attractiontype.AttractionTypeDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.moreinfolink.MoreInfoLinkDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.dto.tourismsegmentation.TourismSegmentationDTO;
@@ -18,7 +19,7 @@ public class AttractionDTO {
 
     private String mapLink;
 
-    private String city;
+    private City city;
 
     private String state;
 
@@ -32,7 +33,7 @@ public class AttractionDTO {
     private List<MoreInfoLinkDTO> moreInfoLinks;
 
     public AttractionDTO() {
-        this(0L, "", "", "", "", "","", null, null, null);
+        this(0L, "", "", "", null, "","", null, null, null);
     }
 
     public AttractionDTO(Attraction obj) {
@@ -48,7 +49,7 @@ public class AttractionDTO {
         this.moreInfoLinks = obj.getMoreInfoLinks().stream().map(MoreInfoLinkDTO::new).toList();
     }
 
-    public AttractionDTO(Long id, String name, String description, String mapLink, String city, String state, String imageLink, List<TourismSegmentationDTO> segmentations, AttractionTypeDTO attractionType, List<MoreInfoLinkDTO> moreInfoLinks) {
+    public AttractionDTO(Long id, String name, String description, String mapLink, City city, String state, String imageLink, List<TourismSegmentationDTO> segmentations, AttractionTypeDTO attractionType, List<MoreInfoLinkDTO> moreInfoLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -81,7 +82,7 @@ public class AttractionDTO {
         return this.mapLink;
     }
 
-    public String getCity() {
+    public City getCity() {
         return this.city;
     }
 
@@ -121,7 +122,7 @@ public class AttractionDTO {
         this.mapLink = mapLink;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -178,7 +179,7 @@ public class AttractionDTO {
         private String name;
         private String description;
         private String mapLink;
-        private String city;
+        private City city;
         private String state;
         private String imageLink;
         private List<TourismSegmentationDTO> segmentations;
@@ -208,7 +209,7 @@ public class AttractionDTO {
             return this;
         }
 
-        public TouristAttractionDTOBuilder city(String city) {
+        public TouristAttractionDTOBuilder city(City city) {
             this.city = city;
             return this;
         }

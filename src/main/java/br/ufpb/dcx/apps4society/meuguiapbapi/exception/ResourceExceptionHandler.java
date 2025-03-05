@@ -1,6 +1,8 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
 import jakarta.validation.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
+    private final Logger log = LoggerFactory.getLogger(ResourceExceptionHandler.class);
 
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException e, HttpServletRequest request) {
@@ -30,6 +33,10 @@ public class ResourceExceptionHandler {
                 e.getMessage(),
                 request.getRequestURI()
         );
+
+        log.info("Recurso não encontrado: {}", error.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -42,6 +49,10 @@ public class ResourceExceptionHandler {
                 e.getMostSpecificCause().getMessage(),
                 request.getRequestURI()
         );
+
+        log.info("Violação da integridade de dados: {}", error.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
@@ -54,6 +65,10 @@ public class ResourceExceptionHandler {
                 e.getLocalizedMessage(),
                 request.getRequestURI()
         );
+
+        log.info("Recurso já existe: {}", error.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
@@ -66,6 +81,10 @@ public class ResourceExceptionHandler {
                 e.getLocalizedMessage(),
                 request.getRequestURI()
         );
+
+        log.info("Erro de validação: {}", error.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -78,6 +97,10 @@ public class ResourceExceptionHandler {
                 e.getLocalizedMessage(),
                 request.getRequestURI()
         );
+
+        log.info("Email já em uso: {}", error.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
@@ -85,6 +108,9 @@ public class ResourceExceptionHandler {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Error handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        log.info("Erro de validação: {}", e.getMessage());
+        log.debug("Request responsavel: {}", request);
+
         BindingResult result = e.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
         return processFieldErrors(fieldErrors);

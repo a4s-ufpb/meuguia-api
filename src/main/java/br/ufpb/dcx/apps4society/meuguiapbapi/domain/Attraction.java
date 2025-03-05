@@ -22,8 +22,9 @@ public class Attraction {
     @Column(name = "map_link", length = 200, nullable = false)
     private String mapLink;
 
-    @Column(name = "city", length = 200, nullable = false)
-    private String city;
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
 
     @Column(name = "state", length = 200, nullable = false)
     private String state;
@@ -38,7 +39,7 @@ public class Attraction {
     private List<TourismSegmentation> segmentations;
 
     @ManyToOne
-    @JoinColumn(name = "type_id")
+    @JoinColumn(name = "type_id", nullable = false)
     private AttractionType attractionType;
 
     @ElementCollection
@@ -49,10 +50,9 @@ public class Attraction {
     private List<MoreInfoLink> moreInfoLinks;
 
     public Attraction() {
-        this(0L, "", "", "", "", "", "", null, null, null);
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink) {
+    public Attraction(Long id, String name, String description, String mapLink, City city, String state, String imageLink) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -62,7 +62,7 @@ public class Attraction {
         this.imageLink = imageLink;
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, String city, String state, String imageLink, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinks) {
+    public Attraction(Long id, String name, String description, String mapLink, City city, String state, String imageLink, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -95,7 +95,7 @@ public class Attraction {
         return this.mapLink;
     }
 
-    public String getCity() {
+    public City getCity() {
         return this.city;
     }
 
@@ -135,7 +135,7 @@ public class Attraction {
         this.mapLink = mapLink;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
@@ -147,16 +147,16 @@ public class Attraction {
         this.imageLink = imageLink;
     }
 
-    public void setSegmentations(List<TourismSegmentation> segmentations) {
-        this.segmentations = segmentations;
-    }
-
     public void setAttractionType(AttractionType attractionType) {
         this.attractionType = attractionType;
     }
 
-    public void setMoreInfoLinks(List<MoreInfoLink> moreInfoLinkList) {
-        this.moreInfoLinks = moreInfoLinkList;
+    public void addSegmentation(TourismSegmentation segmentation) {
+        this.segmentations.add(segmentation);
+    }
+
+    public void addMoreInfoLink(MoreInfoLink moreInfoLink) {
+        this.moreInfoLinks.add(moreInfoLink);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class Attraction {
         private String name;
         private String description;
         private String mapLink;
-        private String city;
+        private City city;
         private String state;
         private String imageLink;
         private List<TourismSegmentation> segmentations;
@@ -222,7 +222,7 @@ public class Attraction {
             return this;
         }
 
-        public AttractionBuilder city(String city) {
+        public AttractionBuilder city(City city) {
             this.city = city;
             return this;
         }

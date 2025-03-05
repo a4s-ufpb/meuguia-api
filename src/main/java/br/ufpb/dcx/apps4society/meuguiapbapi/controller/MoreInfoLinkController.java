@@ -16,8 +16,6 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-// TODO: perguntar para a professora sobre esse controller
-// é melhor ter um controller separado do MoreInfoLink ou juntar com o AttractionController?
 @RestController
 @RequestMapping(path = "/api/attractions/{attractionId}/more-info-links", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MoreInfoLinkController {
@@ -39,14 +37,13 @@ public class MoreInfoLinkController {
         MoreInfoLinkDTO createdMoreInfoLink = moreInfoLinkService.addMoreInfoLinkToAttraction(attractionId, requestData);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/api/attractions/{attractionId}/more-info-links/{link}")
+                .path("/api/attractions/{attractionId}/more-info-links?link={link}")
                 .buildAndExpand(attractionId, createdMoreInfoLink.getLink())
                 .toUri();
 
         log.debug("Link de mais informações adicionado com sucesso a atração de ID: {}", attractionId);
 
         return ResponseEntity.created(uri).body(createdMoreInfoLink);
-
     }
 
     @GetMapping
