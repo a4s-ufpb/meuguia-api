@@ -8,17 +8,25 @@ spring:
     show-sql: true
     open-in-view: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
         dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
   sql:
     init:
       mode: always
+      platform: h2
 logging:
   level:
     auth: debug
+    controller: debug
+    service: debug
   group:
     auth: "br.ufpb.dcx.apps4society.meuguiapbapi.auth,br.ufpb.dcx.apps4society.meuguiapbapi.config"
+    controller: "br.ufpb.dcx.apps4society.meuguiapbapi.controller"
+    service: "br.ufpb.dcx.apps4society.meuguiapbapi.service"

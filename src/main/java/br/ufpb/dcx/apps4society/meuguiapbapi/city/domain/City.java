@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -44,6 +45,20 @@ public class City {
         this.state = state;
         this.stateAbbreviation = stateAbbreviation;
         this.country = country;
+    }
+
+    public static CityBuilder builder() {
+        return new CityBuilder();
+    }
+
+    public CityDTO toDTO() {
+        return CityDTO.CityDTOBuilder.aCityDTO()
+                .id(id)
+                .name(name)
+                .state(state)
+                .stateAbbreviation(stateAbbreviation)
+                .country(country)
+                .build();
     }
 
     public Long getId() {

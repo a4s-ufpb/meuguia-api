@@ -4,7 +4,11 @@ app:
 
 server:
   port: ${API_PORT}
-
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: never
+    include-message: always
 spring:
   application:
     name: meu-guia-api
