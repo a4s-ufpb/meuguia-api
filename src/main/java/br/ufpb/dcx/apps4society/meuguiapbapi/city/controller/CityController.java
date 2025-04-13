@@ -1,9 +1,10 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
-import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.service.CityService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,11 +29,11 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<CityDTO> createCity(
-            @RequestBody CityRequestData cityRequestData
+            @Valid @RequestBody CityRequestData cityRequestData
     ) {
         log.debug("createCity called with {}", cityRequestData);
 
-        CityDTO createdCity = cityService.createCity(cityRequestData).toDTO();
+        CityDTO createdCity = cityService.createCity(cityRequestData).toDto();
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/cities/{id}")
                 .buildAndExpand(createdCity.getId())
                 .toUri();
@@ -48,7 +49,7 @@ public class CityController {
     ) {
         log.debug("updateCity called with {}", cityRequestData);
 
-        CityDTO updatedCity = cityService.updateCity(id, cityRequestData).toDTO();
+        CityDTO updatedCity = cityService.updateCity(id, cityRequestData).toDto();
 
         log.debug("city updated");
         return ResponseEntity.ok(updatedCity);
@@ -72,7 +73,7 @@ public class CityController {
     ) {
         log.debug("getCity called with id {}", id);
 
-        CityDTO city = cityService.findById(id).toDTO();
+        CityDTO city = cityService.findById(id).toDto();
 
         log.debug("city founded");
         return ResponseEntity.ok(city);
@@ -84,7 +85,7 @@ public class CityController {
     ) {
         log.debug("getCities called");
 
-        Page<CityDTO> cities = cityService.findAll(pageable).map(City::toDTO);
+        Page<CityDTO> cities = cityService.findAll(pageable).map(City::toDto);
 
         log.debug("{} cities founded", cities.getTotalElements());
         return ResponseEntity.ok(cities);

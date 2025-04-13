@@ -51,7 +51,7 @@ public class City {
         return new CityBuilder();
     }
 
-    public CityDTO toDTO() {
+    public CityDTO toDto() {
         return CityDTO.CityDTOBuilder.aCityDTO()
                 .id(id)
                 .name(name)
@@ -118,6 +118,13 @@ public class City {
     }
 
     @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + state.hashCode();
+        return result;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -126,12 +133,15 @@ public class City {
     }
 
     @Override
-    public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + state.hashCode();
-        return result;
+    public String toString() {
+        return "City(" +
+                "id=" + id +
+                ", country=" + country +
+                ", stateAbbreviation=" + stateAbbreviation +
+                ", state=" + state +
+                ", name='" + name +
+                ')';
     }
-
 
     public static final class CityBuilder {
         private Long id;

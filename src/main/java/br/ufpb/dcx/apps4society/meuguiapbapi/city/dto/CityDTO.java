@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.dto;
 
+import java.util.Objects;
+
 public class CityDTO {
     private Long id;
     private String name;
@@ -60,6 +62,34 @@ public class CityDTO {
 
     public void setStateAbbreviation(String stateAbbreviation) {
         this.stateAbbreviation = stateAbbreviation;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(state);
+        result = 31 * result + Objects.hashCode(country);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CityDTO cityDTO = (CityDTO) o;
+        return Objects.equals(id, cityDTO.id) && Objects.equals(name, cityDTO.name) && Objects.equals(state, cityDTO.state) && Objects.equals(country, cityDTO.country);
+    }
+
+    @Override
+    public String toString() {
+        return "CityDTO(" +
+                "id=" + id +
+                ", name=" + name +
+                ", state=" + state +
+                ", country=" + country +
+                ", stateAbbreviation=" + stateAbbreviation +
+                ')';
     }
 
     public static final class CityDTOBuilder {

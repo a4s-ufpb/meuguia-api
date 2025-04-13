@@ -2,10 +2,9 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -14,12 +13,12 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class AttractionTypeServiceTest {
-    private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
 
     @Mock
     private AttractionTypeRepository attractionTypeRepository;
@@ -34,7 +33,7 @@ class AttractionTypeServiceTest {
 
     @Test
     void createAttractionTypeTest() {
-        AttractionTypeRequestData requestData = attractionTypeTestHelper.createAttractionTypeRequestData(1);
+        AttractionTypeRequestData requestData = createAttractionTypeRequestData(1);
         when(attractionTypeRepository.save(any(AttractionType.class))).thenAnswer(invocationOnMock -> {
             AttractionType attractionType = invocationOnMock.getArgument(0);
             attractionType.setId(1L);
@@ -51,7 +50,7 @@ class AttractionTypeServiceTest {
 
     @Test
     void findAttractionTypeByIdTest() {
-        AttractionType attractionType = attractionTypeTestHelper.createAttractionType(1);
+        AttractionType attractionType = createAttractionType(1);
         when(attractionTypeRepository.findById(anyLong())).thenReturn(Optional.of(attractionType));
 
         AttractionType result = attractionTypeService.findById(1L);
@@ -73,7 +72,7 @@ class AttractionTypeServiceTest {
 
     @Test
     void findAllAttractionTypesTest() {
-        when(attractionTypeRepository.findAll()).thenReturn(attractionTypeTestHelper.createAttractionTypeList());
+        when(attractionTypeRepository.findAll()).thenReturn(createAttractionTypeList());
 
         List<AttractionType> result = attractionTypeService.findAll();
 
@@ -93,7 +92,7 @@ class AttractionTypeServiceTest {
 
     @Test
     void deleteAttraction() {
-        when(attractionTypeRepository.findById(1L)).thenReturn(Optional.of(attractionTypeTestHelper.createAttractionType(1)));
+        when(attractionTypeRepository.findById(1L)).thenReturn(Optional.of(createAttractionType(1)));
 
         attractionTypeService.delete(1L);
 
@@ -107,7 +106,7 @@ class AttractionTypeServiceTest {
         Exception thrown = assertThrows(ObjectNotFoundException.class,
                 () -> attractionTypeService.delete(1L));
 
-        assertEquals(thrown.getMessage(), "Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType");
+        assertEquals("Objeto não encontrado! Id: 1, Tipo: br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType", thrown.getMessage());
     }
 
     @Test

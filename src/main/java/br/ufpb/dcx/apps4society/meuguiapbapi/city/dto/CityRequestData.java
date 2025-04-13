@@ -1,11 +1,24 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.dto;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
+import jakarta.validation.constraints.NotEmpty;
 
 public class CityRequestData {
+    @NotEmpty(
+            message = "Nome (name) da cidade é obrigatório"
+    )
     private String name;
+    @NotEmpty(
+            message = "Estado (state) da cidade é obrigatório"
+    )
     private String state;
+    @NotEmpty(
+            message = "Pais (country) da cidade é obrigatório"
+    )
     private String country;
+    @NotEmpty(
+            message = "Chave 'stateAbbreviation' é obrigatória"
+    )
     private String stateAbbreviation;
 
     public CityRequestData() {

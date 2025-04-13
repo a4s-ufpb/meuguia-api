@@ -1,6 +1,5 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.service;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.repository.CityRepository;
@@ -36,6 +35,10 @@ public class CityService {
 
     public void deleteCity(Long id) {
         cityRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return cityRepository.existsById(id);
     }
 
 

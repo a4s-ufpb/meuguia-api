@@ -1,14 +1,16 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
+import br.ufpb.dcx.apps4society.meuguiapbapi.city.service.CityService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ResourceAlreadyExistsException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ResourceAlreadyExistsException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
-import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.TourismSegmentationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,14 +28,17 @@ public class AttractionService {
     private final TourismSegmentationService tourismSegmentationService;
     private final AttractionTypeService attractionTypeService;
     private final AttractionRepository attractionRepository;
+    private final CityService cityService;
 
     @Autowired
     public AttractionService(AttractionTypeService attractionTypeService,
                              TourismSegmentationService tourismSegmentationService,
-                             AttractionRepository attractionRepository) {
+                             AttractionRepository attractionRepository,
+                             CityService cityService) {
         this.attractionTypeService = attractionTypeService;
         this.tourismSegmentationService = tourismSegmentationService;
         this.attractionRepository = attractionRepository;
+        this.cityService = cityService;
     }
 
     @Transactional
@@ -42,15 +47,15 @@ public class AttractionService {
         validateFields(obj);
 
         List<TourismSegmentation> segmentations = obj.getSegmentations().stream().map(tourismSegmentationService::findById).toList();
-        AttractionType attractionType = attractionTypeService.findById(obj.getAttractionType());
         List<MoreInfoLink> moreInfoLinks = obj.getMoreInfoLinks().stream().map(MoreInfoLink::new).toList();
+        AttractionType attractionType = attractionTypeService.findById(obj.getAttractionType());
+        City city = cityService.findById(obj.getCityId());
 
         Attraction attraction = Attraction.builder()
                 .name(obj.getName())
                 .description(obj.getDescription())
                 .mapLink(obj.getMapLink())
-                .city(obj.getCity())
-                .state(obj.getState())
+                .city(city)
                 .imageLink(obj.getImageLink())
                 .segmentations(segmentations)
                 .attractionType(attractionType)
@@ -61,8 +66,8 @@ public class AttractionService {
     }
 
     public void verifyExistence(AttractionRequestData obj) {
-        if (attractionRepository.findByNameAndCity(obj.getName(), obj.getCity()).isPresent()) {
-            throw new ResourceAlreadyExistsException("Atração com nome '" + obj.getName() + "' já cadastrada para a cidade '" + obj.getCity() + "'.");
+        if (attractionRepository.findByNameAndCityId(obj.getName(), obj.getCityId()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Atração com nome '" + obj.getName() + "' já cadastrada para a cidade '" + obj.getCityId() + "'.");
         }
     }
 
@@ -71,7 +76,11 @@ public class AttractionService {
             throw new ObjectNotFoundException("Tipo de atração não encontrado! Id: " + obj.getAttractionType());
         }
 
-        for (Long segmentationId: obj.getSegmentations()) {
+        if (!this.cityService.existsById(obj.getCityId())) {
+            throw new ObjectNotFoundException("Cidade não encontrada! Id: " + obj.getCityId());
+        }
+
+        for (Long segmentationId : obj.getSegmentations()) {
             if (!this.tourismSegmentationService.existsById(segmentationId)) {
                 throw new ObjectNotFoundException("Segmentação não encontrada! Id: " + segmentationId);
             }
@@ -88,7 +97,8 @@ public class AttractionService {
         log.debug("Atrativo encontrado com sucesso");
         log.debug("Atrativo encontrado: {}", attraction);
 
-        return attraction; }
+        return attraction;
+    }
 
     public List<Attraction> findAll() {
         return attractionRepository.findAll();
@@ -99,7 +109,7 @@ public class AttractionService {
     }
 
     public List<Attraction> findByCity(String city) {
-        return attractionRepository.findAllByCity(city);
+        return attractionRepository.findAllByCityName(city);
     }
 
     public List<Attraction> findBySegmentation(String segmentationName) {
@@ -125,8 +135,6 @@ public class AttractionService {
         attraction.setName(obj.getName());
         attraction.setDescription(obj.getDescription());
         attraction.setMapLink(obj.getMapLink());
-        attraction.setCity(obj.getCity());
-        attraction.setState(obj.getState());
         attraction.setImageLink(obj.getImageLink());
         return attractionRepository.save(attraction);
     }

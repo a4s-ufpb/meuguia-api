@@ -2,10 +2,10 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
-import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.EmailAlreadyInUseException;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

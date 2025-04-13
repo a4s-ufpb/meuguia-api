@@ -11,20 +11,17 @@ import java.util.Objects;
 @Table(name = "attraction_type")
 public class AttractionType {
 
+    // TODO: getter and setter
+    @OneToMany(mappedBy = "attractionType", fetch = FetchType.LAZY)
+    private final List<Attraction> attractions = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
     @Column(name = "name", length = 200, nullable = false)
     private String name;
-
     @Column(name = "description", length = 200, nullable = false)
     private String description;
-
-    // TODO: getter and setter
-    @OneToMany(mappedBy = "attractionType", fetch = FetchType.LAZY)
-    private List<Attraction> attractions = new ArrayList<>();
 
     public AttractionType() {
         this(0L, "", "");
@@ -44,24 +41,32 @@ public class AttractionType {
         return this.id;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(description);
+        return result;
     }
 
     @Override
@@ -71,14 +76,6 @@ public class AttractionType {
 
         AttractionType that = (AttractionType) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(id);
-        result = 31 * result + Objects.hashCode(name);
-        result = 31 * result + Objects.hashCode(description);
-        return result;
     }
 
     public String toString() {

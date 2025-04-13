@@ -5,7 +5,6 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
 import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
 import jakarta.persistence.*;
-import jakarta.persistence.Entity;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,9 +29,6 @@ public class Attraction {
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
-    @Column(name = "state", length = 200, nullable = false)
-    private String state;
-
     @Column(name = "image_link", length = 500, nullable = false)
     private String imageLink;
 
@@ -56,23 +52,21 @@ public class Attraction {
     public Attraction() {
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, City city, String state, String imageLink) {
+    public Attraction(Long id, String name, String description, String mapLink, City city, String imageLink) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.mapLink = mapLink;
         this.city = city;
-        this.state = state;
         this.imageLink = imageLink;
     }
 
-    public Attraction(Long id, String name, String description, String mapLink, City city, String state, String imageLink, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinks) {
+    public Attraction(Long id, String name, String description, String mapLink, City city, String imageLink, List<TourismSegmentation> segmentations, AttractionType attractionType, List<MoreInfoLink> moreInfoLinks) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.mapLink = mapLink;
         this.city = city;
-        this.state = state;
         this.imageLink = imageLink;
         this.segmentations = segmentations;
         this.attractionType = attractionType;
@@ -87,28 +81,48 @@ public class Attraction {
         return this.id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
         return this.description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getMapLink() {
         return this.mapLink;
+    }
+
+    public void setMapLink(String mapLink) {
+        this.mapLink = mapLink;
     }
 
     public City getCity() {
         return this.city;
     }
 
-    public String getState() {
-        return this.state;
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public String getImageLink() {
         return this.imageLink;
+    }
+
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
     }
 
     public List<TourismSegmentation> getSegmentations() {
@@ -119,40 +133,12 @@ public class Attraction {
         return this.attractionType;
     }
 
-    public List<MoreInfoLink> getMoreInfoLinks() {
-        return this.moreInfoLinks;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setMapLink(String mapLink) {
-        this.mapLink = mapLink;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
-    }
-
     public void setAttractionType(AttractionType attractionType) {
         this.attractionType = attractionType;
+    }
+
+    public List<MoreInfoLink> getMoreInfoLinks() {
+        return this.moreInfoLinks;
     }
 
     public void addSegmentation(TourismSegmentation segmentation) {
@@ -164,22 +150,12 @@ public class Attraction {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Attraction that = (Attraction) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(state, that.state) && Objects.equals(imageLink, that.imageLink) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinks, that.moreInfoLinks);
-    }
-
-    @Override
     public int hashCode() {
         int result = Objects.hashCode(id);
         result = 31 * result + Objects.hashCode(name);
         result = 31 * result + Objects.hashCode(description);
         result = 31 * result + Objects.hashCode(mapLink);
         result = 31 * result + Objects.hashCode(city);
-        result = 31 * result + Objects.hashCode(state);
         result = 31 * result + Objects.hashCode(imageLink);
         result = 31 * result + Objects.hashCode(segmentations);
         result = 31 * result + Objects.hashCode(attractionType);
@@ -187,8 +163,17 @@ public class Attraction {
         return result;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Attraction that = (Attraction) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description) && Objects.equals(mapLink, that.mapLink) && Objects.equals(city, that.city) && Objects.equals(imageLink, that.imageLink) && Objects.equals(segmentations, that.segmentations) && Objects.equals(attractionType, that.attractionType) && Objects.equals(moreInfoLinks, that.moreInfoLinks);
+    }
+
     public String toString() {
-        return "Attraction(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity() + ", state=" + this.getState() + ", imageLink=" + this.getImageLink() + ", segmentations=" + this.getSegmentations() + ", attractionType=" + this.getAttractionType() + ", moreInfoLinkList=" + this.getMoreInfoLinks() + ")";
+        return "Attraction(id=" + this.getId() + ", name=" + this.getName() + ", description=" + this.getDescription() + ", mapLink=" + this.getMapLink() + ", city=" + this.getCity().toString() + ", imageLink=" + this.getImageLink() + ", segmentations=" + this.getSegmentations().toString() + ", attractionType=" + this.getAttractionType().toString() + ", moreInfoLinkList=" + this.getMoreInfoLinks().toString() + ")";
     }
 
     public static class AttractionBuilder {
@@ -197,7 +182,6 @@ public class Attraction {
         private String description;
         private String mapLink;
         private City city;
-        private String state;
         private String imageLink;
         private List<TourismSegmentation> segmentations;
         private AttractionType attractionType;
@@ -231,11 +215,6 @@ public class Attraction {
             return this;
         }
 
-        public AttractionBuilder state(String state) {
-            this.state = state;
-            return this;
-        }
-
         public AttractionBuilder imageLink(String imageLink) {
             this.imageLink = imageLink;
             return this;
@@ -257,11 +236,11 @@ public class Attraction {
         }
 
         public Attraction build() {
-            return new Attraction(this.id, this.name, this.description, this.mapLink, this.city, this.state, this.imageLink, this.segmentations, this.attractionType, this.moreInfoLinks);
+            return new Attraction(this.id, this.name, this.description, this.mapLink, this.city, this.imageLink, this.segmentations, this.attractionType, this.moreInfoLinks);
         }
 
         public String toString() {
-            return "Attraction.AttractionBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", state=" + this.state + ", imageLink=" + this.imageLink + ", segmentations=" + this.segmentations + ", attractionType=" + this.attractionType + ", moreInfoLinkList=" + this.moreInfoLinks + ")";
+            return "Attraction.AttractionBuilder(id=" + this.id + ", name=" + this.name + ", description=" + this.description + ", mapLink=" + this.mapLink + ", city=" + this.city + ", imageLink=" + this.imageLink + ", segmentations=" + this.segmentations + ", attractionType=" + this.attractionType + ", moreInfoLinkList=" + this.moreInfoLinks + ")";
         }
     }
 }

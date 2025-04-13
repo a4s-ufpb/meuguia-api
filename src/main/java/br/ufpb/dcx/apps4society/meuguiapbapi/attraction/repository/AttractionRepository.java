@@ -1,7 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
-import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,5 +23,7 @@ public interface AttractionRepository extends JpaRepository<Attraction, Long> {
     @Query("SELECT a FROM Attraction a JOIN a.segmentations s WHERE s.name = :segmentationName")
     List<Attraction> findAllBySegmentationName(@Param("segmentationName") String segmentationName);
 
-    Optional<Attraction> findByNameAndCity(String name, City city);
+    List<Attraction> findAllByCityName(String cityName);
+
+    Optional<Attraction> findByNameAndCityId(String name, Long cityId);
 }

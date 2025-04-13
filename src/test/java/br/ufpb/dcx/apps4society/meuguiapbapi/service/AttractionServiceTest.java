@@ -1,19 +1,16 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service.AttractionService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
-import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.city.service.CityService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.TourismSegmentationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +20,12 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTestHelper.*;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.createAttractionType;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.CityTestHelper.createDefaultCityObject;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLink;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLinkRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.createTourismSegmentation;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -30,10 +33,6 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 // TODO: Verificar questão do MoreInfoLink
 class AttractionServiceTest {
-    private final AttractionTestHelper attractionTestHelper = AttractionTestHelper.getInstance();
-    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
-    private final AttractionTypeTestHelper attractionTypeTestHelper = AttractionTypeTestHelper.getInstance();
-    private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
 
     @Mock
     private AttractionRepository attractionRepository;
@@ -41,6 +40,8 @@ class AttractionServiceTest {
     private TourismSegmentationService tourismSegmentationService;
     @Mock
     private AttractionTypeService attractionTypeService;
+    @Mock
+    private CityService cityService;
 
     @InjectMocks
     private AttractionService attractionService;
@@ -54,15 +55,15 @@ class AttractionServiceTest {
     void setUp() {
         openMocks(this);
 
-        segmentation = tourismSegmentationTestHelper.createTourismSegmentation(1);
-        attractionType = attractionTypeTestHelper.createAttractionType(1);
-        moreInfoLink = moreInfoLinkTestHelper.createMoreInfoLink(1);
-        moreInfoLinkRequestData = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(1);
+        segmentation = createTourismSegmentation(1);
+        attractionType = createAttractionType(1);
+        moreInfoLink = createMoreInfoLink(1);
+        moreInfoLinkRequestData = createMoreInfoLinkRequestData(1);
     }
 
     @Test
-    void createAttraction() {
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+    void createAttractionTest() {
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionRepository.save(any(Attraction.class))).thenAnswer(invocationOnMock -> {
             Attraction attraction = invocationOnMock.getArgument(0);
             attraction.setId(1L);
@@ -70,6 +71,7 @@ class AttractionServiceTest {
         });
         when(attractionTypeService.existsById(anyLong())).thenReturn(true);
         when(tourismSegmentationService.existsById(anyLong())).thenReturn(true);
+        when(cityService.existsById(1L)).thenReturn(true);
 
         Attraction result = attractionService.create(requestData);
 
@@ -80,8 +82,8 @@ class AttractionServiceTest {
     }
 
     @Test
-    void createAttraction_InvalidAttractionType() {
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+    void createAttraction_InvalidAttractionTypeTest() {
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionTypeService.existsById(anyLong())).thenReturn(false);
         when(tourismSegmentationService.existsById(anyLong())).thenReturn(true);
 
@@ -92,9 +94,10 @@ class AttractionServiceTest {
     }
 
     @Test
-    void createAttraction_InvalidTourismSegmentation() {
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+    void createAttraction_InvalidTourismSegmentationTest() {
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionTypeService.existsById(anyLong())).thenReturn(true);
+        when(cityService.existsById(1L)).thenReturn(true);
         when(tourismSegmentationService.existsById(anyLong())).thenReturn(false);
 
         Exception thrown = assertThrows(ObjectNotFoundException.class, () -> attractionService.create(requestData));
@@ -105,9 +108,11 @@ class AttractionServiceTest {
 
     @Test
     void createAttraction_MoreInfoLinkDoesNotExist() {
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionTypeService.existsById(anyLong())).thenReturn(true);
         when(tourismSegmentationService.existsById(anyLong())).thenReturn(true);
+        when(cityService.existsById(1L)).thenReturn(true);
+        when(cityService.findById(1L)).thenReturn(createDefaultCityObject());
         when(attractionRepository.save(any(Attraction.class))).thenAnswer(invocationOnMock -> {
             Attraction attraction = invocationOnMock.getArgument(0);
             attraction.setId(1L);
@@ -116,12 +121,12 @@ class AttractionServiceTest {
 
         var result = attractionService.create(requestData);
 
-        attractionTestHelper.assertAttractionEqualsToRequestData(result, requestData);
+        assertAttractionEqualsToRequestData(result, requestData);
     }
 
     @Test
     void deleteAttractionTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
         when(attractionRepository.findById(1L)).thenReturn(Optional.of(attraction));
 
         attractionService.delete(1L);
@@ -140,7 +145,7 @@ class AttractionServiceTest {
 
     @Test
     void findAttractionByIdTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
         when(attractionRepository.findById(1L)).thenReturn(Optional.of(attraction));
 
         Attraction result = attractionService.findById(1L);
@@ -160,7 +165,7 @@ class AttractionServiceTest {
 
     @Test
     void findAllAttractionsTest() {
-        when(attractionRepository.findAll()).thenReturn(attractionTestHelper.createAttractionList());
+        when(attractionRepository.findAll()).thenReturn(createAttractionList());
 
         assertEquals(3, attractionService.findAll().size());
     }
@@ -174,8 +179,8 @@ class AttractionServiceTest {
 
     @Test
     void updateAttractionTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionRepository.findById(1L)).thenReturn(Optional.of(attraction));
         when(attractionRepository.save(any(Attraction.class))).thenAnswer(invocationOnMock -> {
             Attraction att = invocationOnMock.getArgument(0);
@@ -184,6 +189,7 @@ class AttractionServiceTest {
         });
         when(attractionTypeService.existsById(anyLong())).thenReturn(true);
         when(tourismSegmentationService.existsById(anyLong())).thenReturn(true);
+        when(cityService.existsById(1L)).thenReturn(true);
 
         Attraction result = attractionService.update(1L, requestData);
 
@@ -195,7 +201,7 @@ class AttractionServiceTest {
 
     @Test
     void updateAttraction_AttractionNotExistTest() {
-        AttractionRequestData requestData = attractionTestHelper.createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        AttractionRequestData requestData = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
         when(attractionRepository.findById(1L)).thenReturn(Optional.empty());
 
         Exception thrown = assertThrows(ObjectNotFoundException.class, () -> attractionService.update(1L, requestData));
@@ -205,7 +211,7 @@ class AttractionServiceTest {
 
     @Test
     void findAttractionByNameTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
         when(attractionRepository.findByNameContainingIgnoreCase("mock Teatro municipal 1")).thenReturn(List.of(attraction));
 
         List<Attraction> result = attractionService.findByName("mock Teatro municipal 1");
@@ -223,8 +229,8 @@ class AttractionServiceTest {
 
     @Test
     void findAttractionByCityTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
-        when(attractionRepository.findAllByCity("João Pessoa")).thenReturn(List.of(attraction));
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
+        when(attractionRepository.findAllByCityName("João Pessoa")).thenReturn(List.of(attraction));
 
         List<Attraction> result = attractionService.findByCity("João Pessoa");
 
@@ -241,7 +247,7 @@ class AttractionServiceTest {
 
     @Test
     void findAttractionBySegmentationTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
         when(tourismSegmentationService.existsByName("mock Turismo de sol e mar1")).thenReturn(true);
         when(attractionRepository.findAllBySegmentationName("mock Turismo de sol e mar1")).thenReturn(List.of(attraction));
 
@@ -271,7 +277,7 @@ class AttractionServiceTest {
 
     @Test
     void findAttractionByTypeTest() {
-        Attraction attraction = attractionTestHelper.createAttraction(1, segmentation, moreInfoLink, attractionType);
+        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
         when(attractionRepository.findAllByType("mock Cultural1")).thenReturn(List.of(attraction));
 
         List<Attraction> result = attractionService.findByType("mock Cultural1");
