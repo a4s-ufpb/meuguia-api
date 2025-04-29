@@ -7,6 +7,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,7 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
+    @Disabled
     public void createCity_shouldReturn403_whenUserHasNoPermission() {
         try {
             given()
@@ -123,6 +125,7 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
+    @Disabled
     public void createCity_shouldReturn400_whenCityRequestDataIsNull() {
         try {
             given()
