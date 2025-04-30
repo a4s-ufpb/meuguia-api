@@ -81,6 +81,7 @@ public class CityTestHelper {
 
     public City createCity() {
         City city = createDefaultCityObject();
+        city.setId(null);
         this.lastCityCreated = cityRepository.save(city);
         return city;
     }

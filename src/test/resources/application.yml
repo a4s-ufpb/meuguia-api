@@ -23,6 +23,9 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
   jackson:
     property-naming-strategy: SNAKE_CASE
 

@@ -1,22 +1,30 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.city.domain;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "city")
 public class City {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_id_seq")
     @SequenceGenerator(name = "city_id_seq", sequenceName = "city_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "ibge_id", unique = true)
+    private Long ibgeId;
+
+    @Column(name = "name")
     private String name;
 
     @Column(name = "state", nullable = false)
@@ -35,6 +43,16 @@ public class City {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @LastModifiedBy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_modified_by")
+    private User lastModifiedBy;
 
     public City() {
         this("", "", "", "");
@@ -67,6 +85,30 @@ public class City {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(User lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Long getIbgeId() {
+        return ibgeId;
+    }
+
+    public void setIbgeId(Long ibgeId) {
+        this.ibgeId = ibgeId;
+    }
+
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getName() {

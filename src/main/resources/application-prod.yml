@@ -15,8 +15,3 @@ spring:
           use_jdbc_metadata_defaults: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      platform: postgresql
-      mode: always
-      data-locations: classpath:database/data-postgresql.sql

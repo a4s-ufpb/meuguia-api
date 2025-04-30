@@ -18,5 +18,8 @@ spring:
     jwt:
       secret-key: ${JWT_SECRET}
       expiration: ${JWT_EXPIRATION}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
   jackson:
     property-naming-strategy: SNAKE_CASE
