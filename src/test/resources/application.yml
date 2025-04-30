@@ -23,13 +23,12 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
   jackson:
     property-naming-strategy: SNAKE_CASE
 
 logging:
   level:
-    test: debug
-  group:
-    auth: "br.ufpb.dcx.apps4society.meuguiapbapi.auth,br.ufpb.dcx.apps4society.meuguiapbapi.config"
-    controller: "br.ufpb.dcx.apps4society.meuguiapbapi.controller"
-    test: "br.ufpb.dcx.apps4society.meuguiapbapi.controller, br.ufpb.dcx.apps4society.meuguiapbapi.util, br.ufpb.dcx.apps4society.meuguiapbapi.mock, br.ufpb.dcx.apps4society.meuguiapbapi"
+    br.ufpb.dcx.apps4society: debug

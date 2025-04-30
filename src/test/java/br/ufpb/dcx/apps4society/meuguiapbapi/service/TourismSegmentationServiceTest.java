@@ -1,10 +1,10 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.TourismSegmentationTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.TourismSegmentationRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.repository.TourismSegmentationRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.TourismSegmentationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,12 +13,12 @@ import org.mockito.Mock;
 import java.util.List;
 import java.util.Optional;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class TourismSegmentationServiceTest {
-    private final TourismSegmentationTestHelper tourismSegmentationTestHelper = TourismSegmentationTestHelper.getInstance();
 
     @Mock
     private TourismSegmentationRepository tourismSegmentationRepository;
@@ -28,12 +28,12 @@ class TourismSegmentationServiceTest {
 
     @BeforeEach
     void setUp() {
-       openMocks(this);
+        openMocks(this);
     }
 
     @Test
     void findTourismSegmentationByIdTest() {
-        TourismSegmentation tourismSegmentation = tourismSegmentationTestHelper.createTourismSegmentation(1);
+        TourismSegmentation tourismSegmentation = createTourismSegmentation(1);
         when(tourismSegmentationRepository.findById(1L)).thenReturn(Optional.of(tourismSegmentation));
 
         TourismSegmentation result = tourismSegmentationService.findById(1L);
@@ -53,12 +53,12 @@ class TourismSegmentationServiceTest {
             tourismSegmentationService.findById(1L);
         });
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation", thrown.getMessage());
+        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation", thrown.getMessage());
     }
 
     @Test
     void findAllTourismSegmentationTest() {
-        List<TourismSegmentation> segmentations = tourismSegmentationTestHelper.getListOfTourismSegmentations();
+        List<TourismSegmentation> segmentations = getListOfTourismSegmentations();
         when(tourismSegmentationRepository.findAll()).thenReturn(segmentations);
 
         List<TourismSegmentation> result = tourismSegmentationService.findAll();
@@ -81,7 +81,7 @@ class TourismSegmentationServiceTest {
 
     @Test
     void findAllTourismSegmentation_DuplicateNamesTest() {
-        List<TourismSegmentation> segmentations = tourismSegmentationTestHelper.getListOfDuplicatedTourismSegmentation();
+        List<TourismSegmentation> segmentations = getListOfDuplicatedTourismSegmentation();
         when(tourismSegmentationRepository.findAll()).thenReturn(segmentations);
 
         List<TourismSegmentation> result = tourismSegmentationService.findAll();
@@ -93,7 +93,7 @@ class TourismSegmentationServiceTest {
 
     @Test
     void createTourismSegmentationTest() {
-        TourismSegmentationRequestData requestData = tourismSegmentationTestHelper.createTourismSegmentationRequestData(1);
+        TourismSegmentationRequestData requestData = createTourismSegmentationRequestData(1);
         when(tourismSegmentationRepository.save(any(TourismSegmentation.class))).thenAnswer(invocationOnMock -> {
             TourismSegmentation tourismSegmentation = invocationOnMock.getArgument(0);
             tourismSegmentation.setId(1L);
@@ -111,7 +111,7 @@ class TourismSegmentationServiceTest {
 
     @Test
     void deleteTourismSegmentationTest() {
-        when(tourismSegmentationRepository.findById(1L)).thenReturn(Optional.of(tourismSegmentationTestHelper.createTourismSegmentation(1)));
+        when(tourismSegmentationRepository.findById(1L)).thenReturn(Optional.of(createTourismSegmentation(1)));
 
         tourismSegmentationService.delete(1L);
 
@@ -126,7 +126,7 @@ class TourismSegmentationServiceTest {
             tourismSegmentationService.delete(1L);
         });
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.TourismSegmentation", thrown.getMessage());
+        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation", thrown.getMessage());
     }
 
     @Test

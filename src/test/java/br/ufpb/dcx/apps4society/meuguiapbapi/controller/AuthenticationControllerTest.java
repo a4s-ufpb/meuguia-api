@@ -1,33 +1,34 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static br.ufpb.dcx.apps4society.meuguiapbapi.util.UserRequestUtil.*;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus201_whenDataIsValidTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(1);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(1);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(UserDTO.class));
+            UserTestsHelper.delete(response.as(UserDTO.class));
         }
 
         response.then()
@@ -39,35 +40,35 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    void register_shouldReturnStatus400_whenEmailAlreadyRegisteredTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(2);
-        AuthenticationResponseData auth = userRequestUtil.registerAndAuthenticate(requestBody);
+    void register_shouldReturnStatus409_whenEmailAlreadyRegisteredTest() {
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(2);
+        AuthenticationResponseData auth = UserTestsHelper.registerAndAuthenticate(requestBody);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
-        userRequestUtil.delete(auth.getToken());
+        UserTestsHelper.delete(auth.getToken());
 
         response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 
     @Test
     void register_shouldReturnStatus400_whenEmailIsInvalidTest() {
-        RegisterUserRequestData mockRequest = authenticationTestHelper.getRegisterRequestData(3);
+        RegisterUserRequestData mockRequest = UserTestsHelper.createRegisterRequestData(3);
         mockRequest.setEmail("");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -76,17 +77,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenPasswordIsInvalidTest() {
-        RegisterUserRequestData mockRequest = authenticationTestHelper.getRegisterRequestData(4);
+        RegisterUserRequestData mockRequest = UserTestsHelper.createRegisterRequestData(4);
         mockRequest.setPassword("");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -95,17 +96,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenFirstNameIsInvalidTest() {
-        RegisterUserRequestData mockRequest = authenticationTestHelper.getRegisterRequestData(5);
+        RegisterUserRequestData mockRequest = UserTestsHelper.createRegisterRequestData(5);
         mockRequest.setFirstName("");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(mockRequest)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -114,17 +115,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenLastNameIsInvalidTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(6);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(6);
         requestBody.setLastName("");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -133,17 +134,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenEmailIsMissingTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(7);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(7);
         requestBody.setEmail(null);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -152,17 +153,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenPasswordIsMissingTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(8);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(8);
         requestBody.setPassword(null);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -171,17 +172,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenFirstNameIsMissingTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(9);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(9);
         requestBody.setFirstName(null);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -190,17 +191,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void register_shouldReturnStatus400_whenLastNameIsMissingTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(10);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(10);
         requestBody.setLastName(null);
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_REGISTER);
+                .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            userRequestUtil.delete(response.as(AuthenticationResponseData.class).getToken());
+            UserTestsHelper.delete(response.as(AuthenticationResponseData.class).getToken());
         }
 
         response.then()
@@ -209,17 +210,17 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn200_whenUserExistTest() {
-        RegisterUserRequestData mockRequest = authenticationTestHelper.getRegisterRequestData(11);
-        AuthenticationResponseData auth = userRequestUtil.registerAndAuthenticate(mockRequest);
+        RegisterUserRequestData mockRequest = UserTestsHelper.createRegisterRequestData(11);
+        AuthenticationResponseData auth = UserTestsHelper.registerAndAuthenticate(mockRequest);
 
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData(11);
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData(11);
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE);
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE);
 
-        userRequestUtil.delete(auth.getToken());
+        UserTestsHelper.delete(auth.getToken());
 
         response.then()
                 .statusCode(HttpStatus.OK.value())
@@ -228,83 +229,83 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void authenticate_shouldReturn403_whenUserNotExistTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsInvalidTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
         requestBody.setEmail("");
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsInvalidTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
         requestBody.setPassword("");
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void authenticate_shouldReturn400_whenEmailIsMissingTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
         requestBody.setEmail(null);
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void authenticate_shouldReturn400_whenPasswordIsMissingTest() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
         requestBody.setPassword(null);
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void authenticate_shouldReturn400_whenPasswordLengthIsLessThan8Test() {
-        AuthenticationRequestData requestBody = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
         requestBody.setPassword("1234567");
 
         given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
                 .when()
-                .post(PATH_USER_AUTHENTICATE)
+                .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
@@ -312,13 +313,13 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
 
     @Test
     void delete_shouldReturnStatus204_whenTokenIsValidTest() {
-        RegisterUserRequestData requestBody = authenticationTestHelper.getRegisterRequestData(12);
-        AuthenticationResponseData auth = userRequestUtil.registerAndAuthenticate(requestBody);
+        RegisterUserRequestData requestBody = UserTestsHelper.createRegisterRequestData(12);
+        AuthenticationResponseData auth = UserTestsHelper.registerAndAuthenticate(requestBody);
 
         given()
                 .header("Authorization", "Bearer " + auth.getToken())
                 .when()
-                .delete(PATH_USER)
+                .delete(UserTestsHelper.PATH_USER)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -328,7 +329,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         given()
                 .header("Authorization", "Bearer " + INVALID_TOKEN)
                 .when()
-                .delete(PATH_USER)
+                .delete(UserTestsHelper.PATH_USER)
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -337,7 +338,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     void delete_shouldReturnStatus403_whenTokenIsMissingTest() {
         given()
                 .when()
-                .delete(PATH_USER)
+                .delete(UserTestsHelper.PATH_USER)
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }

@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;

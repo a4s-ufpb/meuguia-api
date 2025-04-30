@@ -1,18 +1,24 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class StandardError implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
+	private LocalDateTime timeStamp;
 	private Integer status;
-	private String msg;
-	private Long timeStamp;
-	
-	public StandardError(Integer status, String msg, Long timeStamp) {
-		super();
-		this.status = status;
-		this.msg = msg;
+	private String error;
+	private String message;
+	private String path;
+
+	public StandardError(LocalDateTime timeStamp, Integer status, String error, String message, String path) {
 		this.timeStamp = timeStamp;
+		this.status = status;
+		this.error = error;
+		this.message = message;
+		this.path = path;
 	}
 
 	public Integer getStatus() {
@@ -23,21 +29,35 @@ public class StandardError implements Serializable {
 		this.status = status;
 	}
 
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-	public Long getTimeStamp() {
+	public LocalDateTime getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(Long timeStamp) {
+	public void setTimeStamp(LocalDateTime timeStamp) {
 		this.timeStamp = timeStamp;
 	}
-	
-	
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
 }

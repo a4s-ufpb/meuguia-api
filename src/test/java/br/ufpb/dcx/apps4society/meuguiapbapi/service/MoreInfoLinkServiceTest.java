@@ -1,137 +1,133 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service.AttractionService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.MoreInfoLinkRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.service.MoreInfoLinkService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTestHelper.createAttraction;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.createAttractionType;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLink;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLinkRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.createTourismSegmentation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class MoreInfoLinkServiceTest {
-    private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = MoreInfoLinkTestHelper.getInstance();
+    Attraction attraction;
+    AttractionType attractionType;
+    MoreInfoLink moreInfoLink;
+    TourismSegmentation tourismSegmentation;
 
     @Mock
-    private MoreInfoLinkRepository moreInfoLinkRepository;
+    AttractionService attractionService;
 
     @InjectMocks
-    private MoreInfoLinkService moreInfoLinkService;
+    MoreInfoLinkService moreInfoLinkService;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
+        moreInfoLink = createMoreInfoLink(1);
+        tourismSegmentation = createTourismSegmentation(1);
+        attractionType = createAttractionType(1);
+        attraction = createAttraction(1, tourismSegmentation, moreInfoLink, attractionType);
     }
 
     @Test
-    void createMoreInfoLinkTest() {
-        var requestData = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(1);
-        when(moreInfoLinkRepository.save(any(MoreInfoLink.class))).thenAnswer(invocationOnMock -> {
-            MoreInfoLink moreInfoLink = invocationOnMock.getArgument(0);
-            moreInfoLink.setId(1L);
-            return moreInfoLink;
-        });
+    void getMoreInfoLinkFromAttraction() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
 
-        MoreInfoLink result = moreInfoLinkService.create(requestData);
+        MoreInfoLinkDTO moreInfoLink = moreInfoLinkService.getMoreInfoLinkFromAttraction(1L, this.moreInfoLink.getLink());
 
-        verify(moreInfoLinkRepository).save(any(MoreInfoLink.class));
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals(requestData.getLink(), result.getLink());
-        assertEquals(requestData.getDescription(), result.getDescription());
+        assertEquals(this.moreInfoLink.getLink(), moreInfoLink.getLink());
+        assertEquals(this.moreInfoLink.getDescription(), moreInfoLink.getDescription());
     }
 
     @Test
-    void deleteMoreInfoLinkTest() {
-        when(moreInfoLinkRepository.findById(1L)).thenReturn(Optional.of(moreInfoLinkTestHelper.createMoreInfoLink(1)));
+    void getMoreInfoLinkFromAttractionNotFound() {
+        when(attractionService.findById(1L)).thenThrow(ObjectNotFoundException.class);
 
-        moreInfoLinkService.delete(1L);
-
-        verify(moreInfoLinkRepository).deleteById(1L);
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.getMoreInfoLinkFromAttraction(1L, moreInfoLink.getLink()));
     }
 
     @Test
-    void deleteMoreInfoLink_NotExistTest() {
-        when(moreInfoLinkRepository.findById(1L)).thenReturn(Optional.empty());
+    void addMoreInfoLinkToAttraction() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
+        when(attractionService.save(any(Attraction.class))).thenAnswer(i -> i.getArgument(0));
 
-        var thrown = assertThrows(ObjectNotFoundException.class, () -> {
-            moreInfoLinkService.delete(1L);
-        });
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkDTO moreInfoLinkDTO = moreInfoLinkService.addMoreInfoLinkToAttraction(1L, requestData);
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink", thrown.getMessage());
+        assertEquals(requestData.getLink(), moreInfoLinkDTO.getLink());
+        assertEquals(requestData.getDescription(), moreInfoLinkDTO.getDescription());
     }
 
     @Test
-    void findMoreInfoLinkByIdTest() {
-        MoreInfoLink moreInfoLink = moreInfoLinkTestHelper.createMoreInfoLink(1);
-        when(moreInfoLinkRepository.findById(moreInfoLink.getId())).thenReturn(Optional.of(moreInfoLink));
+    void addMoreInfoLinkToAttractionNotFound() {
+        when(attractionService.findById(1L)).thenThrow(ObjectNotFoundException.class);
 
-        MoreInfoLink result = moreInfoLinkService.findById(1L);
-
-        verify(moreInfoLinkRepository).findById(1L);
-        assertNotNull(result);
-        assertEquals(moreInfoLink.getId(), result.getId());
-        assertEquals(moreInfoLink.getLink(), result.getLink());
-        assertEquals(moreInfoLink.getDescription(), result.getDescription());
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.addMoreInfoLinkToAttraction(1L, createMoreInfoLinkRequestData(1)));
     }
 
     @Test
-    void findMoreInfoLinkById_NotExistTest() {
-        when(moreInfoLinkRepository.findById(1L)).thenReturn(Optional.empty());
+    void updateMoreInfoLinkFromAttraction() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
+        when(attractionService.save(any(Attraction.class))).thenAnswer(i -> i.getArgument(0));
 
-        var thrown = assertThrows(ObjectNotFoundException.class, () -> {
-            moreInfoLinkService.findById(1L);
-        });
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkDTO moreInfoLinkDTO = moreInfoLinkService.updateMoreInfoLinkFromAttraction(1L, moreInfoLink.getLink(), requestData);
 
-        assertEquals("Objeto não encontrado! id: 1, Tipo br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink", thrown.getMessage());
+        assertEquals(moreInfoLink.getLink(), moreInfoLinkDTO.getLink());
+        assertEquals(requestData.getDescription(), moreInfoLinkDTO.getDescription());
     }
 
     @Test
-    void findAllMoreInfoLinkTest() {
-        when(moreInfoLinkRepository.findAll()).thenReturn(moreInfoLinkTestHelper.getListOfMoreInfoLinks());
+    void updateMoreInfoLinkFromAttractionNotFound() {
+        when(attractionService.findById(1L)).thenThrow(ObjectNotFoundException.class);
 
-        var result = moreInfoLinkService.findAll();
-
-        verify(moreInfoLinkRepository).findAll();
-        assertNotNull(result);
-        assertEquals(3, result.size());
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.updateMoreInfoLinkFromAttraction(1L, moreInfoLink.getLink(), createMoreInfoLinkRequestData(1)));
     }
 
     @Test
-    void findAllMoreInfoLink_EmptyDatabaseTest() {
-        when(moreInfoLinkRepository.findAll()).thenReturn(null);
+    void updateMoreInfoLink_LinkNotFound() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
 
-        var result = moreInfoLinkService.findAll();
-
-        verify(moreInfoLinkRepository).findAll();
-        assertNull(result);
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.updateMoreInfoLinkFromAttraction(1L, "link", createMoreInfoLinkRequestData(1)));
     }
 
     @Test
-    void exitsMoreInfoLinkByIdTest() {
-        when(moreInfoLinkRepository.existsById(1L)).thenReturn(true);
+    void deleteMoreInfoLinkFromAttraction() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
+        when(attractionService.save(any(Attraction.class))).thenAnswer(i -> i.getArgument(0));
 
-        var result = moreInfoLinkService.existsById(1L);
+        moreInfoLinkService.deleteMoreInfoLinkFromAttraction(1L, moreInfoLink.getLink());
 
-        verify(moreInfoLinkRepository).existsById(1L);
-        assertTrue(result);
+        verify(attractionService, times(1)).save(any(Attraction.class));
     }
 
     @Test
-    void existsMoreInfoLinkById_NotExistTest() {
-        when(moreInfoLinkRepository.existsById(1L)).thenReturn(false);
+    void deleteMoreInfoLinkFromAttractionNotFound() {
+        when(attractionService.findById(1L)).thenThrow(ObjectNotFoundException.class);
 
-        var result = moreInfoLinkService.existsById(1L);
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.deleteMoreInfoLinkFromAttraction(1L, moreInfoLink.getLink()));
+    }
 
-        verify(moreInfoLinkRepository).existsById(1L);
-        assertFalse(result);
+    @Test
+    void deleteMoreInfoLinkFromAttraction_LinkNotFound() {
+        when(attractionService.findById(1L)).thenReturn(this.attraction);
+
+        assertThrows(ObjectNotFoundException.class, () -> moreInfoLinkService.deleteMoreInfoLinkFromAttraction(1L, "link"));
     }
 }

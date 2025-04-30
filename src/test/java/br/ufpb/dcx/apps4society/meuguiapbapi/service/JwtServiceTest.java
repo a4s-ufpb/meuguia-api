@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

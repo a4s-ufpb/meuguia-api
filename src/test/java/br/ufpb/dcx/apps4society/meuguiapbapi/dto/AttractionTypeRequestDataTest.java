@@ -1,14 +1,14 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.dto;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AttractionTypeTestHelper;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.createAttractionTypeRequestData;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AttractionTypeRequestDataTest {
-    private final AttractionTypeTestHelper helper = AttractionTypeTestHelper.getInstance();
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
@@ -25,45 +25,45 @@ class AttractionTypeRequestDataTest {
 
     @Test
     void testEquals() {
-        var attractionTypeRequestData1 = helper.createAttractionTypeRequestData(1);
-        var attractionTypeRequestData2 = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData1 = createAttractionTypeRequestData(1);
+        var attractionTypeRequestData2 = createAttractionTypeRequestData(1);
 
         assertTrue(attractionTypeRequestData1.equals(attractionTypeRequestData2) && attractionTypeRequestData2.equals(attractionTypeRequestData1));
     }
 
     @Test
     void testEqualsNull() {
-        var attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData = createAttractionTypeRequestData(1);
 
         assertNotEquals(null, attractionTypeRequestData);
     }
 
     @Test
     void testEqualsDifferentClass() {
-        var attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData = createAttractionTypeRequestData(1);
 
         assertNotEquals(new Object(), attractionTypeRequestData);
     }
 
     @Test
     void testEqualsDifferent() {
-        var attractionTypeRequestData1 = helper.createAttractionTypeRequestData(1);
-        var attractionTypeRequestData2 = helper.createAttractionTypeRequestData(2);
+        var attractionTypeRequestData1 = createAttractionTypeRequestData(1);
+        var attractionTypeRequestData2 = createAttractionTypeRequestData(2);
 
         assertFalse(attractionTypeRequestData1.equals(attractionTypeRequestData2) || attractionTypeRequestData2.equals(attractionTypeRequestData1));
     }
 
     @Test
     void testHashCode() {
-        var attractionTypeRequestData1 = helper.createAttractionTypeRequestData(1);
-        var attractionTypeRequestData2 = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData1 = createAttractionTypeRequestData(1);
+        var attractionTypeRequestData2 = createAttractionTypeRequestData(1);
 
         assertEquals(attractionTypeRequestData1.hashCode(), attractionTypeRequestData2.hashCode());
     }
 
     @Test
     void testToString() {
-        var attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData = createAttractionTypeRequestData(1);
         String expected = "AttractionTypeRequestData(name=mock Cultural1, description=Turismo cultural, visando pontos históricos)";
 
         assertEquals(expected, attractionTypeRequestData.toString());
@@ -71,7 +71,7 @@ class AttractionTypeRequestDataTest {
 
     @Test
     void testViolationsNullName() {
-        var attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        var attractionTypeRequestData = createAttractionTypeRequestData(1);
         attractionTypeRequestData.setName(null);
         var violations = validator.validate(attractionTypeRequestData);
 
@@ -80,7 +80,7 @@ class AttractionTypeRequestDataTest {
 
     @Test
     void testViolationsEmptyName() {
-        AttractionTypeRequestData attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        AttractionTypeRequestData attractionTypeRequestData = createAttractionTypeRequestData(1);
         attractionTypeRequestData.setName("");
         var violations = validator.validate(attractionTypeRequestData);
 
@@ -89,7 +89,7 @@ class AttractionTypeRequestDataTest {
 
     @Test
     void testViolationsDescription() {
-        AttractionTypeRequestData attractionTypeRequestData = helper.createAttractionTypeRequestData(1);
+        AttractionTypeRequestData attractionTypeRequestData = createAttractionTypeRequestData(1);
         var violations = validator.validate(attractionTypeRequestData);
 
         assertEquals(0, violations.size());

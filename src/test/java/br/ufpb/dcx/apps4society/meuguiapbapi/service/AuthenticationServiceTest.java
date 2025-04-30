@@ -1,12 +1,13 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.UserDTO;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.AuthenticationTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.repository.UserRepository;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.AuthenticationService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.JwtService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,13 +18,15 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper.createAuthenticationRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper.createRegisterRequestData;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 class AuthenticationServiceTest {
-    private final AuthenticationTestHelper authenticationTestHelper = AuthenticationTestHelper.getInstance();
 
     @Mock
     private JwtService jwtService;
@@ -44,7 +47,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUserTest() {
-        AuthenticationRequestData requestData = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestData = createAuthenticationRequestData();
         when(authenticationManager.authenticate(any(Authentication.class))).thenAnswer(invocationOnMock -> {
             Authentication auth = invocationOnMock.getArgument(0);
             User user = User.builder().email((String) auth.getPrincipal()).password((String) auth.getCredentials()).build();
@@ -60,7 +63,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUser_InvalidCredentialsTest() {
-        AuthenticationRequestData requestData = authenticationTestHelper.createAuthenticationRequestData();
+        AuthenticationRequestData requestData = createAuthenticationRequestData();
         when(authenticationManager.authenticate(any(Authentication.class))).thenThrow(new BadCredentialsException("Invalid credentials"));
 
         assertThrows(BadCredentialsException.class, () -> authenticationService.authenticate(requestData));
@@ -68,7 +71,7 @@ class AuthenticationServiceTest {
 
     @Test
     void registerUserTest() {
-        RegisterUserRequestData requestData = authenticationTestHelper.getRegisterRequestData(1);
+        RegisterUserRequestData requestData = createRegisterRequestData(1);
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenAnswer(invocationOnMock -> {
             User user = invocationOnMock.getArgument(0);

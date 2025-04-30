@@ -1,6 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.config;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.service.JwtService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -44,9 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        log.debug("doFilterInternal called");
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.debug("Auth header not present");
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,8 +62,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (userEmail != null && authentication == null) {
+                log.debug("Generate new authentication for ContextHolder");
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    log.debug("Valid token for user {}", userEmail);
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities()
                     );
@@ -69,19 +73,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    log.debug("Successfully authenticated user {}", userEmail);
                 }
             }
             filterChain.doFilter(request, response);
         } catch (UsernameNotFoundException e) {
+            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Unauthorized");
         } catch (MalformedJwtException e) {
+            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Malformed token");
         } catch (ExpiredJwtException e) {
+            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Expired token");
         } catch (SignatureException e) {
+            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Signature does not match local calculated signature");
         } catch (Exception e) {

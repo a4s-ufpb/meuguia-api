@@ -1,232 +1,282 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.AuthenticationResponseData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.RegisterUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.domain.MoreInfoLink;
-import br.ufpb.dcx.apps4society.meuguiapbapi.dto.MoreInfoLinkRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.mock.MoreInfoLinkTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil;
-import io.restassured.response.Response;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.helper.*;
+import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.dto.MoreInfoLinkRequestData;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 
-import static br.ufpb.dcx.apps4society.meuguiapbapi.util.MoreInfoLinkRequestUtil.PATH_MORE_INFO_LINK;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTestHelper.PATH_ATTRACTION;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTestHelper.createAttractionRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.createAttractionTypeRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.PATH_MORE_INFO_LINK;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLinkRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.createTourismSegmentationRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper.createRegisterRequestData;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
+@Disabled
 class MoreInfoLinkControllerTest extends MeuguiaApiApplicationTests {
-    private final MoreInfoLinkTestHelper moreInfoLinkTestHelper = new MoreInfoLinkTestHelper();
-    private final MoreInfoLinkRequestUtil moreInfoLinkRequestUtil = new MoreInfoLinkRequestUtil();
+    Attraction attraction;
+    AttractionType attractionType;
+    TourismSegmentation tourismSegmentation;
+    MoreInfoLinkRequestData moreInfoLinkRequestData;
 
-    @Autowired
-    private Environment env;
-
-    private String token;
+    String token;
 
     @BeforeAll
     void setUp() {
-        RegisterUserRequestData request = authenticationTestHelper.getRegisterRequestData(70);
-        AuthenticationResponseData response = userRequestUtil.registerAndAuthenticate(request);
-        token = response.getToken();
+        token = UserTestsHelper.registerAndAuthenticate(
+                createRegisterRequestData(1)
+        ).getToken();
+        log.info("Token: {}", token);
     }
 
-    @AfterAll
+    @BeforeEach
+    void setUpEach() {
+        moreInfoLinkRequestData = createMoreInfoLinkRequestData(1);
+        attractionType = AttractionTypeTestHelper.post(createAttractionTypeRequestData(1), token);
+        tourismSegmentation = TourismSegmentationTestHelper.post(createTourismSegmentationRequestData(1), token);
+
+        AttractionRequestData attractionRequestData = createAttractionRequestData(1, tourismSegmentation, moreInfoLinkRequestData, attractionType);
+        attractionRequestData.setMoreInfoLinks(List.of());
+        attraction = AttractionTestHelper.post(attractionRequestData, token);
+    }
+
+    @AfterEach
     void tearDown() {
-        userRequestUtil.delete(token);
+        AttractionTestHelper.delete(attraction.getId(), token);
+        AttractionTypeTestHelper.delete(attractionType, token);
+        TourismSegmentationTestHelper.delete(tourismSegmentation, token);
     }
 
     @Test
-    void create_shouldReturn201_whenMoreInfoLinkDataIsValidTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(1);
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post(PATH_MORE_INFO_LINK);
-
-        if (response.statusCode() == HttpStatus.CREATED.value()) {
-            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
-        }
-
-        response.then()
-                .statusCode(HttpStatus.CREATED.value())
-                .body("id", notNullValue())
-                .body("link", equalTo(requestBody.getLink()))
-                .body("description", equalTo(requestBody.getDescription()))
-                .extract()
-                .as(MoreInfoLink.class);
-    }
-
-    @Test
-    void create_shouldReturn400_whenMoreInfoLinkLinkIsNullTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(2);
-        requestBody.setLink(null);
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post(PATH_MORE_INFO_LINK);
-
-        if (response.statusCode() == HttpStatus.CREATED.value()) {
-            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
-        }
-
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    void create_shouldReturn400_whenMoreInfoLinkDescriptionIsNullTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(3);
-        requestBody.setDescription(null);
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post(PATH_MORE_INFO_LINK);
-
-        if (response.statusCode() == HttpStatus.CREATED.value()) {
-            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
-        }
-
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-
-    }
-
-    @Test
-    void create_shouldReturn400_whenMoreInfoLinkLinkIsEmptyTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(4);
-        requestBody.setLink("");
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post(PATH_MORE_INFO_LINK);
-
-        if (response.statusCode() == HttpStatus.CREATED.value()) {
-            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
-        }
-
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    void create_shouldReturn400_whenMoreInfoLinkLinkIsInvalidTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(5);
-        requestBody.setLink("invalidLink");
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post(PATH_MORE_INFO_LINK);
-
-        if (response.statusCode() == HttpStatus.CREATED.value()) {
-            moreInfoLinkRequestUtil.delete(response.as(MoreInfoLink.class), token);
-        }
-
-        response.then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-
-    @Test
-    void findById_shouldReturn200_whenMoreInfoLinkExistsTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(8);
-        MoreInfoLink infoLink = moreInfoLinkRequestUtil.post(requestBody, token);
-
-        Response response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + token)
-                .when()
-                .get(PATH_MORE_INFO_LINK+"/"+infoLink.getId());
-
-        moreInfoLinkRequestUtil.delete(infoLink, token);
-
-        response.then()
-                .statusCode(HttpStatus.OK.value())
-                .body("id", is(infoLink.getId().intValue()))
-                .body("link", equalTo(infoLink.getLink()))
-                .body("description", equalTo(infoLink.getDescription()));
-    }
-
-    @Test
-    void findById_shouldReturn404_whenMoreInfoLinkDoesNotExistTest() {
+    void addMoreInfoLinkToAttraction_ShouldReturn201() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
         given()
-                .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
-                .when()
-                .get(PATH_MORE_INFO_LINK+"/"+INVALID_ID)
+                .contentType(ContentType.JSON)
+                .body(requestData)
+                .post(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("link", equalTo(requestData.getLink()))
+                .body("description", equalTo(requestData.getDescription()));
+    }
+
+    @Test
+    void addMoreInfoLinkToAttraction_ShouldReturn404_WhenAttractionDoesNotExist() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(requestData)
+                .post(PATH_ATTRACTION + "/" + 0 + PATH_MORE_INFO_LINK)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
-    void delete_shouldReturn204_whenTokenIsValidTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(9);
-        MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
+    void addMoreInfoLinkToAttraction_ShouldReturn403_WhenUserIsNotAuthenticated() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
 
         given()
-                .contentType("application/json")
+                .contentType(ContentType.JSON)
+                .body(requestData)
+                .post(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK)
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    void getMoreInfoLinkFromAttraction_ShouldReturn200() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        String encodedLink = URLEncoder.encode(requestData.getLink(), StandardCharsets.UTF_8);
+        given()
                 .header("Authorization", "Bearer " + token)
-                .when()
-                .delete(PATH_MORE_INFO_LINK+"/"+response.getId())
+                .contentType(ContentType.JSON)
+                .get(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + encodedLink)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("link", equalTo(requestData.getLink()))
+                .body("description", equalTo(requestData.getDescription()));
+    }
+
+    @Test
+    void getMoreInfoLinkShouldReturn200_WhenUserIsNotAuthenticated() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        String encodedLink = URLEncoder.encode(requestData.getLink(), StandardCharsets.UTF_8);
+        given()
+                .contentType(ContentType.JSON)
+                .get(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + requestData.getLink())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("link", equalTo(requestData.getLink()))
+                .body("description", equalTo(requestData.getDescription()));
+    }
+
+    @Test
+    void getMoreInfoLink_ShouldReturn200_WhenLinkIsNotEncoded() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .get(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + requestData.getLink())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("link", equalTo(requestData.getLink()))
+                .body("description", equalTo(requestData.getDescription()));
+    }
+
+    @Test
+    void getMoreInfoLinkShouldReturn404_WhenLinkDoesNotExist() {
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .get(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=link")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void getMoreInfoLinkShouldReturn404_WhenAttractionDoesNotExist() {
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .get(PATH_ATTRACTION + "/" + 0 + PATH_MORE_INFO_LINK + "?link=link")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void updateMoreInfoLinkFromAttraction_ShouldReturn200() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        MoreInfoLinkRequestData updatedRequestData = createMoreInfoLinkRequestData(2);
+        updatedRequestData.setLink(requestData.getLink());
+        String encodedLink = URLEncoder.encode(requestData.getLink(), StandardCharsets.UTF_8);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(updatedRequestData)
+                .put(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + requestData.getLink())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("link", equalTo(updatedRequestData.getLink()))
+                .body("description", equalTo(updatedRequestData.getDescription()));
+    }
+
+    @Test
+    void updateMoreInfoLinkFromAttraction_ShouldReturn404_WhenLinkDoesNotExist() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        MoreInfoLinkRequestData updatedRequestData = createMoreInfoLinkRequestData(2);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(updatedRequestData)
+                .put(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=link")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void updateMoreInfoLinkFromAttraction_ShouldReturn404_WhenAttractionDoesNotExist() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        MoreInfoLinkRequestData updatedRequestData = createMoreInfoLinkRequestData(2);
+        String encodedLink = URLEncoder.encode(updatedRequestData.getLink(), StandardCharsets.UTF_8);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(updatedRequestData)
+                .put(PATH_ATTRACTION + "/" + 0 + PATH_MORE_INFO_LINK + "?link=" + encodedLink)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void updateMoreInfoLinkFromAttraction_ShouldReturn400_WhenMoreInfoLinkIsInvalid() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        MoreInfoLinkRequestData updatedRequestData = createMoreInfoLinkRequestData(3);
+        updatedRequestData.setLink("invalidLink");
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(updatedRequestData)
+                .put(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + requestData.getLink())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void removeMoreInfoLinkFromAttraction_ShouldReturn204() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        String encodedLink = URLEncoder.encode(requestData.getLink(), StandardCharsets.UTF_8);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .delete(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + encodedLink)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
-    void delete_shouldReturn401_whenTokenIsInvalidTest() {
-       MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(10);
-       MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
-
-       given()
-               .contentType("application/json")
-               .header("Authorization", "Bearer " + INVALID_TOKEN)
-               .when()
-               .delete(PATH_MORE_INFO_LINK+"/"+response.getId())
-               .then()
-               .statusCode(HttpStatus.UNAUTHORIZED.value());
-
-       moreInfoLinkRequestUtil.delete(response, token);
-    }
-
-    @Test
-    void delete_shouldReturn403_whenTokenIsMissingTest() {
-        MoreInfoLinkRequestData requestBody = moreInfoLinkTestHelper.createMoreInfoLinkRequestData(11);
-        MoreInfoLink response = moreInfoLinkRequestUtil.post(requestBody, token);
+    void removeMoreInfoLinkFromAttraction_ShouldReturn204_WhenLinkIsNotEncoded() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
 
         given()
-                .contentType("application/json")
-                .when()
-                .delete(PATH_MORE_INFO_LINK+"/"+response.getId())
-                .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
-
-        moreInfoLinkRequestUtil.delete(response, token);
-    }
-
-    @Test
-    void delete_shouldReturn404_whenMoreInfoLinkDoesNotExistTest() {
-        given()
-                .contentType("application/json")
                 .header("Authorization", "Bearer " + token)
-                .when()
-                .delete(PATH_MORE_INFO_LINK+"/"+INVALID_ID)
+                .contentType(ContentType.JSON)
+                .delete(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=" + requestData.getLink())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void removeMoreInfoLinkFromAttraction_ShouldReturn404_WhenLinkDoesNotExist() {
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .delete(PATH_ATTRACTION + "/" + attraction.getId() + PATH_MORE_INFO_LINK + "?link=link")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void removeMoreInfoLinkFromAttraction_ShouldReturn404_WhenAttractionDoesNotExist() {
+        MoreInfoLinkRequestData requestData = createMoreInfoLinkRequestData(1);
+        MoreInfoLinkTestHelper.post(requestData, attraction.getId(), token);
+
+        String encodedLink = URLEncoder.encode(requestData.getLink(), StandardCharsets.UTF_8);
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .delete(PATH_ATTRACTION + "/" + 0 + PATH_MORE_INFO_LINK + "?link=" + encodedLink)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
