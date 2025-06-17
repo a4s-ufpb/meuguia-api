@@ -1,17 +1,16 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.repository.TourismSegmentationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class TourismSegmentationService {
@@ -28,17 +27,8 @@ public class TourismSegmentationService {
         return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! id: " + id + ", Tipo " + TourismSegmentation.class.getName()));
     }
 
-    public List<TourismSegmentation> findAll() {
-        List<TourismSegmentation> segmentations = tourismSegmentationRepository.findAll();
-
-        // Filtra para manter apenas as segmentações com nomes únicos
-        return new ArrayList<>(segmentations.stream()
-                .collect(Collectors.toMap(
-                        TourismSegmentation::getName,  // Usa o nome como chave
-                        Function.identity(),          // Usa o próprio objeto TurismSegmentation como valor
-                        (existing, replacement) -> existing // Em caso de duplicata, mantém o existente
-                ))
-                .values());
+    public Page<TourismSegmentation> findAll(Pageable pageable) {
+        return tourismSegmentationRepository.findAllDistinct(pageable);
     }
 
     public TourismSegmentation create(TourismSegmentationRequestData obj) {

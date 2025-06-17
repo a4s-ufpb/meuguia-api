@@ -2,28 +2,12 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AttractionRepository extends JpaRepository<Attraction, Long> {
-
-    List<Attraction> findByNameContainingIgnoreCase(String name);
-
-    @Query("SELECT obj FROM Attraction obj WHERE obj.city = :city")
-    List<Attraction> findAllByCity(@Param(value = "city") String city);
-
-    @Query("SELECT a FROM Attraction a JOIN a.attractionType s WHERE s.name = :attractionTypesName")
-    List<Attraction> findAllByType(@Param(value = "attractionTypesName") String attractionTypes);
-
-    @Query("SELECT a FROM Attraction a JOIN a.segmentations s WHERE s.name = :segmentationName")
-    List<Attraction> findAllBySegmentationName(@Param("segmentationName") String segmentationName);
-
-    List<Attraction> findAllByCityName(String cityName);
-
+public interface AttractionRepository extends JpaRepository<Attraction, Long>, JpaSpecificationExecutor<Attraction> {
     Optional<Attraction> findByNameAndCityId(String name, Long cityId);
 }

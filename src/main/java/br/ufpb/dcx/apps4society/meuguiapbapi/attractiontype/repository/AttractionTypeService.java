@@ -4,6 +4,8 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionTyp
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +35,8 @@ public class AttractionTypeService {
                 "Objeto não encontrado! Id: " + id + ", Tipo: " + AttractionType.class.getName()));
     }
 
-    public List<AttractionType> findAll() {
-        return attractionTypeRepository.findAll();
+    public Page<AttractionType> findAll(Pageable pageable) {
+        return attractionTypeRepository.findAll(pageable);
     }
 
     public List<AttractionType> search(String name) {
