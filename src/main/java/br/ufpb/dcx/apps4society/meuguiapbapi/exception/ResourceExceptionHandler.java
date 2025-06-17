@@ -1,18 +1,18 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -23,6 +23,34 @@ import java.util.List;
 @ControllerAdvice
 public class ResourceExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(ResourceExceptionHandler.class);
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> handleAllExceptions(Exception ex, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "internal server error",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        log.warn(error.toString());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<StandardError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                "invalid credentials",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        log.warn("Invalid credentials: {}", error.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
 
     @ExceptionHandler(ObjectNotFoundException.class)
     public ResponseEntity<StandardError> objectNotFoundException(ObjectNotFoundException e, HttpServletRequest request) {
@@ -118,7 +146,7 @@ public class ResourceExceptionHandler {
 
     private Error processFieldErrors(List<FieldError> fieldErrors) {
         Error error = new Error(HttpStatus.BAD_REQUEST.value(), "Validation error");
-        for (FieldError fieldError: fieldErrors) {
+        for (FieldError fieldError : fieldErrors) {
             error.addFieldError(fieldError.getObjectName(), fieldError.getField(), fieldError.getDefaultMessage());
         }
         return error;

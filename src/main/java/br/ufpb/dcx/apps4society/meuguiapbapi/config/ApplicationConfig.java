@@ -2,7 +2,10 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.config;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -16,9 +19,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.format.DateTimeFormatter;
+
 @Configuration
 @EnableJpaAuditing
 public class ApplicationConfig {
+    public static final String dateFormat = "yyyy-MM-dd";
+    public static final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -54,5 +62,14 @@ public class ApplicationConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration
                 .getAuthenticationManager();
+    }
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
+        return builder -> {
+            builder.simpleDateFormat(dateTimeFormat);
+            builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
+        };
     }
 }

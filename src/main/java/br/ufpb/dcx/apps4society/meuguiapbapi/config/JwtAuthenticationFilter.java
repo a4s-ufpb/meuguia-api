@@ -1,6 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.config;
 
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.JwtService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.exception.StandardError;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -24,6 +27,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+
+import static br.ufpb.dcx.apps4society.meuguiapbapi.config.ApplicationConfig.dateTimeFormat;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -78,25 +85,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (UsernameNotFoundException e) {
-            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Unauthorized");
+            writeErrorResponse(request, response, HttpStatus.UNAUTHORIZED.value(), "Unauthorized", "User not found: " + e.getMessage());
         } catch (MalformedJwtException e) {
-            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Malformed token");
+            writeErrorResponse(request, response, HttpStatus.UNAUTHORIZED.value(), "Malformed token", "Malformed token: " + e.getMessage());
         } catch (ExpiredJwtException e) {
-            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Expired token");
+            writeErrorResponse(request, response, HttpStatus.UNAUTHORIZED.value(), "Expired token", "Expired token: " + e.getMessage());
         } catch (SignatureException e) {
-            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Signature does not match local calculated signature");
-        } catch (Exception e) {
-            log.error("Error at {}: {}", this.getClass().getName(), e.getMessage());
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.getWriter().write("server internal error");
+            writeErrorResponse(request, response, HttpStatus.UNAUTHORIZED.value(), "Invalid signature", "Invalid signature: " + e.getMessage());
         }
+    }
+
+    private void writeErrorResponse(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    int status,
+                                    String error,
+                                    String message) throws IOException {
+
+        StandardError standardError = new StandardError(
+                LocalDateTime.now(),
+                status,
+                error,
+                message,
+                request.getRequestURI()
+        );
+        log.warn("AuthenticationError: {}", standardError.toString());
+
+        response.setStatus(status);
+        response.setContentType("application/json");
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.setDateFormat(new SimpleDateFormat(dateTimeFormat));
+
+        String json = mapper.writeValueAsString(standardError);
+        response.getWriter().write(json);
+        response.getWriter().flush();
     }
 }
