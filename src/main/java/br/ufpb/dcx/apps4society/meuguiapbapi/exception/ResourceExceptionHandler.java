@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,12 +38,26 @@ public class ResourceExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<StandardError> handleAllExceptions(AuthorizationDeniedException ex, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                "Authorization denied",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        log.warn(error.toString());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<StandardError> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
         StandardError error = new StandardError(
                 LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED.value(),
-                "invalid credentials",
+                "Invalid credentials",
                 ex.getMessage(),
                 request.getRequestURI()
         );
@@ -57,7 +72,7 @@ public class ResourceExceptionHandler {
         StandardError error = new StandardError(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                "recurso não encontrado",
+                "Recurso não encontrado",
                 e.getMessage(),
                 request.getRequestURI()
         );

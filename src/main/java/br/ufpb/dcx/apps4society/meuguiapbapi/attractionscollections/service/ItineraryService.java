@@ -8,6 +8,8 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.repository.I
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -82,5 +84,19 @@ public class ItineraryService {
         itineraryRepository.save(itinerary);
 
         log.debug("Attraction removed from itinerary: {}", itinerary);
+    }
+
+    public Page<Itinerary> findAllItineraries(Pageable pageable) {
+        log.debug("Retrieving itineraries with pageable: {}", pageable);
+        Page<Itinerary> itineraries = itineraryRepository.findAll(pageable);
+        log.debug("Retrieved itineraries: {}", itineraries);
+        return itineraries;
+    }
+
+    public Page<Itinerary> findAllPublicItineraries(Pageable pageable) {
+        log.debug("Retrieving itineraries with pageable: {}", pageable);
+        Page<Itinerary> itineraries = itineraryRepository.findAllByIsPublicTrueAndIsActiveTrue(pageable);
+        log.debug("Retrieved itineraries: {}", itineraries);
+        return itineraries;
     }
 }

@@ -73,12 +73,12 @@ public class Itinerary extends AbstractAttractionsCollection {
         isRanked = ranked;
     }
 
-    public User getCreatedBy() {
+    public User getOwner() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setOwner(User newOwner) {
+        this.createdBy = newOwner;
     }
 
     public Set<ItineraryItem> getItems() {

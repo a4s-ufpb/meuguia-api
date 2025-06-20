@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.controller;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.domain.Itinerary;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.AddAttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.ItineraryDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.ItineraryRequestData;
@@ -7,7 +8,10 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.service.Itin
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -38,6 +42,7 @@ public class ItineraryController {
         return ResponseEntity.created(uri).body(itineraryDto);
     }
 
+    @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication) || @itinerariesAuthorization.isItineraryPublic(#id) || hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ItineraryDTO> getItinerary(@PathVariable("id") Long id) {
         log.debug("Retrieving itinerary with id: {}", id);
@@ -48,6 +53,7 @@ public class ItineraryController {
         return ResponseEntity.ok(itineraryDto);
     }
 
+    @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication)")
     @PostMapping("/{id}/items")
     public ResponseEntity<Void> addItemToItinerary(@PathVariable("id") Long id, @Valid @RequestBody AddAttractionRequestData requestData) {
         log.debug("Adding item to itinerary with id: {}", id);
@@ -59,6 +65,7 @@ public class ItineraryController {
         return ResponseEntity.ok(null);
     }
 
+    @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication)")
     @DeleteMapping("/{id}/items/{attractionId}")
     public ResponseEntity<Void> removeItemFromItinerary(@PathVariable("id") Long id, @PathVariable("attractionId") Long attractionId) {
         log.debug("Deleting item with attractionId: {} from itinerary with id: {}", attractionId, id);
@@ -70,6 +77,7 @@ public class ItineraryController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication) || hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItinerary(@PathVariable("id") Long id) {
         log.debug("Deleting itinerary with id: {}", id);
@@ -79,6 +87,29 @@ public class ItineraryController {
         log.info("Itinerary deleted successfully");
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<Page<ItineraryDTO>> getPublicItineraries(Pageable pageable) {
+        log.debug("Retrieving public itineraries with pageable: {}", pageable);
+
+        Page<ItineraryDTO> itineraries = itineraryService.findAllPublicItineraries(pageable).map(Itinerary::toDto);
+
+        log.info("Itineraries retrieved successfully");
+        log.debug("Retrieved {} itineraries", itineraries.getTotalElements());
+        return ResponseEntity.ok(itineraries);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<Page<ItineraryDTO>> getAllItineraries(Pageable pageable) {
+        log.debug("Retrieving all itineraries with pageable: {}", pageable);
+
+        Page<ItineraryDTO> itineraries = itineraryService.findAllItineraries(pageable).map(Itinerary::toDto);
+
+        log.info("Itineraries retrieved successfully");
+        log.debug("Retrieved {} itineraries", itineraries.getTotalElements());
+        return ResponseEntity.ok(itineraries);
     }
 
 }
