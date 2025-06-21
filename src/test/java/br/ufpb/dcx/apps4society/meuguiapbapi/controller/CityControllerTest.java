@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class CityControllerTest extends MeuguiaApiApplicationTests {
@@ -22,7 +21,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
 
     @BeforeAll
     public void setUp() {
-        this.cityRequestData = new CityRequestData("MockCity2", "MockState2", "MockCountry2", "MC");
+        this.cityRequestData = new CityRequestData("MockCity", "MockState", "MockCountry", "MC");
     }
 
     @Test
@@ -139,4 +138,184 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
             fail();
         }
     }
+
+    @Test
+    public void updateCity_shouldReturn200_whenUserHasPermission() {
+        var createdCity = cityTestHelper.createCity();
+
+        var updatedCityRequestData = new CityRequestData("UpdatedCity", "UpdatedState", "UpdatedCountry", "UC");
+
+        try {
+            given()
+                    .header("Authorization", "Bearer " + getAdminToken())
+                    .contentType("application/json")
+                    .body(updatedCityRequestData)
+                    .when()
+                    .put(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body("id", equalTo(createdCity.getId().intValue()))
+                    .body("name", equalTo(updatedCityRequestData.getName()))
+                    .body("state", equalTo(updatedCityRequestData.getState()))
+                    .body("country", equalTo(updatedCityRequestData.getCountry()))
+                    .body("state_abbreviation", equalTo(updatedCityRequestData.getStateAbbreviation()));
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void updateCity_shouldReturn403_whenUserHasNoPermission() {
+        var createdCity = cityTestHelper.createCity();
+
+        var updatedCityRequestData = new CityRequestData("UpdatedCity", "UpdatedState", "UpdatedCountry", "UC");
+
+        try {
+            given()
+                    .header("Authorization", "Bearer " + getDefaultToken())
+                    .contentType("application/json")
+                    .body(updatedCityRequestData)
+                    .when()
+                    .put(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.FORBIDDEN.value());
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void updateCity_shouldReturn403_whenAuthorizationHeaderIsNotPresent() {
+        var createdCity = cityTestHelper.createCity();
+
+        var updatedCityRequestData = new CityRequestData("UpdatedCity", "UpdatedState", "UpdatedCountry", "UC");
+
+        try {
+            given()
+                    .contentType("application/json")
+                    .body(updatedCityRequestData)
+                    .when()
+                    .put(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.FORBIDDEN.value());
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void deleteCity_shouldReturn204_whenUserHasPermission() {
+        var createdCity = cityTestHelper.createCity();
+
+        try {
+            given()
+                    .header("Authorization", "Bearer " + getAdminToken())
+                    .when()
+                    .delete(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            cityTestHelper.deleteLastCityCreated();
+            fail();
+        }
+    }
+
+    @Test
+    public void deleteCity_shouldReturn403_whenUserHasNoPermission() {
+        var createdCity = cityTestHelper.createCity();
+
+        try {
+            given()
+                    .header("Authorization", "Bearer " + getDefaultToken())
+                    .when()
+                    .delete(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.FORBIDDEN.value());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            fail();
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void getCity_shouldReturn200_whenCityExists() {
+        var createdCity = cityTestHelper.createCity();
+
+        try {
+            given()
+                    .when()
+                    .get(CITY_PATH + "/" + createdCity.getId())
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body("id", equalTo(createdCity.getId().intValue()))
+                    .body("name", equalTo(createdCity.getName()))
+                    .body("state", equalTo(createdCity.getState()))
+                    .body("country", equalTo(createdCity.getCountry()))
+                    .body("state_abbreviation", equalTo(createdCity.getStateAbbreviation()));
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void getCity_shouldReturn404_whenCityDoesNotExist() {
+        try {
+            given()
+                    .when()
+                    .get(CITY_PATH + "/" + INVALID_ID)
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.NOT_FOUND.value());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    public void getCities_shouldReturn200_whenCitiesExist() {
+        cityTestHelper.createCity();
+
+        try {
+            given()
+                    .when()
+                    .get(CITY_PATH)
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body("content", notNullValue())
+                    .body("content", hasSize(1))
+                    .body("total_elements", is(1));
+        } finally {
+            cityTestHelper.deleteLastCityCreated();
+        }
+    }
+
+    @Test
+    public void getCities_shouldReturn200_whenNoCitiesExist() {
+        try {
+            given()
+                    .when()
+                    .get(CITY_PATH)
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.OK.value())
+                    .body("content", notNullValue())
+                    .body("content", hasSize(0))
+                    .body("total_elements", is(0));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            fail();
+        }
+    }
+
 }
