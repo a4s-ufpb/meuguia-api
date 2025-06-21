@@ -26,9 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AttractionTestHelper {
     public static final String PATH_ATTRACTION = "/attractions";
     public static final String PATH_CREATE_ATTRACTION = PATH_ATTRACTION;
-    public static final String PATH_FIND_ATTRACTION_BY_NAME = "/attractions/byName";
-    public static final String PATH_FIND_ATTRACTION_BY_CITY = "/attractions/byCity";
-    public static final String PATH_FIND_ATTRACTION_BY_SEGMENTATION = "/attractions/bySegmentations";
+    public static final String PATH_SEARCH_ATTRACTIONS = PATH_ATTRACTION + "/search";
 
     public static AttractionRequestData createAttractionRequestData(
             Integer num,

@@ -3,7 +3,6 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.service;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UpdateUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +38,7 @@ class UserServiceTest {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
-        UserDTO result = userService.update(requestData, user);
+        User result = userService.update(requestData, user);
 
         assertNotNull(result);
         assertEquals(user.getId(), result.getId());

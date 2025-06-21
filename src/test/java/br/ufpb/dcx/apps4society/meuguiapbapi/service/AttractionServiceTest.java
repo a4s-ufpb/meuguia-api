@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service.AttractionService;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.specification.AttractionSpecification;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.service.CityService;
@@ -16,8 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
 import java.util.Optional;
 
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTestHelper.*;
@@ -25,6 +30,7 @@ import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHel
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.CityTestHelper.createDefaultCityObject;
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLink;
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.MoreInfoLinkTestHelper.createMoreInfoLinkRequestData;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.PaginationHelper.*;
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.createTourismSegmentation;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,6 +40,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 // TODO: Verificar questão do MoreInfoLink
 class AttractionServiceTest {
 
+    private static final Logger log = LoggerFactory.getLogger(AttractionServiceTest.class);
     @Mock
     private AttractionRepository attractionRepository;
     @Mock
@@ -165,16 +172,21 @@ class AttractionServiceTest {
 
     @Test
     void findAllAttractionsTest() {
-        when(attractionRepository.findAll()).thenReturn(createAttractionList());
+        var attractions = createAttractionList();
+        when(attractionRepository.findAll(any(Pageable.class))).thenAnswer(invocation -> createPageWithContent(createAttractionList(), invocation.getArgument(0, Pageable.class)));
 
-        assertEquals(3, attractionService.findAll().size());
+        Page<Attraction> result = attractionService.findAll(createDefaultPageable());
+        assertEquals(attractions.size(), result.getContent().size());
     }
 
     @Test
     void findAllAttractions_AttractionNotExistTest() {
-        when(attractionRepository.findAll()).thenReturn(List.of());
+        when(attractionRepository.findAll(any(Pageable.class))).thenAnswer(invocation -> createEmptyPage(invocation.getArgument(0, Pageable.class)));
 
-        assertEquals(0, attractionService.findAll().size());
+        var result = attractionService.findAll(createDefaultPageable());
+
+        assertEquals(0, result.getTotalElements());
+        assertTrue(result.getContent().isEmpty());
     }
 
     @Test
@@ -210,86 +222,49 @@ class AttractionServiceTest {
     }
 
     @Test
-    void findAttractionByNameTest() {
-        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
-        when(attractionRepository.findByNameContainingIgnoreCase("mock Teatro municipal 1")).thenReturn(List.of(attraction));
+    void searchAttractionsTest() {
+        var attractions = createAttractionList();
+        var specification = new AttractionSpecification();
+        specification.setName("1");
 
-        List<Attraction> result = attractionService.findByName("mock Teatro municipal 1");
+        when(attractionRepository.findAll(any(AttractionSpecification.class), any(Pageable.class)))
+                .thenAnswer(invocation -> {
+                    return createPageWithContent(attractions.stream().map(attraction -> attraction.getName().equals(invocation.getArgument(0, AttractionSpecification.class).getName())).toList(), invocation.getArgument(1, Pageable.class));
+                });
 
-        assertNotNull(result);
-        assertEquals(attraction, result.getFirst());
-    }
-
-    @Test
-    void findAttractionByName_AttractionNotExistTest() {
-        when(attractionRepository.findByNameContainingIgnoreCase("mock Teatro municipal 1")).thenReturn(List.of());
-
-        assertEquals(0, attractionService.findByName("mock Teatro municipal 1").size());
-    }
-
-    @Test
-    void findAttractionByCityTest() {
-        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
-        when(attractionRepository.findAllByCityName("João Pessoa")).thenReturn(List.of(attraction));
-
-        List<Attraction> result = attractionService.findByCity("João Pessoa");
+        Page<Attraction> result = attractionService.search(createDefaultPageable(), specification);
 
         assertNotNull(result);
-        assertEquals(attraction, result.getFirst());
+        assertEquals(attractions.size(), result.getContent().size());
+        verify(attractionRepository).findAll(any(AttractionSpecification.class), any(Pageable.class));
+        log.debug("Search result: {}", result.getContent());
     }
 
     @Test
-    void findAttractionByCity_AttractionNotExistTest() {
-        when(attractionRepository.findAllByCity("João Pessoa")).thenReturn(List.of());
+    void searchAttractions_EmptyResultTest() {
+        var specification = new AttractionSpecification();
+        specification.setName("AttractionNonexistent");
 
-        assertEquals(0, attractionService.findByCity("João Pessoa").size());
-    }
+        when(attractionRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenAnswer(invocation -> createEmptyPage(invocation.getArgument(1, Pageable.class)));
 
-    @Test
-    void findAttractionBySegmentationTest() {
-        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
-        when(tourismSegmentationService.existsByName("mock Turismo de sol e mar1")).thenReturn(true);
-        when(attractionRepository.findAllBySegmentationName("mock Turismo de sol e mar1")).thenReturn(List.of(attraction));
-
-        List<Attraction> result = attractionService.findBySegmentation("mock Turismo de sol e mar1");
+        Page<Attraction> result = attractionService.search(createDefaultPageable(), specification);
 
         assertNotNull(result);
-        assertEquals(attraction, result.getFirst());
+        assertEquals(0, result.getTotalElements());
+        assertTrue(result.getContent().isEmpty());
     }
 
     @Test
-    void findAttractionBySegmentation_SegmentationNotExistsTest() {
-        when(tourismSegmentationService.existsByName("mock Turismo de sol e mar1")).thenReturn(false);
+    void searchAttractions_NullSpecificationTest() {
+        var attractions = createAttractionList();
 
-        Exception thrown = assertThrows(ObjectNotFoundException.class,
-                () -> attractionService.findBySegmentation("mock Turismo de sol e mar1"));
+        when(attractionRepository.findAll((AttractionSpecification) isNull(), any(Pageable.class)))
+                .thenAnswer(invocation -> createPageWithContent(attractions, invocation.getArgument(1, Pageable.class)));
 
-        assertEquals("Segmentação com nome 'mock Turismo de sol e mar1' não encontrada!", thrown.getMessage());
-    }
-
-    @Test
-    void findAttractionBySegmentation_AttractionNotExistTest() {
-        when(tourismSegmentationService.existsByName("mock Turismo de sol e mar1")).thenReturn(true);
-        when(attractionRepository.findAllBySegmentationName("mock Turismo de sol e mar1")).thenReturn(List.of());
-
-        assertEquals(0, attractionService.findBySegmentation("mock Turismo de sol e mar1").size());
-    }
-
-    @Test
-    void findAttractionByTypeTest() {
-        Attraction attraction = createAttraction(1, segmentation, moreInfoLink, attractionType);
-        when(attractionRepository.findAllByType("mock Cultural1")).thenReturn(List.of(attraction));
-
-        List<Attraction> result = attractionService.findByType("mock Cultural1");
+        Page<Attraction> result = attractionService.search(createDefaultPageable(), null);
 
         assertNotNull(result);
-        assertEquals(attraction, result.getFirst());
-    }
-
-    @Test
-    void findAttractionByType_AttractionNotExistTest() {
-        when(attractionRepository.findAllByType("mock Cultural1")).thenReturn(List.of());
-
-        assertEquals(0, attractionService.findByType("mock Cultural1").size());
+        assertEquals(attractions.size(), result.getContent().size());
     }
 }

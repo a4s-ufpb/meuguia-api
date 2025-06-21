@@ -5,7 +5,6 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRe
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
-import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .post(UserTestsHelper.PATH_USER_REGISTER);
 
         if (response.getStatusCode() == HttpStatus.CREATED.value()) {
-            UserTestsHelper.delete(response.as(UserDTO.class));
+            UserTestsHelper.delete(response.getBody().jsonPath().getLong("id"), getAdminToken());
         }
 
         response.then()
@@ -228,8 +227,9 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    void authenticate_shouldReturn403_whenUserNotExistTest() {
+    void authenticate_shouldReturn401_whenUserNotExistTest() {
         AuthenticationRequestData requestBody = UserTestsHelper.createAuthenticationRequestData();
+        requestBody.setEmail("dontExist@test.com");
 
         given()
                 .contentType(ContentType.JSON)
@@ -237,7 +237,7 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
                 .when()
                 .post(UserTestsHelper.PATH_USER_AUTHENTICATE)
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

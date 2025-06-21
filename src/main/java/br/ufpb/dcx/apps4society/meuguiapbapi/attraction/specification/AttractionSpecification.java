@@ -18,6 +18,9 @@ public class AttractionSpecification implements Specification<Attraction> {
     private List<Long> type;
     private List<Long> city;
 
+    public AttractionSpecification() {
+    }
+
     public AttractionSpecification(String name, List<Long> segmentation, List<Long> type, List<Long> city) {
         this.name = name;
         this.segmentation = segmentation;

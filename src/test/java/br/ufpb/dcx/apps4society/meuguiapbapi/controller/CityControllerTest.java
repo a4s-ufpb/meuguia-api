@@ -3,11 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.controller;
 import br.ufpb.dcx.apps4society.meuguiapbapi.MeuguiaApiApplicationTests;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.dto.CityRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.helper.CityTestHelper;
-import br.ufpb.dcx.apps4society.meuguiapbapi.helper.UserTestsHelper;
-import groovy.util.logging.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,30 +13,16 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@Slf4j
-public class CityControllerTest extends MeuguiaApiApplicationTests {
+class CityControllerTest extends MeuguiaApiApplicationTests {
     private static final String CITY_PATH = "/cities";
 
     @Autowired
-    private UserTestsHelper userTestsHelper;
-    @Autowired
     private CityTestHelper cityTestHelper;
-
-    private String adminApiToken;
-    private String defaultApiToken;
-
     private CityRequestData cityRequestData;
 
     @BeforeAll
     public void setUp() {
-        this.cityRequestData = new CityRequestData("MockCity", "MockState", "MockCountry", "MC");
-        this.adminApiToken = userTestsHelper.createAndAuthenticateUserWithAdminPermission();
-        this.defaultApiToken = userTestsHelper.createAndAuthenticateUserWithDefaultPermissions();
-    }
-
-    @AfterAll
-    public void tearDown() {
-        this.userTestsHelper.deleteLastUserCreated();
+        this.cityRequestData = new CityRequestData("MockCity2", "MockState2", "MockCountry2", "MC");
     }
 
     @Test
@@ -48,7 +30,7 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
         // request to create city
         try {
             given()
-                    .header("Authorization", "Bearer " + this.adminApiToken)
+                    .header("Authorization", "Bearer " + getAdminToken())
                     .contentType("application/json")
                     .body(cityRequestData)
                     .when()
@@ -70,11 +52,10 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    @Disabled
     public void createCity_shouldReturn403_whenUserHasNoPermission() {
         try {
             given()
-                    .header("Authorization", "Bearer " + this.defaultApiToken)
+                    .header("Authorization", "Bearer " + getDefaultToken())
                     .contentType("application/json")
                     .body(cityRequestData)
                     .when()
@@ -110,7 +91,7 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
         var invalidRequestData = new CityRequestData("", "", "", "");
         try {
             given()
-                    .header("Authorization", "Bearer " + this.adminApiToken)
+                    .header("Authorization", "Bearer " + getAdminToken())
                     .contentType("application/json")
                     .body(invalidRequestData)
                     .when()
@@ -125,12 +106,29 @@ public class CityControllerTest extends MeuguiaApiApplicationTests {
     }
 
     @Test
-    @Disabled
-    public void createCity_shouldReturn400_whenCityRequestDataIsNull() {
+    public void createCity_shouldReturn500_whenCityRequestDataIsNull() {
         try {
             given()
-                    .header("Authorization", "Bearer " + this.adminApiToken)
+                    .header("Authorization", "Bearer " + getAdminToken())
                     .contentType("application/json")
+                    .when()
+                    .post(CITY_PATH)
+                    .then()
+                    .log().all()
+                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            fail();
+        }
+    }
+
+    @Test
+    public void createCity_shouldReturn400_whenCityRequestDataIsEmpty() {
+        try {
+            given()
+                    .header("Authorization", "Bearer " + getAdminToken())
+                    .contentType("application/json")
+                    .body("{}")
                     .when()
                     .post(CITY_PATH)
                     .then()

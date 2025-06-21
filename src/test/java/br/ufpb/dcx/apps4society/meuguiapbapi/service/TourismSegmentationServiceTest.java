@@ -9,10 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.PaginationHelper.*;
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.TourismSegmentationTestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -59,36 +62,26 @@ class TourismSegmentationServiceTest {
     @Test
     void findAllTourismSegmentationTest() {
         List<TourismSegmentation> segmentations = getListOfTourismSegmentations();
-        when(tourismSegmentationRepository.findAll()).thenReturn(segmentations);
+        when(tourismSegmentationRepository.findAllDistinct(any(Pageable.class))).thenAnswer(invocation -> createPageWithContent(segmentations, invocation.getArgument(0, Pageable.class)));
 
-        List<TourismSegmentation> result = tourismSegmentationService.findAll();
+        Page<TourismSegmentation> result = tourismSegmentationService.findAll(createDefaultPageable());
 
-        verify(tourismSegmentationRepository).findAll();
+        verify(tourismSegmentationRepository).findAllDistinct(any(Pageable.class));
         assertNotNull(result);
-        assertEquals(3, result.size());
+        assertEquals(3, result.getTotalElements());
+        assertEquals(segmentations.size(), result.getContent().size());
     }
 
     @Test
     void findAllTourismSegmentation_EmptyTest() {
-        when(tourismSegmentationRepository.findAll()).thenReturn(List.of());
+        when(tourismSegmentationRepository.findAllDistinct(any(Pageable.class))).thenAnswer(invocation -> createEmptyPage(invocation.getArgument(0, Pageable.class)));
 
-        List<TourismSegmentation> result = tourismSegmentationService.findAll();
+        Page<TourismSegmentation> result = tourismSegmentationService.findAll(createDefaultPageable());
 
-        verify(tourismSegmentationRepository).findAll();
+        verify(tourismSegmentationRepository).findAllDistinct(any(Pageable.class));
         assertNotNull(result);
-        assertEquals(0, result.size());
-    }
-
-    @Test
-    void findAllTourismSegmentation_DuplicateNamesTest() {
-        List<TourismSegmentation> segmentations = getListOfDuplicatedTourismSegmentation();
-        when(tourismSegmentationRepository.findAll()).thenReturn(segmentations);
-
-        List<TourismSegmentation> result = tourismSegmentationService.findAll();
-
-        verify(tourismSegmentationRepository).findAll();
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(0, result.getTotalElements());
+        assertTrue(result.getContent().isEmpty());
     }
 
     @Test

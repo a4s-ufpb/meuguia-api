@@ -34,6 +34,7 @@ public class ResourceExceptionHandler {
                 ex.getMessage(),
                 request.getRequestURI()
         );
+        log.warn(ex.toString());
         log.warn(error.toString());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

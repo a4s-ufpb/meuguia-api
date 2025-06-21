@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRe
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.service.AuthenticationService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.UserRole;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UpdateUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
@@ -66,6 +67,17 @@ public class UserTestsHelper {
                 .email(bodyRequest.getEmail())
                 .password(bodyRequest.getPassword())
                 .build());
+    }
+
+    public static void delete(Long id, String adminToken) {
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .delete(PATH_USER + "/" + id)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
     }
 
     public static void delete(UserDTO userDTO) {
@@ -157,6 +169,7 @@ public class UserTestsHelper {
                         .lastName("default")
                         .email("user@default")
                         .password(passwordEncoder.encode("password"))
+                        .role(UserRole.DEFAULT_USER)
                         .build()
         );
     }
@@ -179,6 +192,7 @@ public class UserTestsHelper {
                         .lastName("default")
                         .email("admin@default")
                         .password(passwordEncoder.encode("password"))
+                        .role(UserRole.ADMIN)
                         .build()
         );
     }

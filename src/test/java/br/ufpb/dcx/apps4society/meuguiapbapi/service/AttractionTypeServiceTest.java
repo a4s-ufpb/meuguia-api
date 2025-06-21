@@ -5,15 +5,19 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRe
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeRepository;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.ObjectNotFoundException;
+import br.ufpb.dcx.apps4society.meuguiapbapi.helper.PaginationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.AttractionTypeTestHelper.*;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.PaginationHelper.createDefaultPageable;
+import static br.ufpb.dcx.apps4society.meuguiapbapi.helper.PaginationHelper.createEmptyPage;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -72,22 +76,25 @@ class AttractionTypeServiceTest {
 
     @Test
     void findAllAttractionTypesTest() {
-        when(attractionTypeRepository.findAll()).thenReturn(createAttractionTypeList());
+        when(attractionTypeRepository.findAll(any(Pageable.class))).thenAnswer(invocation -> PaginationHelper.createPageWithContent(createAttractionTypeList(), invocation.getArgument(0, Pageable.class)));
 
-        List<AttractionType> result = attractionTypeService.findAll();
+        Page<AttractionType> result = attractionTypeService.findAll(createDefaultPageable());
 
         assertNotNull(result);
-        assertEquals(3, result.size());
+        assertEquals(1, result.getTotalPages());
+        assertEquals(3, result.getTotalElements());
+        assertEquals(3, result.getContent().size());
     }
 
     @Test
     void findAllAttractionTypes_EmptyDatabaseTest() {
-        when(attractionTypeRepository.findAll()).thenReturn(List.of());
+        when(attractionTypeRepository.findAll(any(Pageable.class))).thenAnswer(invocation -> createEmptyPage(invocation.getArgument(0, Pageable.class)));
 
-        List<AttractionType> result = attractionTypeService.findAll();
+        Page<AttractionType> result = attractionTypeService.findAll(createDefaultPageable());
 
         assertNotNull(result);
-        assertEquals(0, result.size());
+        assertEquals(0, result.getTotalElements());
+        assertTrue(result.getContent().isEmpty());
     }
 
     @Test
