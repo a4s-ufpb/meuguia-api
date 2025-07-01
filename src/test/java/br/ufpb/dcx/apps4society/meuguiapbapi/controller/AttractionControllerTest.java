@@ -864,4 +864,89 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("content.size()", is(0))
                 .body("totalElements", is(0));
     }
+
+    @Test
+    void findById_shouldReturn200_whenAttractionExistsTest() {
+        AttractionRequestData requestBody = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        Attraction savedAttraction = AttractionTestHelper.post(requestBody, getDefaultToken());
+
+        Response response = given()
+                .contentType("application/json")
+                .when()
+                .get(AttractionTestHelper.PATH_ATTRACTION + "/" + savedAttraction.getId());
+
+        AttractionTestHelper.delete(savedAttraction.getId(), getAdminToken());
+
+        response.then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(savedAttraction.getName()))
+                .body("description", equalTo(savedAttraction.getDescription()))
+                .body("mapLink", equalTo(savedAttraction.getMapLink()))
+                .body("city.id", equalTo(savedAttraction.getCity().getId().intValue()))
+                .body("imageLink", equalTo(savedAttraction.getImageLink()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+    }
+
+    @Test
+    void findById_shouldReturn200_whenUserNotAuthenticatedTest() {
+        AttractionRequestData requestBody = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        Attraction savedAttraction = AttractionTestHelper.post(requestBody, getDefaultToken());
+
+        Response response = given()
+                .contentType("application/json")
+                .when()
+                .get(AttractionTestHelper.PATH_ATTRACTION + "/" + savedAttraction.getId());
+
+        AttractionTestHelper.delete(savedAttraction.getId(), getAdminToken());
+
+        response.then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(savedAttraction.getName()))
+                .body("description", equalTo(savedAttraction.getDescription()))
+                .body("mapLink", equalTo(savedAttraction.getMapLink()))
+                .body("city.id", equalTo(savedAttraction.getCity().getId().intValue()))
+                .body("imageLink", equalTo(savedAttraction.getImageLink()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+    }
+
+    @Test
+    void findById_shouldReturn200_whenAuthenticatedUserTest() {
+        AttractionRequestData requestBody = createAttractionRequestData(1, segmentation, moreInfoLinkRequestData, attractionType);
+        Attraction savedAttraction = AttractionTestHelper.post(requestBody, getDefaultToken());
+
+        Response response = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + getAdminToken())
+                .when()
+                .get(AttractionTestHelper.PATH_ATTRACTION + "/" + savedAttraction.getId());
+
+        AttractionTestHelper.delete(savedAttraction.getId(), getAdminToken());
+
+        response.then()
+                .statusCode(HttpStatus.OK.value())
+                .body("name", equalTo(savedAttraction.getName()))
+                .body("description", equalTo(savedAttraction.getDescription()))
+                .body("mapLink", equalTo(savedAttraction.getMapLink()))
+                .body("city.id", equalTo(savedAttraction.getCity().getId().intValue()))
+                .body("imageLink", equalTo(savedAttraction.getImageLink()))
+                .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+    }
+
+    @Test
+    void findById_shouldReturn404_whenAttractionNotExistsTest() {
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + getAdminToken())
+                .when()
+                .get(AttractionTestHelper.PATH_ATTRACTION + "/" + INVALID_ID)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
 }

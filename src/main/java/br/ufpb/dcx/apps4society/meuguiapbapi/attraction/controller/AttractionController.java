@@ -50,9 +50,9 @@ public class AttractionController {
             }
     )
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Attraction> findById(@PathVariable Long id) {
+    public ResponseEntity<AttractionDTO> findById(@PathVariable Long id) {
         log.info("Buscando atrativo pelo ID: {}", id);
-        Attraction obj = attractionService.findById(id);
+        var obj = attractionService.findById(id).toDto();
         log.info("Atrativo encontrado pelo ID: {}", obj);
 
         return ResponseEntity.ok().body(obj);

@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
 import br.ufpb.dcx.apps4society.meuguiapbapi.moreinfolink.domain.MoreInfoLink;
@@ -71,6 +72,10 @@ public class Attraction {
         this.segmentations = segmentations;
         this.attractionType = attractionType;
         this.moreInfoLinks = moreInfoLinks;
+    }
+
+    public AttractionDTO toDto() {
+        return new AttractionDTO(this);
     }
 
     public static AttractionBuilder builder() {
