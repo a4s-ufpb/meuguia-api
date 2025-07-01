@@ -203,7 +203,7 @@ class TourismSegmentationControllerTest extends MeuguiaApiApplicationTests {
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("content", empty())
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
 
     }
 

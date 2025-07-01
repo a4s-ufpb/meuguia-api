@@ -160,7 +160,7 @@ class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .body("content.id.flatten()", hasItems(attractionType1.getId().intValue(), attractionType2.getId().intValue()))
                 .body("content.name.flatten()", hasItems(attractionType1.getName(), attractionType2.getName()))
                 .body("content.description.flatten()", hasItems(attractionType1.getDescription(), attractionType2.getDescription()))
-                .body("total_elements", is(2));
+                .body("totalElements", is(2));
     }
 
     @Test
@@ -172,7 +172,7 @@ class AttractionTypeControllerTest extends MeuguiaApiApplicationTests {
                 .then()
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("total_elements", is(0))
+                .body("totalElements", is(0))
                 .body("content", empty());
     }
 

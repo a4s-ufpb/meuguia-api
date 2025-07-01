@@ -40,7 +40,7 @@ public class MeuguiaApiApplicationTests {
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
                 (type, s) -> {
                     ObjectMapper objectMapper = new ObjectMapper();
-                    objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
+                    objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.LowerCamelCaseStrategy());
                     return objectMapper;
                 })
         );

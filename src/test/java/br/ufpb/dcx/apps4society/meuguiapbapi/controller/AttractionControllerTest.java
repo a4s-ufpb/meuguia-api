@@ -83,12 +83,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.CREATED.value())
                 .body("name", equalTo(requestBody.getName()))
                 .body("description", equalTo(requestBody.getDescription()))
-                .body("map_link", equalTo(requestBody.getMapLink()))
+                .body("mapLink", equalTo(requestBody.getMapLink()))
                 .body("city.id", equalTo(requestBody.getCityId().intValue()))
-                .body("image_link", equalTo(requestBody.getImageLink()))
+                .body("imageLink", equalTo(requestBody.getImageLink()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
-                .body("more_info_links[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -251,23 +251,23 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.CREATED.value())
                 .body("name", equalTo(requestBody1.getName()))
                 .body("description", equalTo(requestBody1.getDescription()))
-                .body("map_link", equalTo(requestBody1.getMapLink()))
+                .body("mapLink", equalTo(requestBody1.getMapLink()))
                 .body("city.id", equalTo(requestBody1.getCityId().intValue()))
-                .body("image_link", equalTo(requestBody1.getImageLink()))
+                .body("imageLink", equalTo(requestBody1.getImageLink()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
-                .body("more_info_links[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
 
         response2.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("name", equalTo(requestBody2.getName()))
                 .body("description", equalTo(requestBody2.getDescription()))
-                .body("map_link", equalTo(requestBody2.getMapLink()))
+                .body("mapLink", equalTo(requestBody2.getMapLink()))
                 .body("city.id", equalTo(requestBody2.getCityId().intValue()))
-                .body("image_link", equalTo(requestBody2.getImageLink()))
+                .body("imageLink", equalTo(requestBody2.getImageLink()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
-                .body("more_info_links[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -316,12 +316,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.OK.value())
                 .body("name", equalTo(requestBody.getName()))
                 .body("description", equalTo(requestBody.getDescription()))
-                .body("map_link", equalTo(requestBody.getMapLink()))
+                .body("mapLink", equalTo(requestBody.getMapLink()))
                 .body("city.id", equalTo(requestBody.getCityId().intValue()))
-                .body("image_link", equalTo(requestBody.getImageLink()))
+                .body("imageLink", equalTo(requestBody.getImageLink()))
                 .body("segmentations[0].id", equalTo(segmentation.getId().intValue()))
-                .body("attraction_type.id", equalTo(attractionType.getId().intValue()))
-                .body("more_info_links[0].link", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("attractionType.id", equalTo(attractionType.getId().intValue()))
+                .body("moreInfoLinks[0].link", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -612,12 +612,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.OK.value())
                 .body("content.name", hasItem(savedAttraction.getName()))
                 .body("content.description", hasItem(savedAttraction.getDescription()))
-                .body("content.map_link", hasItem(savedAttraction.getMapLink()))
+                .body("content.mapLink", hasItem(savedAttraction.getMapLink()))
                 .body("content.city.id", hasItem(savedAttraction.getCity().getId().intValue()))
-                .body("content.image_link", hasItem(savedAttraction.getImageLink()))
+                .body("content.imageLink", hasItem(savedAttraction.getImageLink()))
                 .body("content.segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("content.attraction_type.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("content.more_info_links[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("content.attractionType.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("content.moreInfoLinks[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -636,7 +636,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("content", empty())
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
     }
 
     @Test
@@ -669,12 +669,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("content.size()", is(2))
                 .body("content.name", hasItems(attraction1.getName(), attraction2.getName()))
                 .body("content.description", hasItems(attraction1.getDescription(), attraction2.getDescription()))
-                .body("content.map_link", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
+                .body("content.mapLink", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
                 .body("content.city.id", hasItems(attraction1.getCity().getId().intValue(), attraction2.getCity().getId().intValue()))
-                .body("content.image_link", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
+                .body("content.imageLink", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
                 .body("content.segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation2.getId().intValue()))
-                .body("content.attraction_type.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("content.more_info_links.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()));
+                .body("content.attractionType.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("content.moreInfoLinks.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()));
     }
 
 
@@ -694,12 +694,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.OK.value())
                 .body("content.name", hasItem(savedAttraction.getName()))
                 .body("content.description", hasItem(savedAttraction.getDescription()))
-                .body("content.map_link", hasItem(savedAttraction.getMapLink()))
+                .body("content.mapLink", hasItem(savedAttraction.getMapLink()))
                 .body("content.city.id", hasItem(savedAttraction.getCity().getId().intValue()))
-                .body("content.image_link", hasItem(savedAttraction.getImageLink()))
+                .body("content.imageLink", hasItem(savedAttraction.getImageLink()))
                 .body("content.segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("content.attraction_type.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("content.more_info_links[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("content.attractionType.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("content.moreInfoLinks[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -718,7 +718,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.size()", is(0))
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
     }
 
     @Test
@@ -731,7 +731,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.size()", is(0))
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
     }
 
     @Test
@@ -763,13 +763,13 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("content.size()", is(2))
                 .body("content.name", hasItems(attraction1.getName(), attraction2.getName()))
                 .body("content.description", hasItems(attraction1.getDescription(), attraction2.getDescription()))
-                .body("content.map_link", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
+                .body("content.mapLink", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
                 .body("content.city.id", hasItems(attraction1.getCity().getId().intValue(), attraction2.getCity().getId().intValue()))
-                .body("content.image_link", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
+                .body("content.imageLink", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
                 .body("content.segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation2.getId().intValue()))
-                .body("content.attraction_type.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("content.more_info_links.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()))
-                .body("total_elements", is(2));
+                .body("content.attractionType.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("content.moreInfoLinks.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()))
+                .body("totalElements", is(2));
     }
 
     @Test
@@ -788,12 +788,12 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .statusCode(HttpStatus.OK.value())
                 .body("content.name", hasItem(savedAttraction.getName()))
                 .body("content.description", hasItem(savedAttraction.getDescription()))
-                .body("content.map_link", hasItem(savedAttraction.getMapLink()))
+                .body("content.mapLink", hasItem(savedAttraction.getMapLink()))
                 .body("content.city.id", hasItem(savedAttraction.getCity().getId().intValue()))
-                .body("content.image_link", hasItem(savedAttraction.getImageLink()))
+                .body("content.imageLink", hasItem(savedAttraction.getImageLink()))
                 .body("content.segmentations[0].id[0]", equalTo(segmentation.getId().intValue()))
-                .body("content.attraction_type.id[0]", equalTo(attractionType.getId().intValue()))
-                .body("content.more_info_links[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
+                .body("content.attractionType.id[0]", equalTo(attractionType.getId().intValue()))
+                .body("content.moreInfoLinks[0].link[0]", equalTo(moreInfoLinkRequestData.getLink()));
     }
 
     @Test
@@ -815,7 +815,7 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
         response.then()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.size()", is(0))
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
     }
 
     @Test
@@ -844,13 +844,13 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .body("content.size()", is(2))
                 .body("content.name", hasItems(attraction1.getName(), attraction2.getName()))
                 .body("content.description", hasItems(attraction1.getDescription(), attraction2.getDescription()))
-                .body("content.map_link", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
+                .body("content.mapLink", hasItems(attraction1.getMapLink(), attraction2.getMapLink()))
                 .body("content.city.id", hasItems(attraction1.getCity().getId().intValue(), attraction2.getCity().getId().intValue()))
-                .body("content.image_link", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
+                .body("content.imageLink", hasItems(attraction1.getImageLink(), attraction2.getImageLink()))
                 .body("content.segmentations.id.flatten()", hasItems(segmentation.getId().intValue(), segmentation.getId().intValue()))
-                .body("content.attraction_type.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
-                .body("content.more_info_links.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()))
-                .body("total_elements", is(2));
+                .body("content.attractionType.id.flatten()", hasItems(attractionType.getId().intValue(), attractionType2.getId().intValue()))
+                .body("content.moreInfoLinks.link.flatten()", hasItems(moreInfoLinkRequestData.getLink(), moreInfoLink2.getLink()))
+                .body("totalElements", is(2));
     }
 
     @Test
@@ -862,6 +862,6 @@ class AttractionControllerTest extends MeuguiaApiApplicationTests {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("content.size()", is(0))
-                .body("total_elements", is(0));
+                .body("totalElements", is(0));
     }
 }

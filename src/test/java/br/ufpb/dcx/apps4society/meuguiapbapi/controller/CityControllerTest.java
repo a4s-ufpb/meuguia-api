@@ -41,7 +41,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
                     .body("name", equalTo(cityRequestData.getName()))
                     .body("state", equalTo(cityRequestData.getState()))
                     .body("country", equalTo(cityRequestData.getCountry()))
-                    .body("state_abbreviation", equalTo(cityRequestData.getStateAbbreviation()));
+                    .body("stateAbbreviation", equalTo(cityRequestData.getStateAbbreviation()));
         } catch (Exception e) {
             log.error(e.getMessage());
             fail();
@@ -159,7 +159,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
                     .body("name", equalTo(updatedCityRequestData.getName()))
                     .body("state", equalTo(updatedCityRequestData.getState()))
                     .body("country", equalTo(updatedCityRequestData.getCountry()))
-                    .body("state_abbreviation", equalTo(updatedCityRequestData.getStateAbbreviation()));
+                    .body("stateAbbreviation", equalTo(updatedCityRequestData.getStateAbbreviation()));
         } finally {
             cityTestHelper.deleteLastCityCreated();
         }
@@ -260,7 +260,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
                     .body("name", equalTo(createdCity.getName()))
                     .body("state", equalTo(createdCity.getState()))
                     .body("country", equalTo(createdCity.getCountry()))
-                    .body("state_abbreviation", equalTo(createdCity.getStateAbbreviation()));
+                    .body("stateAbbreviation", equalTo(createdCity.getStateAbbreviation()));
         } finally {
             cityTestHelper.deleteLastCityCreated();
         }
@@ -294,7 +294,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
                     .statusCode(HttpStatus.OK.value())
                     .body("content", notNullValue())
                     .body("content", hasSize(1))
-                    .body("total_elements", is(1));
+                    .body("totalElements", is(1));
         } finally {
             cityTestHelper.deleteLastCityCreated();
         }
@@ -311,7 +311,7 @@ class CityControllerTest extends MeuguiaApiApplicationTests {
                     .statusCode(HttpStatus.OK.value())
                     .body("content", notNullValue())
                     .body("content", hasSize(0))
-                    .body("total_elements", is(0));
+                    .body("totalElements", is(0));
         } catch (Exception e) {
             log.error(e.getMessage());
             fail();

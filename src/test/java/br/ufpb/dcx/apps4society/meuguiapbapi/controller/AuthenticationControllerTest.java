@@ -33,8 +33,8 @@ class AuthenticationControllerTest extends MeuguiaApiApplicationTests {
         response.then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("email", equalTo(requestBody.getEmail()))
-                .body("first_name", equalTo(requestBody.getFirstName()))
-                .body("last_name", equalTo(requestBody.getLastName()))
+                .body("firstName", equalTo(requestBody.getFirstName()))
+                .body("lastName", equalTo(requestBody.getLastName()))
                 .body("id", notNullValue());
     }
 
