@@ -9,7 +9,7 @@ public class UpdateUserRequestData {
     @NotBlank(
             message = "O email não pode ser vazio"
     )
-    @Email (
+    @Email(
             message = "'${validatedValue}' não é um email válido"
     )
     private String email;
@@ -33,32 +33,40 @@ public class UpdateUserRequestData {
     public UpdateUserRequestData() {
     }
 
-    public static UserDTOBuilder builder() {
-        return new UserDTOBuilder();
+    public static UpdateUserRequestDataBuilder builder() {
+        return new UpdateUserRequestDataBuilder();
     }
 
     public String getEmail() {
         return this.email;
     }
 
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
     }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    public String getLastName() {
+        return this.lastName;
+    }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(email);
+        result = 31 * result + Objects.hashCode(firstName);
+        result = 31 * result + Objects.hashCode(lastName);
+        return result;
     }
 
     @Override
@@ -70,47 +78,52 @@ public class UpdateUserRequestData {
         return Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName);
     }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(email);
-        result = 31 * result + Objects.hashCode(firstName);
-        result = 31 * result + Objects.hashCode(lastName);
-        return result;
-    }
-
     public String toString() {
         return "UserDTO(email=" + this.getEmail() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ")";
     }
 
-    public static class UserDTOBuilder {
-        private String email;
-        private String firstName;
-        private String lastName;
+    public static final class UpdateUserRequestDataBuilder {
+        private @NotBlank(
+                message = "O email não pode ser vazio"
+        )
+        @Email(
+                message = "'${validatedValue}' não é um email válido"
+        ) String email;
+        private @NotBlank(
+                message = "O nome não pode ser vazio"
+        ) String firstName;
+        private @NotBlank(
+                message = "O sobrenome não pode ser vazio"
+        ) String lastName;
 
-        UserDTOBuilder() {
+        private UpdateUserRequestDataBuilder() {
         }
 
-        public UserDTOBuilder email(String email) {
+        public static UpdateUserRequestDataBuilder anUpdateUserRequestData() {
+            return new UpdateUserRequestDataBuilder();
+        }
+
+        public UpdateUserRequestDataBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public UserDTOBuilder firstName(String firstName) {
+        public UpdateUserRequestDataBuilder firstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public UserDTOBuilder lastName(String lastName) {
+        public UpdateUserRequestDataBuilder lastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
 
         public UpdateUserRequestData build() {
-            return new UpdateUserRequestData(this.email, this.firstName, this.lastName);
-        }
-
-        public String toString() {
-            return "UserDTO.UserDTOBuilder(email=" + this.email + ", firstName=" + this.firstName + ", lastName=" + this.lastName + ")";
+            UpdateUserRequestData updateUserRequestData = new UpdateUserRequestData();
+            updateUserRequestData.setEmail(email);
+            updateUserRequestData.setFirstName(firstName);
+            updateUserRequestData.setLastName(lastName);
+            return updateUserRequestData;
         }
     }
 }

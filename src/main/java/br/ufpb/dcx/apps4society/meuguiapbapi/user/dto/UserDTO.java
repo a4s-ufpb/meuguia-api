@@ -1,5 +1,7 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.user.dto;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.UserRole;
+
 import java.util.Objects;
 
 public class UserDTO {
@@ -7,12 +9,14 @@ public class UserDTO {
     private String email;
     private String firstName;
     private String lastName;
+    private String role;
 
-    public UserDTO(Long id, String email, String firstName, String lastName) {
+    public UserDTO(Long id, String email, String firstName, String lastName, UserRole role) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.role = role.toString();
     }
 
     public UserDTO() {
@@ -26,41 +30,40 @@ public class UserDTO {
         return this.id;
     }
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return this.firstName;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public String getRole() {
+        return role;
+    }
 
-        UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(id, userDTO.id) && Objects.equals(email, userDTO.email) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName);
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override
@@ -69,20 +72,42 @@ public class UserDTO {
         result = 31 * result + Objects.hashCode(email);
         result = 31 * result + Objects.hashCode(firstName);
         result = 31 * result + Objects.hashCode(lastName);
+        result = 31 * result + Objects.hashCode(role);
         return result;
     }
 
-    public String toString() {
-        return "UserDTO(id=" + this.getId() + ", email=" + this.getEmail() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ")";
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(email, userDTO.email) && Objects.equals(firstName, userDTO.firstName) && Objects.equals(lastName, userDTO.lastName) && Objects.equals(role, userDTO.role);
     }
 
-    public static class UserDTOBuilder {
+    @Override
+    public String toString() {
+        return "UserDTO(" +
+                "id=" + id +
+                ", email=" + email +
+                ", firstName=" + firstName +
+                ", lastName=" + lastName +
+                ", role=" + role +
+                ')';
+    }
+
+
+    public static final class UserDTOBuilder {
         private Long id;
         private String email;
         private String firstName;
         private String lastName;
+        private String role;
 
-        UserDTOBuilder() {
+        private UserDTOBuilder() {
+        }
+
+        public static UserDTOBuilder anUserDTO() {
+            return new UserDTOBuilder();
         }
 
         public UserDTOBuilder id(Long id) {
@@ -105,12 +130,19 @@ public class UserDTO {
             return this;
         }
 
-        public UserDTO build() {
-            return new UserDTO(this.id, this.email, this.firstName, this.lastName);
+        public UserDTOBuilder role(String role) {
+            this.role = role;
+            return this;
         }
 
-        public String toString() {
-            return "UserDTO.UserDTOBuilder(id=" + this.id + ", email=" + this.email + ", firstName=" + this.firstName + ", lastName=" + this.lastName + ")";
+        public UserDTO build() {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(id);
+            userDTO.setEmail(email);
+            userDTO.setFirstName(firstName);
+            userDTO.setLastName(lastName);
+            userDTO.setRole(role);
+            return userDTO;
         }
     }
 }

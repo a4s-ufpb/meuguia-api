@@ -51,6 +51,7 @@ public class User implements UserDetails {
                 .firstName(this.firstName)
                 .lastName(this.lastName)
                 .email(this.email)
+                .role(this.role.toString())
                 .build();
     }
 

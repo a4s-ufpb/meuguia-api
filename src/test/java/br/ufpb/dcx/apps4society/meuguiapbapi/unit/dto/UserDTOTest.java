@@ -25,43 +25,43 @@ class UserDTOTest {
 
     @Test
     void testEquals() {
-        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case");
-        var userDTO2 = new UserDTO(1L, "test@test.com", "test", "case");
+        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
+        var userDTO2 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
 
         assertTrue(userDTO1.equals(userDTO2) && userDTO2.equals(userDTO1));
     }
 
     @Test
     void testEqualsNull() {
-        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case");
+        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
         assertNotEquals(null, userDTO1);
     }
 
     @Test
     void testEqualsDifferentClass() {
-        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case");
+        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
         assertNotEquals(new Object(), userDTO1);
     }
 
     @Test
     void testEqualsDifferent() {
-        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case");
-        var userDTO2 = new UserDTO(2L, "test@test.com", "test", "case");
+        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
+        var userDTO2 = new UserDTO(2L, "test@test.com", "test", "case", UserRole.ADMIN);
 
         assertFalse(userDTO1.equals(userDTO2) || userDTO2.equals(userDTO1));
     }
 
     @Test
     void testHashCode() {
-        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case");
-        var userDTO2 = new UserDTO(1L, "test@test.com", "test", "case");
+        var userDTO1 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
+        var userDTO2 = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
         assertEquals(userDTO1.hashCode(), userDTO2.hashCode());
     }
 
     @Test
     void testToString() {
-        var userDTO = new UserDTO(1L, "test@test.com", "test", "case");
-        var expected = "UserDTO(id=1, email=test@test.com, firstName=test, lastName=case)";
+        var userDTO = new UserDTO(1L, "test@test.com", "test", "case", UserRole.ADMIN);
+        var expected = "UserDTO(id=1, email=test@test.com, firstName=test, lastName=case, role=ADMIN)";
 
         assertEquals(expected, userDTO.toString());
     }
