@@ -4,6 +4,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationRe
 import br.ufpb.dcx.apps4society.meuguiapbapi.authentication.dto.AuthenticationResponseData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.exception.EmailAlreadyInUseException;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.User;
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.domain.UserRole;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.RegisterUserRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.user.repository.UserRepository;
@@ -59,6 +60,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(registerUserRequestData.getPassword()))
                 .firstName(registerUserRequestData.getFirstName())
                 .lastName(registerUserRequestData.getLastName())
+                .role(UserRole.DEFAULT_USER)
                 .build());
 
         return UserDTO.builder()

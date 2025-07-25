@@ -27,7 +27,7 @@ spring:
     enabled: false
     locations: classpath:db/migration
   jackson:
-    property-naming-strategy: SNAKE_CASE
+    property-naming-strategy: LOWER_CAMEL_CASE
 
 logging:
   level:

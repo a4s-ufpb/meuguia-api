@@ -1,8 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.controller;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
-import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.domain.TourismSegmentation;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.dto.TourismSegmentationRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.TourismSegmentationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +15,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -71,10 +75,10 @@ public class TourismSegmentationController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<TourismSegmentation>> findAll() {
+    public ResponseEntity<Page<TourismSegmentationDTO>> findAll(Pageable pageable) {
         log.info("Buscando todas as segmentações turísticas");
-        List<TourismSegmentation> list = tourismSegmentationService.findAll();
-        log.info("Total de segmentações encontradas: {}", list.size());
+        Page<TourismSegmentationDTO> list = tourismSegmentationService.findAll(pageable).map(TourismSegmentationDTO::new);
+        log.info("Total de segmentações encontradas: {}", list.getTotalElements());
         return ResponseEntity.ok().body(list);
     }
 
@@ -111,6 +115,7 @@ public class TourismSegmentationController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Deletando segmentação turística com ID: {}", id);
         tourismSegmentationService.delete(id);

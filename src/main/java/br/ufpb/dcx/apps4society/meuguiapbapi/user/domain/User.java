@@ -1,7 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.user.domain;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.user.dto.UserDTO;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -23,12 +25,17 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    public User(Long id, String firstName, String lastName, String email, String password) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRole role;
+
+    public User(Long id, String firstName, String lastName, String email, String password, UserRole role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public User() {
@@ -38,9 +45,23 @@ public class User implements UserDetails {
         return new UserBuilder();
     }
 
+    public UserDTO toDto() {
+        return UserDTO.builder()
+                .id(this.id)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .email(this.email)
+                .role(this.role.toString())
+                .build();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.role()));
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
     @Override
@@ -66,6 +87,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getId() {
@@ -100,21 +125,12 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public String getPassword() {
-        return this.password;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     @Override
@@ -127,19 +143,26 @@ public class User implements UserDetails {
         return result;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
+    }
+
     public String toString() {
         return "User(id=" + this.getId() + ", firstName=" + this.getFirstName() + ", lastName=" + this.getLastName() + ", email=" + this.getEmail() + ", password=" + this.getPassword() + ")";
     }
 
-    public static class UserBuilder {
+    public static final class UserBuilder {
         private Long id;
         private String firstName;
         private String lastName;
         private String email;
         private String password;
-
-        UserBuilder() {
-        }
+        private UserRole role;
 
         public UserBuilder id(Long id) {
             this.id = id;
@@ -166,12 +189,13 @@ public class User implements UserDetails {
             return this;
         }
 
-        public User build() {
-            return new User(this.id, this.firstName, this.lastName, this.email, this.password);
+        public UserBuilder role(UserRole role) {
+            this.role = role;
+            return this;
         }
 
-        public String toString() {
-            return "User.UserBuilder(id=" + this.id + ", firstName=" + this.firstName + ", lastName=" + this.lastName + ", email=" + this.email + ", password=" + this.password + ")";
+        public User build() {
+            return new User(id, firstName, lastName, email, password, role);
         }
     }
 }

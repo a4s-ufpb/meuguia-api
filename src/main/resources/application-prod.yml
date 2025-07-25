@@ -8,10 +8,13 @@ spring:
     show-sql: false
     open-in-view: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     properties:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    br.ufpb.dcx.apps4society.meuguiapbapi: ${LOG_LEVEL}

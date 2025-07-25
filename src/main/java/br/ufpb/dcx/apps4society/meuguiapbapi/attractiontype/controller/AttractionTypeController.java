@@ -1,8 +1,9 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.controller;
 
-import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
-import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeDTO;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.dto.AttractionTypeRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -14,7 +15,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -51,7 +55,7 @@ public class AttractionTypeController {
         logger.info("Criando novo tipo de atrativo: {}", obj);
         AttractionType newObj = attractionTypeService.create(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/types/{id}")
+                .path("/api/types/{id}")
                 .buildAndExpand(newObj.getId()).toUri();
         logger.info("Tipo de atrativo criado com sucesso: {}", newObj);
         return ResponseEntity.created(uri).body(newObj);
@@ -68,6 +72,7 @@ public class AttractionTypeController {
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content),
             }
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         logger.info("Deletando tipo de atrativo com ID: {}", id);
         attractionTypeService.delete(id);
@@ -76,7 +81,7 @@ public class AttractionTypeController {
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<List<AttractionType>> search(@RequestParam(value= "name", required = false, defaultValue = "") String name) {
+    public ResponseEntity<List<AttractionType>> search(@RequestParam(value = "name", required = false, defaultValue = "") String name) {
         logger.info("Buscando tipo de atrativo pelo link: {}", name);
         List<AttractionType> list = attractionTypeService.search(name);
         logger.info("Tipo de atrativo encontrado: {}", list.size());
@@ -100,10 +105,10 @@ public class AttractionTypeController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<AttractionType>> findAll() {
+    public ResponseEntity<Page<AttractionTypeDTO>> findAll(Pageable pageable) {
         logger.info("Buscando todos os tipos de atrativos");
-        List<AttractionType> list = attractionTypeService.findAll();
-        logger.info("Tipos de atrativos encontrados: {}", list.size());
-        return ResponseEntity.ok().body(list);
+        Page<AttractionTypeDTO> typesDto = attractionTypeService.findAll(pageable).map(AttractionTypeDTO::new);
+        logger.info("Tipos de atrativos encontrados: {}", typesDto.getTotalElements());
+        return ResponseEntity.ok().body(typesDto);
     }
 }

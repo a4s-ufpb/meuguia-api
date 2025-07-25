@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -49,7 +50,7 @@ public class MoreInfoLinkController {
     @GetMapping
     public ResponseEntity<MoreInfoLinkDTO> getMoreInfoLinkFromAttraction(
             @PathVariable Long attractionId,
-            @RequestParam(name="link") String encodedLink
+            @RequestParam(name = "link") String encodedLink
     ) {
         log.debug("Recebendo requisição para obter link de mais informações da atração de ID: {}", attractionId);
 
@@ -62,9 +63,10 @@ public class MoreInfoLinkController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MoreInfoLinkDTO> updateMoreInfoLinkFromAttraction(
             @PathVariable Long attractionId,
-            @RequestParam(name="link") String encodedLink,
+            @RequestParam(name = "link") String encodedLink,
             @RequestBody @Valid MoreInfoLinkRequestData requestData
     ) {
         log.debug("Recebendo requisição para atualizar link de mais informações da atração de ID: {}", attractionId);
@@ -78,9 +80,10 @@ public class MoreInfoLinkController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMoreInfoLinkFromAttraction(
             @PathVariable Long attractionId,
-            @RequestParam(name="link") String encodedLink
+            @RequestParam(name = "link") String encodedLink
     ) {
         log.debug("Recebendo requisição para deletar link de mais informações da atração de ID: {}", attractionId);
 

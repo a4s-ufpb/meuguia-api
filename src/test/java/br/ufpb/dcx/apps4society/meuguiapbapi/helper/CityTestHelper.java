@@ -75,7 +75,7 @@ public class CityTestHelper {
      */
     public void deleteLastCityCreated() {
         if (this.lastCityCreated != null) {
-            cityRepository.delete(this.lastCityCreated);
+            cityRepository.deleteById(this.lastCityCreated.getId());
         }
     }
 

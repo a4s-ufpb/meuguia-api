@@ -3,6 +3,7 @@ package br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.domain.Attraction;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.repository.AttractionRepository;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.specification.AttractionSpecification;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.domain.AttractionType;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractiontype.repository.AttractionTypeService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.city.domain.City;
@@ -15,6 +16,8 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.tourismsegmentation.service.Tourism
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,27 +103,13 @@ public class AttractionService {
         return attraction;
     }
 
-    public List<Attraction> findAll() {
-        return attractionRepository.findAll();
+    public Page<Attraction> findAll(Pageable pageable) {
+        return attractionRepository.findAll(pageable);
     }
 
-    public List<Attraction> findByName(String name) {
-        return attractionRepository.findByNameContainingIgnoreCase(name);
-    }
 
-    public List<Attraction> findByCity(String city) {
-        return attractionRepository.findAllByCityName(city);
-    }
-
-    public List<Attraction> findBySegmentation(String segmentationName) {
-        if (!this.tourismSegmentationService.existsByName(segmentationName)) {
-            throw new ObjectNotFoundException("Segmentação com nome '" + segmentationName + "' não encontrada!");
-        }
-        return attractionRepository.findAllBySegmentationName(segmentationName);
-    }
-
-    public List<Attraction> findByType(String attractionTypes) {
-        return attractionRepository.findAllByType(attractionTypes);
+    public Page<Attraction> search(Pageable pageable, AttractionSpecification specification) {
+        return attractionRepository.findAll(specification, pageable);
     }
 
     public void delete(Long id) {
@@ -142,4 +131,5 @@ public class AttractionService {
     public Attraction save(Attraction attraction) {
         return attractionRepository.save(attraction);
     }
+
 }
