@@ -50,7 +50,7 @@ public class ResourceExceptionHandler {
                 ex.getMessage(),
                 request.getRequestURI()
         );
-        log.warn(ex.toString());
+        log.debug("Stack trace: ", ex);
         log.warn(error.toString());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

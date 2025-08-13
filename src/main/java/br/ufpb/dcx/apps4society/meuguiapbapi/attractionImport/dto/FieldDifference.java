@@ -4,12 +4,12 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.domain.enums.DiffT
 
 public class FieldDifference {
     private String fieldName;
-    private Object csvValue;
-    private Object databaseValue;
+    private String csvValue;
+    private String databaseValue;
     private DiffType diffType;
     private String description;
 
-    public FieldDifference(String fieldName, Object csvValue, Object databaseValue, DiffType diffType) {
+    public FieldDifference(String fieldName, String csvValue, String databaseValue, DiffType diffType) {
         this.fieldName = fieldName;
         this.csvValue = csvValue;
         this.databaseValue = databaseValue;
@@ -34,7 +34,7 @@ public class FieldDifference {
         return csvValue;
     }
 
-    public void setCsvValue(Object csvValue) {
+    public void setCsvValue(String csvValue) {
         this.csvValue = csvValue;
     }
 
@@ -42,7 +42,7 @@ public class FieldDifference {
         return databaseValue;
     }
 
-    public void setDatabaseValue(Object databaseValue) {
+    public void setDatabaseValue(String databaseValue) {
         this.databaseValue = databaseValue;
     }
 
@@ -60,5 +60,16 @@ public class FieldDifference {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "FieldDifference(" +
+                "fieldName=" + fieldName +
+                ", csvValue=" + csvValue +
+                ", databaseValue=" + databaseValue +
+                ", diffType=" + diffType +
+                ", description=" + description +
+                ')';
     }
 }

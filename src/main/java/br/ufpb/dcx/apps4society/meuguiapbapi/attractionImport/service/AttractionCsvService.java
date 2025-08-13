@@ -113,10 +113,10 @@ public class AttractionCsvService {
         List<FieldDifference> differences = new ArrayList<>();
 
         // Compare each field
-        compareField("name", csvAttraction.getName(), dbAttraction.getName(), differences);
-        compareField("description", csvAttraction.getDescription(), dbAttraction.getDescription(), differences);
-        compareField("mapLink", csvAttraction.getMapLink(), dbAttraction.getMapLink(), differences);
-        compareField("imageLink", csvAttraction.getImageUrl(), dbAttraction.getImageLink(), differences);
+        compareField("name", csvAttraction.getName().strip(), dbAttraction.getName().strip(), differences);
+        compareField("description", csvAttraction.getDescription().strip(), dbAttraction.getDescription().strip(), differences);
+        compareField("mapLink", csvAttraction.getMapLink().strip(), dbAttraction.getMapLink().strip(), differences);
+        compareField("imageLink", csvAttraction.getImageUrl().strip(), dbAttraction.getImageLink().strip(), differences);
 
         // Complex fields comparison
         compareCityField(csvAttraction.getCity(), dbAttraction.getCity(), differences);
@@ -144,7 +144,7 @@ public class AttractionCsvService {
         City city = cityRepository.findCityByNameIgnoreCase(attractionCsv.getCity())
                 .orElseThrow(() -> new ObjectNotFoundException("City not found: " + attractionCsv.getCity()));
         AttractionType attractionType = findOrCreateAttractionType(attractionCsv.getAttractionType());
-        List<TourismSegmentation> segmentations = attractionCsv.getSegmentations().stream().parallel().map(this::findOrCreateSegmentation).toList();
+        List<TourismSegmentation> segmentations = attractionCsv.getSegmentations().stream().map(this::findOrCreateSegmentation).toList();
         List<MoreInfoLink> moreInfoLinks = attractionCsv.getMoreInfoLinks().values().stream()
                 .filter(link -> link != null && !link.isBlank())
                 .map(link -> new MoreInfoLink(link,""))
@@ -165,16 +165,26 @@ public class AttractionCsvService {
     }
 
     private AttractionType findOrCreateAttractionType(String typeName) {
+        var typeNameStriped = typeName.strip();
+        if (typeNameStriped.isBlank()) {
+            log.warn("Attraction type name is blank, skipping creation");
+            throw new ImportFileException("Attraction type name cannot be blank");
+        }
         return attractionTypeRepository.findByNameIgnoreCase(typeName)
                 .orElseGet(() -> {
-                    return attractionTypeRepository.save(new AttractionType(null, typeName, ""));
+                    return attractionTypeRepository.save(new AttractionType(null, typeNameStriped, ""));
                 });
     }
 
     private TourismSegmentation findOrCreateSegmentation(String segmentationName) {
-        return tourismSegmentationRepository.findByNameIgnoreCase(segmentationName)
+        var segmentationNameStriped = segmentationName.strip();
+        if (segmentationNameStriped.isBlank()) {
+            log.warn("Segmentation name is blank, skipping creation");
+            throw new ImportFileException("Segmentation name cannot be blank");
+        }
+        return tourismSegmentationRepository.findByNameIgnoreCase(segmentationNameStriped)
                 .orElseGet(() -> {
-                    return tourismSegmentationRepository.save(new TourismSegmentation(null, segmentationName, ""));
+                    return tourismSegmentationRepository.save(new TourismSegmentation(null, segmentationNameStriped, ""));
                 });
     }
 
@@ -184,6 +194,7 @@ public class AttractionCsvService {
             CsvToBean<AttractionCsv> csvToBean = new CsvToBeanBuilder<AttractionCsv>(reader)
                     .withType(AttractionCsv.class)
                     .withIgnoreLeadingWhiteSpace(true)
+                    .withIgnoreEmptyLine(true)
                     .build();
             var list = csvToBean.parse();
             list.removeFirst();
@@ -196,30 +207,35 @@ public class AttractionCsvService {
     }
 
     private void compareField(String fieldName, String csvValue, String dbValue, List<FieldDifference> differences) {
-        if (!csvValue.equals(dbValue)) {
-            differences.add(new FieldDifference(fieldName, csvValue, dbValue, DiffType.CHANGED));
+        if (csvValue.equalsIgnoreCase(dbValue)) {
+            return;
         }
+        differences.add(new FieldDifference(fieldName, csvValue, dbValue, DiffType.CHANGED));
     }
 
     private void compareCityField(String csvCityName, City dbCity, List<FieldDifference> differences) {
-        String dbCityName = dbCity != null ? dbCity.getName() : null;
-        compareField("city", csvCityName, dbCityName, differences);
+        String dbCityName = dbCity != null ? dbCity.getName().strip() : null;
+        compareField("city", csvCityName.strip(), dbCityName, differences);
     }
 
     private void compareAttractionTypeField(String csvTypeName, AttractionType dbType, List<FieldDifference> differences) {
-        String dbTypeName = dbType != null ? dbType.getName() : null;
-        compareField("attractionType", csvTypeName, dbTypeName, differences);
+        String dbTypeName = dbType != null ? dbType.getName().strip() : null;
+        compareField("attractionType", csvTypeName.strip(), dbTypeName, differences);
     }
 
     private void compareInfoLinksField(List<String> moreInfoLinks, List<MoreInfoLink> moreInfoLinks1, List<FieldDifference> differences) {
-        if (moreInfoLinks.size() != moreInfoLinks1.size()) {
-            differences.add(new FieldDifference("moreInfoLinks", moreInfoLinks, moreInfoLinks1, DiffType.CHANGED));
+        var csvLinksCleaned = moreInfoLinks.stream().filter(s -> !s.isBlank()).map(String::strip).toList();
+        if (csvLinksCleaned.size() != moreInfoLinks1.size()) {
+            String csvLinks = String.join(", ", csvLinksCleaned);
+            String dbLinks = moreInfoLinks1.stream().map(m -> m.getLink().strip()).reduce((a, b) -> a + ", " + b).orElse("");
+            differences.add(new FieldDifference("moreInfoLinks", csvLinks, dbLinks, DiffType.CHANGED));
             return;
         }
 
-        for (int i = 0; i < moreInfoLinks.size(); i++) {
-            String csvLink = moreInfoLinks.get(i);
-            String dbLink = moreInfoLinks1.get(i).getLink();
+
+        for (int i = 0; i < csvLinksCleaned.size(); i++) {
+            String csvLink = csvLinksCleaned.get(i);
+            String dbLink = moreInfoLinks1.get(i).getLink().strip();
             if (!csvLink.equals(dbLink)) {
                 differences.add(new FieldDifference("moreInfoLink[" + i + "]", csvLink, dbLink, DiffType.CHANGED));
             }
@@ -227,14 +243,17 @@ public class AttractionCsvService {
     }
 
     private void compareSegmentationsField(List<String> csvSegmentations, List<TourismSegmentation> dbSegmentations, List<FieldDifference> differences) {
-        if (csvSegmentations.size() != dbSegmentations.size()) {
-            differences.add(new FieldDifference("segmentations", csvSegmentations, dbSegmentations, DiffType.CHANGED));
+        var csvSegmentationsCleaned = csvSegmentations.stream().filter(s -> !s.isBlank()).map(String::strip).toList();
+        if (csvSegmentationsCleaned.size() != dbSegmentations.size()) {
+            String csvSegmentationsString = String.join(", ", csvSegmentationsCleaned);
+            String dbSegmentationsString = dbSegmentations.stream().map(s -> s.getName().strip()).reduce((a, b) -> a + ", " + b).orElse("");
+            differences.add(new FieldDifference("segmentations", csvSegmentationsString, dbSegmentationsString, DiffType.CHANGED));
             return;
         }
 
-        for (int i = 0; i < csvSegmentations.size(); i++) {
-            String csvSegmentation = csvSegmentations.get(i);
-            String dbSegmentation = dbSegmentations.get(i).getName();
+        for (int i = 0; i < csvSegmentationsCleaned.size(); i++) {
+            String csvSegmentation = csvSegmentationsCleaned.get(i);
+            String dbSegmentation = dbSegmentations.get(i).getName().strip();
             if (!csvSegmentation.equals(dbSegmentation)) {
                 differences.add(new FieldDifference("segmentation[" + i + "]", csvSegmentation, dbSegmentation, DiffType.CHANGED));
             }

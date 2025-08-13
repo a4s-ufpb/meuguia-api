@@ -5,6 +5,7 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service.AttractionService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.specification.AttractionSpecification;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.dto.AttractionDiffResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.dto.ImportResponse;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.service.AttractionCsvService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -174,7 +175,7 @@ public class AttractionController {
                     @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
                     @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
             })
-    public ResponseEntity<?> compareAttractionsFromFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<List<AttractionDiffResponse>> compareAttractionsFromFile(@RequestParam("file") MultipartFile file) {
         log.info("compareAttractionsFromFile called with file with name {}", file.getOriginalFilename());
         var response = attractionImportService.compareAttractions(file);
         return ResponseEntity.ok(response);

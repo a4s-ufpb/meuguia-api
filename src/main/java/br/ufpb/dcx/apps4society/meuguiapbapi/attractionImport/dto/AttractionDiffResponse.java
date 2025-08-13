@@ -63,4 +63,15 @@ public class AttractionDiffResponse {
     public void setComparisonTimestamp(LocalDateTime comparisonTimestamp) {
         this.comparisonTimestamp = comparisonTimestamp;
     }
+
+    @Override
+    public String toString() {
+        return "AttractionDiffResponse(" +
+                "attractionName=" + attractionName +
+                ", differences=" + differences +
+                ", hasChanges=" + hasChanges +
+                ", diffType=" + diffType +
+                ", comparisonTimestamp=" + comparisonTimestamp +
+                ')';
+    }
 }
