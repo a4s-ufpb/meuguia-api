@@ -1,5 +1,6 @@
 package br.ufpb.dcx.apps4society.meuguiapbapi.exception;
 
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.exceptions.ImportFileException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import org.slf4j.Logger;
@@ -24,6 +25,21 @@ import java.util.List;
 @ControllerAdvice
 public class ResourceExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(ResourceExceptionHandler.class);
+
+
+    @ExceptionHandler(ImportFileException.class)
+    public ResponseEntity<StandardError> handleImportFileException(Exception ex, HttpServletRequest request) {
+        StandardError error = new StandardError(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "File import error",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        log.warn(ex.toString());
+        log.warn(error.toString());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardError> handleAllExceptions(Exception ex, HttpServletRequest request) {

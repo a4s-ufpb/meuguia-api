@@ -17,20 +17,20 @@ public class Attraction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 200, nullable = false)
+    @Column(name = "name", length = 256, nullable = false)
     private String name;
 
     @Column(name = "description", length = 100000, nullable = false)
     private String description;
 
-    @Column(name = "map_link", length = 200, nullable = false)
+    @Column(name = "map_link", length = 512, nullable = false)
     private String mapLink;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
-    @Column(name = "image_link", length = 500, nullable = false)
+    @Column(name = "image_link", length = 512, nullable = false)
     private String imageLink;
 
     @ManyToMany(fetch = FetchType.LAZY)
