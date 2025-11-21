@@ -15,6 +15,9 @@ spring:
           use_jdbc_metadata_defaults: false
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: false
 logging:
   level:
     br.ufpb.dcx.apps4society.meuguiapbapi: ${LOG_LEVEL}
