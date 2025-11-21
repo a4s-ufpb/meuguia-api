@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tests" type="JUnit" factoryName="JUnit">
+    <module name="meuguiapb-api" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
+    <envs>
+      <env name="API_PORT" value="8081" />
+      <env name="JWT_EXPIRATION" value="3600000" />
+      <env name="JWT_SECRET" value="b120b718e1ee432184022ea7909cd0d26975edce39ae8b59b93abbee1d910917eea2d14c50bf872d32862563336265a428355217a7ea5ff90ab8e05c9a4f7861f393ec94b304f786d727f0d377f57d1b8805e384756a8532d81c20989b57aa0e387c08c72127ca85c067c2d3e056dfe8509521382ef3c52c3cf26bd156fad6115c2dfb4415c89ca8608895bca85b49ca86fa81afc3002c196cb7afde4c957b24d63fdf08616f4e72c43c176ddfb5f4ac3ee65a7ca291edb3426c92cbf80392bd4911f79498a94c683328ed7afe89c50f5a40aad41fc17b5191286fc30a5e560ecbf37780f41593da058095eb0f16a5835bdce442e35aebbcb6cc3072195d23d1" />
+      <env name="TEST_SERVER_BASE_PATH" value="/api" />
+      <env name="TEST_SERVER_PORT" value="8081" />
+      <env name="TEST_SERVER_URI" value="http://localhost" />
+    </envs>
+    <dir value="$PROJECT_DIR$/src/test/java/br/ufpb/dcx/apps4society/meuguiapbapi" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

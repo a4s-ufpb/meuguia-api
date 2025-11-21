@@ -5,6 +5,9 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.dto.AttractionRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.service.AttractionService;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attraction.specification.AttractionSpecification;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.dto.AttractionDiffResponse;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.dto.ImportResponse;
+import br.ufpb.dcx.apps4society.meuguiapbapi.attractionImport.service.AttractionCsvService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,9 +23,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/attractions", produces = {"application/json"})
@@ -31,10 +36,12 @@ public class AttractionController {
     private final Logger log = LoggerFactory.getLogger(AttractionController.class);
 
     private final AttractionService attractionService;
+    private final AttractionCsvService attractionImportService;
 
     @Autowired
-    public AttractionController(AttractionService attractionService) {
+    public AttractionController(AttractionService attractionService, AttractionCsvService attractionImportService) {
         this.attractionService = attractionService;
+        this.attractionImportService = attractionImportService;
     }
 
     @Operation(summary = "Buscar atrativo por id", description = "Busca um atrativo passando o seu id",
@@ -156,5 +163,38 @@ public class AttractionController {
         log.info("Atrativo atualizado com sucesso: {}", updatedAttraction);
 
         return ResponseEntity.ok().body(updatedAttractionDTO);
+    }
+
+    @PostMapping("/import/compare")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Comparar atrativos de arquivo CSV",
+            description = "Compara atrativos de um arquivo CSV com os existentes no banco de dados. Retorna as diferenças encontradas.",
+            tags = {"Attractions"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            })
+    public ResponseEntity<List<AttractionDiffResponse>> compareAttractionsFromFile(@RequestParam("file") MultipartFile file) {
+        log.info("compareAttractionsFromFile called with file with name {}", file.getOriginalFilename());
+        var response = attractionImportService.compareAttractions(file);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/import")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Importar atrativos de arquivo CSV",
+            description = "Importa atrativos de um arquivo CSV. O arquivo deve conter as colunas: name, description, mapLink, cityId, imageLink, segmentations, attractionType, moreInfoLinks",
+            tags = {"Attractions"},
+            responses = {
+                    @ApiResponse(description = "Success", responseCode = "200", content = @Content),
+                    @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
+                    @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
+            })
+    public ResponseEntity<List<ImportResponse>> importAttractionsFromFile(@RequestParam("file") MultipartFile file) {
+        log.info("Importando atrativos do arquivo: {}", file.getOriginalFilename());
+        var response = attractionImportService.importAttractionsFromCsv(file);
+        log.info("Importação de atrativos concluída com sucesso");
+        return ResponseEntity.ok(response);
     }
 }

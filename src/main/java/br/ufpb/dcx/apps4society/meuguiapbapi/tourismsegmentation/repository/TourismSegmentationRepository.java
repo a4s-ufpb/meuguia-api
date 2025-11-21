@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TourismSegmentationRepository extends JpaRepository<TourismSegmentation, Long> {
@@ -15,6 +16,10 @@ public interface TourismSegmentationRepository extends JpaRepository<TourismSegm
 
     List<TourismSegmentation> findByNameContainingIgnoreCase(String name);
 
+    List<TourismSegmentation> findByNameIgnoreCaseIn(List<String> names);
+
     @Query("SELECT DISTINCT ts FROM TourismSegmentation ts")
     Page<TourismSegmentation> findAllDistinct(Pageable pageable);
+
+    Optional<TourismSegmentation> findByNameIgnoreCase(String segmentationName);
 }

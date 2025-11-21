@@ -11,7 +11,7 @@ import java.util.Objects;
 public class MoreInfoLink {
     // TODO: Talvez adicionar uma ordem para os links de mais informações (Index)
 
-    @Column(name = "link", length = 200, nullable = false)
+    @Column(name = "link", length = 512, nullable = false)
     private String link;
 
     @Column(name = "description", length = 200, nullable = false)

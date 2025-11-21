@@ -5,6 +5,8 @@ import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.AddAttra
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.ItineraryDTO;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.dto.ItineraryRequestData;
 import br.ufpb.dcx.apps4society.meuguiapbapi.attractionscollections.service.ItineraryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @Controller
-@RequestMapping("/api/itineraries")
+@RequestMapping(value = "/api/itineraries", produces = {"application/json"})
 public class ItineraryController {
     private static final Logger log = LoggerFactory.getLogger(ItineraryController.class);
 
@@ -29,6 +31,7 @@ public class ItineraryController {
         this.itineraryService = itineraryService;
     }
 
+    @Operation
     @PostMapping
     public ResponseEntity<ItineraryDTO> createItinerary(@Valid @RequestBody ItineraryRequestData requestData) {
         log.debug("Creating itinerary with request data: {}", requestData);
@@ -42,6 +45,7 @@ public class ItineraryController {
         return ResponseEntity.created(uri).body(itineraryDto);
     }
 
+    @Operation
     @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication) || @itinerariesAuthorization.isItineraryPublic(#id) || hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<ItineraryDTO> getItinerary(@PathVariable("id") Long id) {
@@ -53,6 +57,7 @@ public class ItineraryController {
         return ResponseEntity.ok(itineraryDto);
     }
 
+    @Operation
     @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication)")
     @PostMapping("/{id}/items")
     public ResponseEntity<Void> addItemToItinerary(@PathVariable("id") Long id, @Valid @RequestBody AddAttractionRequestData requestData) {
@@ -65,6 +70,7 @@ public class ItineraryController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation
     @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication)")
     @DeleteMapping("/{id}/items/{attractionId}")
     public ResponseEntity<Void> removeItemFromItinerary(@PathVariable("id") Long id, @PathVariable("attractionId") Long attractionId) {
@@ -77,6 +83,7 @@ public class ItineraryController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation
     @PreAuthorize("@itinerariesAuthorization.isOwnerOfItinerary(#id, authentication) || hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItinerary(@PathVariable("id") Long id) {
@@ -89,6 +96,7 @@ public class ItineraryController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation
     @GetMapping()
     public ResponseEntity<Page<ItineraryDTO>> getPublicItineraries(Pageable pageable) {
         log.debug("Retrieving public itineraries with pageable: {}", pageable);
@@ -100,6 +108,7 @@ public class ItineraryController {
         return ResponseEntity.ok(itineraries);
     }
 
+    @Operation
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<Page<ItineraryDTO>> getAllItineraries(Pageable pageable) {

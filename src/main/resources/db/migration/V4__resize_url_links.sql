@@ -1,0 +1,11 @@
+ALTER TABLE more_info_link
+ALTER COLUMN link TYPE CHAR(512);
+
+ALTER TABLE attraction
+ALTER COLUMN map_link TYPE CHAR(512);
+
+ALTER TABLE attraction
+ALTER COLUMN image_link TYPE CHAR(512);
+
+ALTER TABLE attraction
+ALTER COLUMN name TYPE CHAR(256);
